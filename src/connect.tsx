@@ -23,8 +23,7 @@ export default function connectToState<
     }
 
     componentDidMount() {
-      // eslint-disable-next-line no-param-reassign
-      container.onStateUpdate = () => this.forceUpdate();
+      container.addListener(() => this.forceUpdate());
     }
   };
 }

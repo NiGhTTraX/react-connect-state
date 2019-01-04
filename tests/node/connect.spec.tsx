@@ -25,7 +25,7 @@ describe('connectToState', () => {
     expect(View.renderedWith({ foo: fooContainer.object })).to.be.true;
   });
 
-  it('should pass the updated container after a state change', () => {
+  it('should support one listener', () => {
     interface FooState {
       bar: number;
     }
@@ -51,5 +51,41 @@ describe('connectToState', () => {
     fooContainer.increment();
 
     expect(View.renderedWith({ foo: fooContainer })).to.be.true;
+  });
+
+  it('should support multiple listeners', () => {
+    interface FooState {
+      bar: number;
+    }
+
+    class FooContainer extends StateContainer<FooState> {
+      increment() {
+        this.setState({ bar: 42 });
+      }
+    }
+    const fooContainer = new FooContainer();
+
+    interface ViewProps {
+      foo: StateContainer<FooState>;
+    }
+
+    const View1 = createReactStub<ViewProps>();
+    const View2 = createReactStub<ViewProps>();
+
+    const ConnectedView1 = connectToState(View1, fooContainer, 'foo');
+    const ConnectedView2 = connectToState(View2, fooContainer, 'foo');
+
+    $render(<div>
+      <ConnectedView1 />
+      <ConnectedView2 />
+    </div>);
+
+    View1.sinonStub.reset();
+    View2.sinonStub.reset();
+
+    fooContainer.increment();
+
+    expect(View1.renderedWith({ foo: fooContainer })).to.be.true;
+    expect(View2.renderedWith({ foo: fooContainer })).to.be.true;
   });
 });
