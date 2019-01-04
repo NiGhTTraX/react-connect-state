@@ -1,0 +1,13 @@
+language: node_js
+node_js:
+- 8
+sudo: required
+services:
+- docker
+
+script:
+- npm run lint
+- npm run test
+
+after_success:
+- npm run report-coverage
