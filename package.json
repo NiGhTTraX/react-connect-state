@@ -29,7 +29,9 @@
   },
   "author": "Andrei Picus",
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "react-bind-component": "~1.0.1"
+  },
   "peerDependencies": {
     "react": "^16"
   },
