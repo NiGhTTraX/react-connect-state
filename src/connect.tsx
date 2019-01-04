@@ -21,5 +21,10 @@ export default function connectToState<
       // @ts-ignore
       return <View {...props} />;
     }
+
+    componentDidMount() {
+      // eslint-disable-next-line no-param-reassign
+      container.onStateUpdate = () => this.forceUpdate();
+    }
   };
 }

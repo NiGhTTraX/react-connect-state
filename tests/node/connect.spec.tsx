@@ -24,4 +24,32 @@ describe('connectToState', () => {
 
     expect(View.renderedWith({ foo: fooContainer.object })).to.be.true;
   });
+
+  it('should pass the updated container after a state change', () => {
+    interface FooState {
+      bar: number;
+    }
+
+    class FooContainer extends StateContainer<FooState> {
+      increment() {
+        this.setState({ bar: 42 });
+      }
+    }
+    const fooContainer = new FooContainer();
+
+    interface ViewProps {
+      foo: StateContainer<FooState>;
+    }
+
+    const View = createReactStub<ViewProps>();
+    const ConnectedView = connectToState(View, fooContainer, 'foo');
+
+    $render(<ConnectedView />);
+
+    View.sinonStub.reset();
+
+    fooContainer.increment();
+
+    expect(View.renderedWith({ foo: fooContainer })).to.be.true;
+  });
 });

@@ -20,7 +20,8 @@ describe('StateContainer', () => {
     const onStateUpdate = Mock.ofType<(state: FooState) => void>();
     onStateUpdate.setup(x => x({ foo: 2 })).verifiable();
 
-    const foo = new Foo({ onStateUpdate: onStateUpdate.object });
+    const foo = new Foo();
+    foo.onStateUpdate = onStateUpdate.object;
     foo.increment();
 
     onStateUpdate.verifyAll();
