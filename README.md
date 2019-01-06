@@ -8,6 +8,8 @@
 ## Usage
 
 ```tsx
+import connectToState, { StateContainer } from 'react-state-connect';
+
 interface CounterState {
   count: number;
 }
