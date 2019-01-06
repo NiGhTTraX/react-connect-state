@@ -50,7 +50,7 @@ describe('connectToState', () => {
 
     fooContainer.increment();
 
-    expect(View.renderedWith({ foo: fooContainer })).to.be.true;
+    expect(View.lastProps.foo.state).to.deep.equal({ bar: 42 });
   });
 
   it('should support multiple listeners', () => {
@@ -85,7 +85,7 @@ describe('connectToState', () => {
 
     fooContainer.increment();
 
-    expect(View1.renderedWith({ foo: fooContainer })).to.be.true;
-    expect(View2.renderedWith({ foo: fooContainer })).to.be.true;
+    expect(View1.lastProps.foo.state).to.deep.equal({ bar: 42 });
+    expect(View2.lastProps.foo.state).to.deep.equal({ bar: 42 });
   });
 });

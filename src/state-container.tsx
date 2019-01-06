@@ -3,7 +3,7 @@ type Listener = () => void;
 export default abstract class StateContainer<T> {
   private listeners: Listener[] = [];
 
-  protected state: T | undefined;
+  state: T | undefined;
 
   protected setState(partialState: Partial<T>) {
     this.state = Object.assign({}, this.state, partialState);
