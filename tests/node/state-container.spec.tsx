@@ -3,20 +3,18 @@ import { describe, it, expect } from './suite';
 import StateContainer from '../../src/state-container';
 
 describe('StateContainer', () => {
+  interface FooState {
+    // eslint-disable-next-line no-use-before-define
+    foo: number;
+  }
+
+  class Foo extends StateContainer<FooState> {
+    increment() {
+      this.setState({ });
+    }
+  }
+
   it('should call when the state is updated', () => {
-    interface FooState {
-      // eslint-disable-next-line no-use-before-define
-      foo: number;
-    }
-
-    class Foo extends StateContainer<FooState> {
-      state = { foo: 1 };
-
-      increment() {
-        this.setState({ foo: 2 });
-      }
-    }
-
     const listener = spy();
 
     const foo = new Foo();
@@ -27,19 +25,6 @@ describe('StateContainer', () => {
   });
 
   it('should call all its listeners when the state is updated', () => {
-    interface FooState {
-      // eslint-disable-next-line no-use-before-define
-      foo: number;
-    }
-
-    class Foo extends StateContainer<FooState> {
-      state = { foo: 1 };
-
-      increment() {
-        this.setState({ foo: 2 });
-      }
-    }
-
     const listener1 = spy();
     const listener2 = spy();
 
