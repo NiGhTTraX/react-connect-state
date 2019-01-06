@@ -1,6 +1,6 @@
-import { describe, it } from './suite';
+import { spy } from 'sinon';
+import { describe, it, expect } from './suite';
 import StateContainer from '../../src/state-container';
-import { Mock } from 'typemoq';
 
 describe('StateContainer', () => {
   it('should call when the state is updated', () => {
@@ -17,13 +17,12 @@ describe('StateContainer', () => {
       }
     }
 
-    const onStateUpdate = Mock.ofType<() => void>();
-    onStateUpdate.setup(x => x()).verifiable();
+    const listener = spy();
 
     const foo = new Foo();
-    foo.addListener(onStateUpdate.object);
+    foo.addListener(listener);
     foo.increment();
 
-    onStateUpdate.verifyAll();
+    expect(listener).to.have.been.calledOnce;
   });
 });
