@@ -1,6 +1,6 @@
 {
   "include": [
-    "src/components/**/*.{ts,tsx}"
+    "src/**/*.{ts,tsx}"
   ],
   "exclude": [
     "**/*.d.ts",
