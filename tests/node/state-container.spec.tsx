@@ -25,4 +25,30 @@ describe('StateContainer', () => {
 
     expect(listener).to.have.been.calledOnce;
   });
+
+  it('should call all its listeners when the state is updated', () => {
+    interface FooState {
+      // eslint-disable-next-line no-use-before-define
+      foo: number;
+    }
+
+    class Foo extends StateContainer<FooState> {
+      state = { foo: 1 };
+
+      increment() {
+        this.setState({ foo: 2 });
+      }
+    }
+
+    const listener1 = spy();
+    const listener2 = spy();
+
+    const foo = new Foo();
+    foo.addListener(listener1);
+    foo.addListener(listener2);
+    foo.increment();
+
+    expect(listener1).to.have.been.calledOnce;
+    expect(listener2).to.have.been.calledOnce;
+  });
 });
