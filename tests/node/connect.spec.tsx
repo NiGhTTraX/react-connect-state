@@ -115,6 +115,5 @@ describe('connectToState', () => {
       foo: fooContainer1.object,
       bar: fooContainer2.object
     })).to.be.true;
-
   });
 });
