@@ -129,3 +129,43 @@ to type without something like
 [TypeScript#5453](https://github.com/Microsoft/TypeScript/issues/5453).
 An option would be to manually type overrides for up to a number of
 containers, but that doesn't seem right, at least not at the moment.
+
+### Exporting a connected component
+
+You can of course connect a view to a container when exporting it from
+a module.
+
+```tsx
+import connectToState, { StateContainer } from 'react-state-connect';
+import CounterContainer from './counter-container';
+
+interface CounterViewProps {
+  counter: CounterContainer
+}
+
+const CounterView = (({ counter }): CounterViewProps) => <div>...</div>;
+
+export default connectToState(
+  CounterView,
+  new CounterContainer()
+);
+```
+
+This pattern is perfectly valid, though it couples the view to the
+state container so it can't be used without it. This increases "out of
+the box readyness" at the expense of loose coupling.
+
+### Connecting a component inline
+
+```tsx
+import connectToState, { StateContainer } from 'react-state-connect';
+import container from './container';
+import View from './view';
+
+// Connect the view once, outside your render method.
+const ConnectedView = connectToState(View, container, 'foo');
+
+export default () => <div>
+  <ConnectedView />
+</div>;
+```
