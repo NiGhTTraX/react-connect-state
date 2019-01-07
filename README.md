@@ -99,3 +99,33 @@ connectToState(AnotherView, singletonContainer, 'bar');
 Moreover, the views receive the container directly under the specified prop,
 there's no need to create an intermediary component that accepts only the
 container and passes it along to the real view.
+
+
+## More examples
+
+### Connecting multiple containers
+
+You can chain multiple `connectToState` calls to connect multiple containers.
+
+```tsx
+interface ViewProps {
+  foo: ContainerState<State1>,
+  bar: ContainerState<State2>,
+}
+
+const View = ({ foo, bar }: ViewProps) => <div>...</div>;
+
+const ConnectedView = connectToState(
+  connectToState(View, container1, 'foo'),
+  container2,
+  'bar'
+);
+
+ReactDOM.render(<ConnectedView />);
+```
+
+Making `connectToState` accept an array of containers is a bit hard
+to type without something like
+[TypeScript#5453](https://github.com/Microsoft/TypeScript/issues/5453).
+An option would be to manually type overrides for up to a number of
+containers, but that doesn't seem right, at least not at the moment.

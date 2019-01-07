@@ -88,4 +88,33 @@ describe('connectToState', () => {
     expect(View1.lastProps.foo.state).to.deep.equal({ bar: 42 });
     expect(View2.lastProps.foo.state).to.deep.equal({ bar: 42 });
   });
+
+  it('should bind multiple containers', () => {
+    interface FooState {
+      bar: number;
+    }
+
+    const fooContainer1 = Mock.ofType<StateContainer<FooState>>();
+    const fooContainer2 = Mock.ofType<StateContainer<FooState>>();
+
+    interface ViewProps {
+      foo: StateContainer<FooState>;
+      bar: StateContainer<FooState>;
+    }
+
+    const View = createReactStub<ViewProps>();
+    const ConnectedView = connectToState(
+      connectToState(View, fooContainer1.object, 'foo'),
+      fooContainer2.object,
+      'bar'
+    );
+
+    $render(<ConnectedView />);
+
+    expect(View.renderedWith({
+      foo: fooContainer1.object,
+      bar: fooContainer2.object
+    })).to.be.true;
+
+  });
 });
