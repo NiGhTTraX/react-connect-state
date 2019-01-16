@@ -59,14 +59,19 @@ interface ViewProps {
 }
 const View = (props: ViewProps) => null;
 
-class Container extends StateContainer<ADifferentState> {}
-const container = new Container();
+class SomeContainer extends StateContainer<SomeState> {}
+class SomeOtherContainer extends StateContainer<ADifferentState> {}
+const someContainer = new SomeContainer();
+const someOtherContainer = new SomeOtherContainer();
+
+// All good here.
+connectToState(View, someContainer, 'foo');
 
 // Will throw a compiler error because `View` does not accept `ADifferentState`.
-connectToState(View, container, 'foo');
+connectToState(View, someOtherContainer, 'foo');
 
 // Will throw a compiler error because `View` does not accept `bar`.
-connectToState(View, container, 'bar');
+connectToState(View, someContainer, 'bar');
 ```
 
 ### Dependency Injection
