@@ -71,21 +71,39 @@ connectToState(View, container, 'bar');
 
 ### Dependency Injection
 
-There is no automagic `<Provider>` to wire up your container and views,
-everything is up to you: when you instantiate your containers, how many of
-them you create and who you pass them to. If you want to have a singleton
-container then you just create it once and pass the same reference to
-everyone. This style of DI prefers to have everything wired up in your
-app root, rather than inlined in the components. This leads to increased
-reusability because the views will not be tied to a particular framework.
+Pulling away the state from the views and connecting them higher up
+in the app can lead to loosely coupled components. Views can become more
+reusable since their state and actions can be expressed through props
+and callbacks. The state containers are simple classes with a very
+minimal interface that can be implemented with or without this lib or
+with other libs.
 
 ```tsx
-const singletonContainer = new SingletonContainer();
+import connectToState, { StateContainer } from 'react-connect-state';
 
-// We're passing the same instance to different views, but we could also
-// pass new instances every time.
-connectToState(SomeView, singletonContainer, 'foo'); 
-connectToState(AnotherView, singletonContainer, 'bar');
+interface DropdownState {
+  items: { id: number; name: string; }[];
+}
+
+interface IDropdownContainer extends StateContainer<DropdownState> {
+  delete: (id: number) => void;
+}
+
+interface DropdownProps {
+  items: IDropdownContainer;
+}
+
+const Dropdown = ({ items }: DropdownProps) => <select>
+  {items.state.items.map(item => <option key={item.id}>
+    <span>{item.name}</span>
+    <button onClick={items.delete.bind(items, item.id)}>Delete</button>
+  </option>)}
+</select>;
+
+// We're using the same Dropdown component and binding it to different
+// state containers.
+const UserDropdown = connectToState(Dropdown, new UsersContainer(), 'items');
+const ArticlesDropdown = connectToState(Dropdown, new ArticlesContainer(), 'items');
 ```
 
 ### Keep It Simple
