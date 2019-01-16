@@ -235,5 +235,5 @@ export default () => <div>
 This is the same as exporting a connected component although it happens
 higher up the call stack - the `CounterView` component is reusable and
 can be connected to any container and the component we're exporting
-binds it to particular container, effectively binding itself to that
+binds it to a particular container, effectively binding itself to that
 container.
