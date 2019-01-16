@@ -160,7 +160,8 @@ const CounterView = (({ counter }): CounterViewProps) => <div>...</div>;
 
 export default connectToState(
   CounterView,
-  new CounterContainer()
+  new CounterContainer(),
+  'counter'
 );
 ```
 
