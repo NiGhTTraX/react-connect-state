@@ -22,18 +22,13 @@ class CounterContainer extends StateContainer<CounterState> {
   increment() {
     this.setState({ count: this.state.count + 1 });
   }
-
-  decrement() {
-    this.setState({ count: this.state.count - 1 });
-  }
 }
 
 interface CounterViewProps {
-  counter: StateContainer<CounterState>;
+  counter: CounterContainer;
 }
 
 const CounterView = (({ counter }): CounterViewProps) => <div>
-  <button onClick={() => counter.decrement()}>-</button>
   <span>{counter.state.count}</span>
   <button onClick={() => counter.increment()}>+</button>
 </div>;
