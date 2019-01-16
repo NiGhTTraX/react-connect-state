@@ -210,7 +210,7 @@ export default connectToState(
 
 This pattern is perfectly valid, though it couples the view to the
 state container so it can't be used without it. This increases "out of
-the box readyness" at the expense of loose coupling.
+the box readiness" at the expense of loose coupling.
 
 ### Connecting a component inline
 
