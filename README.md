@@ -106,6 +106,51 @@ const UserDropdown = connectToState(Dropdown, new UsersContainer(), 'items');
 const ArticlesDropdown = connectToState(Dropdown, new ArticlesContainer(), 'items');
 ```
 
+### Easy testing
+
+Separating state from views enables testing them separately in isolation.
+Taking the first example from above, the tests might look something
+like this:
+
+```tsx
+import { StateContainerMock } from 'react-state-connect';
+import { spy } from 'sinon';
+import { CounterContainer, CounterView, CounterState } from '../src';
+
+describe('CounterContainer', () => {
+  it('should start at zero', () => {
+    expect(new CounterContainer().state.count).to.equal(0);
+  });
+  
+  it('should increment', () => {
+    const counter = new CounterContainer();
+    counter.increment();
+    expect(counter.state.count).to.equal(1);
+  });
+});
+
+describe('CounterView', () => {
+  class CounterMock extends StateContainer<CounterState> {
+    state = { count: 23 };
+    
+    increment = spy();
+  }
+  
+  it('should display the counter', () => {
+    const container = new CounterMock();
+    const component = render(<CounterView counter={container} />);
+    expect(component.text()).to.include('23');
+  });
+  
+  it('should call to increment', () => {
+    const container = new CounterMock();
+    const component = render(<CounterView counter={container} />);
+    component.click('button');
+    expect(container.increment).to.have.been.calledOnce;
+  });
+});
+```
+
 ### Keep It Simple
 
 `setState` is synchronous because we're not doing any batching like in React.
