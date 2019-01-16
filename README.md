@@ -217,12 +217,18 @@ the box readyness" at the expense of loose coupling.
 ```tsx
 import connectToState, { StateContainer } from 'react-state-connect';
 import container from './container';
-import View from './view';
+import CounterView from './view';
 
 // Connect the view once, outside your render method.
-const ConnectedView = connectToState(View, container, 'foo');
+const ConnectedCounterView = connectToState(CounterView, container, 'foo');
 
 export default () => <div>
-  <ConnectedView />
+  <ConnectedCounterView />
 </div>;
 ```
+
+This is the same as exporting a connected component although it happens
+higher up the call stack - the `CounterView` component is reusable and
+can be connected to any container and the component we're exporting
+binds it to particular container, effectively binding itself to that
+container.
