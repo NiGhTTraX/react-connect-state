@@ -1,7 +1,7 @@
 {
   "name": "react-state-connect",
   "description": "Connect state containers to React views",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "main": "dist/index",
   "types": "dist/index",
   "files": [
