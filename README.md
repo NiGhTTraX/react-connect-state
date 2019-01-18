@@ -112,6 +112,72 @@ const ConnectedView = connectToState(
 render(<ConnectedView />);
 ```
 
+## Motivation
+
+Turn this
+
+```tsx
+interface ViewState {
+  foo: number
+}
+
+class View extends React.Component<{}, ViewState> {
+  state = { foo: 1 };
+  
+  render() {
+    return <div>
+      Foo is {this.state.foo}
+    </div>;
+  }
+  
+  componentDidMount() {
+    setInterval(() => this.setState(
+      (prevState) => ({ foo: prevState.foo + 1 })
+    ), 1000);
+  }
+}
+```
+
+into this
+
+```tsx
+interface FooState {
+  foo: number;
+}
+
+class FooContainer extends StateContainer<FooState> {
+  state = { foo: 1 };
+  
+  constructor() {
+    super();
+    
+    setInterval(() => {
+      this.setState({ foo: this.state.foo + 1 });
+    }, 1000);
+  }
+}
+
+interface ViewProps {
+  foo: StateContainer<FooState>
+}
+
+const View = (props: ViewProps) => <div>
+  Foo is {props.foo.state.foo}
+</div>;
+
+const ConnectedView = connectToState(View, new FooContainer(), 'foo'); 
+```
+
+Decoupling state from your React views has some advantages. First of all,
+you can test the state logic and the view logic separately. Secondly,
+state will become easier to share between components because it will
+set at a higher level from where it can be passed to multiple components.
+Lastly, components can become more reusable by accepting a more generic
+type of state. This becomes evident if you have components that are
+coupled to APIs - by removing that state and creating a prop interface
+for it, you can open up the component to receiving similar responses
+from other APIs as well.
+
 
 ## Guiding principles
 
