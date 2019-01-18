@@ -44,6 +44,74 @@ ReactDOM.render(
 );
 ```
 
+### `StateContainer<State>`
+
+This is a very simple abstract base class that provides a private
+`setState` method similar to React which will update the internal state
+and notify all listeners. Unlike React though, this method is synchronous
+so there's no danger in reading the current state while updating it.
+
+If your container needs some dependencies in order to work you can pass
+them through the constructor.
+
+```tsx
+class MyStateContainer extends StateContainer<{ foo: number }> {
+  state = { foo: number };
+  
+  constructor(private foo: number) { }
+  
+  doSomething() {
+    this.setState({ foo: this.foo + 1 });
+  }
+}
+
+const ConnectedView = connectToState(View, new MyStateContainer(42), 'container');
+
+render(<ConnectedView />);
+```
+
+### `connectToState(View, container, propName)`
+
+The method takes a component and a state container and connects them
+together so that whenever the container updates its state the view
+will be re-rendered. The returned HOC will accept the same props as
+the original component, minus the prop that will hold the container.
+
+You can connect the same container to multiple views in a singleton
+pattern by just passing the same reference to multiple connect calls.
+
+```tsx
+const container = new MyStateContainer();
+
+const ConnectedView1 = connectToState(View1, container, 'foo');
+const ConnectedView2 = connectToState(View2, container, 'bar');
+
+render(<div>
+  <ConnectedView1 />
+  <ConnectedView2 />
+</div>);
+```
+
+You can also chain multiple `connectToState` calls to connect a view
+to multiple containers.
+
+```tsx
+interface ViewProps {
+  foo: ContainerState<State1>,
+  bar: ContainerState<State2>,
+}
+
+const View = ({ foo, bar }: ViewProps) => <div>...</div>;
+
+const ConnectedView = connectToState(
+  connectToState(View, container1, 'foo'),
+  container2,
+  'bar'
+);
+
+render(<ConnectedView />);
+```
+
 
 ## Guiding principles
 
@@ -156,40 +224,8 @@ describe('CounterView', () => {
 });
 ```
 
-### Keep It Simple
-
-`setState` is synchronous because we're not doing any batching like in React.
-Moreover, the views receive the container directly under the specified prop,
-there's no need to create an intermediary component that accepts only the
-container and passes it along to the real view.
-
 
 ## More examples
-
-### Connecting multiple containers
-
-You can chain multiple `connectToState` calls to connect multiple containers.
-
-```tsx
-interface ViewProps {
-  foo: ContainerState<State1>,
-  bar: ContainerState<State2>,
-}
-
-const View = ({ foo, bar }: ViewProps) => <div>...</div>;
-
-const ConnectedView = connectToState(
-  connectToState(View, container1, 'foo'),
-  container2,
-  'bar'
-);
-
-ReactDOM.render(<ConnectedView />);
-```
-
-Making `connectToState` accept an array of containers is a bit hard
-to type without something like
-[TypeScript#5453](https://github.com/Microsoft/TypeScript/issues/5453).
 
 ### Exporting a connected component
 
