@@ -3,7 +3,7 @@ type Listener<T> = (state: T) => void;
 
 type GlobalListener = (
   state: any,
-  commit: () => void,
+  checkout: () => void,
   instance: StateContainer<any>
 ) => void;
 
@@ -42,7 +42,7 @@ export default abstract class StateContainer<T> {
 
 export interface StateCommit {
   state: any;
-  commit: () => void;
+  checkout: () => void;
 }
 
 export interface CommitsState {
@@ -62,7 +62,7 @@ class CommitsContainer extends StateContainer<CommitsState> {
     this.state = { commits: [] };
   }
 
-  private onSetState = (state: any, commit: () => void, instance: StateContainer<any>) => {
+  private onSetState = (state: any, checkout: () => void, instance: StateContainer<any>) => {
     // We hide updates from us. This also prevents an infinite loop.
     if (instance === this) {
       return;
@@ -71,7 +71,7 @@ class CommitsContainer extends StateContainer<CommitsState> {
     this.setState({
       commits: this.state.commits.concat([{
         state,
-        commit
+        checkout
       }])
     });
   }

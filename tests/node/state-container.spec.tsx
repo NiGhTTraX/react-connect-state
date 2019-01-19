@@ -100,7 +100,7 @@ describe('StateContainer', () => {
       const firstCommit: StateCommit = firstUpdate.commits[0];
 
       listener.resetHistory();
-      firstCommit.commit();
+      firstCommit.checkout();
 
       expect(container.state.foo).to.equal(2);
 
