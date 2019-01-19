@@ -1,9 +1,11 @@
 /* eslint-disable react/no-access-state-in-setstate */
 type Listener<T> = (state: T) => void;
 
-let globalListener: Listener<any> = () => {};
+type GlobalListener = (state: any, commit: () => void) => void;
 
-function attachGlobalListener(listener: Listener<any>) {
+let globalListener: GlobalListener = () => {};
+
+function attachGlobalListener(listener: GlobalListener) {
   globalListener = listener;
 }
 
@@ -18,9 +20,10 @@ export default abstract class StateContainer<T> {
     this.state = Object.assign({}, this.state, partialState);
 
     this.notifyListeners();
-    globalListener(this.state);
+    globalListener(this.state, this.setState.bind(this, this.state));
   }
 
+  // TODO: make this private
   protected notifyListeners() {
     this.listeners.forEach(listener => listener(this.state));
   }
@@ -32,6 +35,7 @@ export default abstract class StateContainer<T> {
 
 export interface StateCommit {
   state: any;
+  commit: () => void;
 }
 
 export interface CommitsState {
@@ -51,9 +55,12 @@ class CommitsContainer extends StateContainer<CommitsState> {
     this.state = { commits: [] };
   }
 
-  private onSetState = (state: any) => {
+  private onSetState = (state: any, commit: () => void) => {
     // We're not using setState because that would cause an infinite loop.
-    this.state.commits.push({ state });
+    this.state.commits = this.state.commits.concat([{
+      state,
+      commit
+    }]);
 
     this.notifyListeners();
   }

@@ -1,6 +1,11 @@
+/* eslint-disable react/no-access-state-in-setstate */
 import { spy } from 'sinon';
 import { describe, it, expect } from './suite';
-import StateContainer, { commitsContainer } from '../../src/state-container';
+import StateContainer, {
+  commitsContainer,
+  CommitsState,
+  StateCommit
+} from '../../src/state-container';
 
 describe('StateContainer', () => {
   interface FooState {
@@ -37,39 +42,70 @@ describe('StateContainer', () => {
     expect(listener2).to.have.been.calledOnceWith({ foo: 42 });
   });
 
-  it('should call a global singleton for every state update', () => {
-    class Container1 extends StateContainer<FooState> {
-      doStuff() {
-        this.setState({ foo: 1 });
+  describe('commitsContainer', () => {
+    it('should call a global listener for every state update', () => {
+      class Container1 extends StateContainer<FooState> {
+        doStuff() {
+          this.setState({ foo: 1 });
+        }
       }
-    }
 
-    class Container2 extends StateContainer<FooState> {
-      doStuff() {
-        this.setState({ foo: 2 });
+      class Container2 extends StateContainer<FooState> {
+        doStuff() {
+          this.setState({ foo: 2 });
+        }
       }
-    }
 
-    commitsContainer.reset();
-    const listener = spy();
-    commitsContainer.addListener(listener);
+      commitsContainer.reset();
+      const listener = spy();
+      commitsContainer.addListener(listener);
 
-    const container1 = new Container1();
-    const container2 = new Container2();
+      const container1 = new Container1();
+      const container2 = new Container2();
 
-    container1.doStuff();
-    expect(listener).to.have.been.calledWith({
-      commits: [
-        { state: { foo: 1 } }
-      ]
+      container1.doStuff();
+
+      let states = listener.lastCall.args[0].commits.map((c: StateCommit) => c.state);
+      expect(states).to.deep.equal([
+        { foo: 1 }
+      ]);
+
+      container2.doStuff();
+
+      states = listener.lastCall.args[0].commits.map((c: StateCommit) => c.state);
+      expect(states).to.deep.equal([
+        { foo: 1 },
+        { foo: 2 }
+      ]);
     });
 
-    container2.doStuff();
-    expect(listener).to.have.been.calledWith({
-      commits: [
-        { state: { foo: 1 } },
-        { state: { foo: 2 } }
-      ]
+    it('should allow a previous state to be rolled back', () => {
+      class Container extends StateContainer<FooState> {
+        state = { foo: 1 };
+
+        increment() {
+          this.setState({ foo: this.state.foo + 1 });
+        }
+      }
+
+      commitsContainer.reset();
+      const listener = spy();
+      commitsContainer.addListener(listener);
+
+      const container = new Container();
+      container.increment();
+      container.increment();
+
+      const firstUpdate: CommitsState = listener.firstCall.args[0];
+      const firstCommit: StateCommit = firstUpdate.commits[0];
+
+      listener.resetHistory();
+      firstCommit.commit();
+
+      expect(container.state.foo).to.equal(2);
+
+      // TODO: the rollback will be committed, is this desired?
+      expect(listener.lastCall.args[0].commits).to.not.be.empty;
     });
   });
 });
