@@ -224,12 +224,12 @@ interface DropdownState {
   items: { id: number; name: string; }[];
 }
 
-interface IDropdownContainer extends StateContainer<DropdownState> {
+interface DropdownContainer extends StateContainer<DropdownState> {
   delete: (id: number) => void;
 }
 
 interface DropdownProps {
-  items: IDropdownContainer;
+  items: DropdownContainer;
 }
 
 const Dropdown = ({ items }: DropdownProps) => <select>
