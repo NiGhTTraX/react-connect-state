@@ -44,14 +44,14 @@ describe('commitsContainer', () => {
 
     container1.doStuff();
 
-    let states = commitListener.lastCall.args[0].commits.map((c: StateCommit) => c.state);
+    let states = commitListener.lastCall.args[0].master.map((c: StateCommit) => c.state);
     expect(states).to.deep.equal([
       { count: 1 }
     ]);
 
     container2.doStuff();
 
-    states = commitListener.lastCall.args[0].commits.map((c: StateCommit) => c.state);
+    states = commitListener.lastCall.args[0].master.map((c: StateCommit) => c.state);
     expect(states).to.deep.equal([
       { count: 1 },
       { count: 2 }
@@ -64,7 +64,7 @@ describe('commitsContainer', () => {
     container.increment();
 
     const firstUpdate: CommitsState = commitListener.firstCall.args[0];
-    const firstCommit: StateCommit = firstUpdate.commits[0];
+    const firstCommit: StateCommit = firstUpdate.master[0];
 
     firstCommit.checkout();
 
@@ -74,28 +74,37 @@ describe('commitsContainer', () => {
   it('should not commit a checkout', () => {
     const container = new CounterContainer();
     container.increment();
+    container.increment();
 
     const firstUpdate: CommitsState = commitListener.firstCall.args[0];
-    const firstCommit: StateCommit = firstUpdate.commits[0];
+    const firstCommit: StateCommit = firstUpdate.master[0];
 
     commitListener.resetHistory();
     firstCommit.checkout();
 
-    expect(commitListener.lastCall.args[0].commits).to.have.length(1);
+    expect(commitListener.lastCall.args[0].master).to.have.length(2);
   });
 
-  it('should not record new commits after a checkout', () => {
+  it('after a checkout it should record new commits in a new branch', () => {
     const container = new CounterContainer();
+    container.increment();
     container.increment();
 
     const firstUpdate: CommitsState = commitListener.firstCall.args[0];
-    const firstCommit: StateCommit = firstUpdate.commits[0];
+    const firstCommit: StateCommit = firstUpdate.master[0];
 
     commitListener.resetHistory();
 
     firstCommit.checkout();
-    container.increment();
 
-    expect(commitListener.lastCall.args[0].commits).to.have.length(1);
+    expect(container.state.count).to.equal(2);
+    container.increment();
+    expect(container.state.count).to.equal(3);
+
+    const lastUpdate: CommitsState = commitListener.lastCall.args[0];
+
+    expect(lastUpdate.master).to.have.length(2);
+    expect(lastUpdate.branches).to.have.length(1);
+    expect(lastUpdate.branches[0][0].state).to.deep.equal({ count: 3 });
   });
 });

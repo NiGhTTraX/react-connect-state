@@ -7,7 +7,8 @@ export interface StateCommit {
 }
 
 export interface CommitsState {
-  commits: StateCommit[];
+  master: StateCommit[];
+  branches: StateCommit[][];
   detached: boolean;
 }
 
@@ -21,17 +22,12 @@ class CommitsContainer extends StateContainer<CommitsState> {
   }
 
   reset() {
-    this.state = { commits: [], detached: false };
+    this.state = { master: [], branches: [], detached: false };
   }
 
   private onSetState = (state: any, checkout: () => void, instance: StateContainer<any>) => {
     // We hide updates from us. This also prevents an infinite loop.
     if (instance === this) {
-      return;
-    }
-
-    // Don't allow new commits in a detached state.
-    if (this.state.detached) {
       return;
     }
 
@@ -44,8 +40,17 @@ class CommitsContainer extends StateContainer<CommitsState> {
       }
     };
 
+    if (this.state.detached) {
+      this.setState({
+        branches: [...this.state.branches, [head]],
+        detached: false
+      });
+
+      return;
+    }
+
     this.setState({
-      commits: this.state.commits.concat([head])
+      master: [...this.state.master, head]
     });
   };
 }
