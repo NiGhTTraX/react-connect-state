@@ -22,15 +22,28 @@ export default abstract class StateContainer<T> {
 
   protected setState(partialState: Partial<T>) {
     this.state = Object.assign({}, this.state, partialState);
-    this.notify();
+
+    this.notifyPublicListeners();
+    this.notifyGlobalListener();
   }
 
-  private notify() {
-    this.listeners.forEach(listener => listener(this.state));
+  /**
+   * Checkout a previous state without informing the global listener.
+   */
+  private checkout(state: T) {
+    this.state = state;
 
+    this.notifyPublicListeners();
+  }
+
+  private notifyPublicListeners() {
+    this.listeners.forEach(listener => listener(this.state));
+  }
+
+  private notifyGlobalListener() {
     globalListener(
       this.state,
-      this.setState.bind(this, this.state),
+      this.checkout.bind(this, this.state),
       this
     );
   }
@@ -64,6 +77,7 @@ class CommitsContainer extends StateContainer<CommitsState> {
 
   private onSetState = (state: any, checkout: () => void, instance: StateContainer<any>) => {
     // We hide updates from us. This also prevents an infinite loop.
+    // TODO: find a better way
     if (instance === this) {
       return;
     }

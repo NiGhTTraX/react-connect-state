@@ -43,19 +43,31 @@ describe('StateContainer', () => {
   });
 
   describe('commitsContainer', () => {
+    interface CountState {
+      count: number;
+    }
+
+    class Container1 extends StateContainer<CountState> {
+      doStuff() {
+        this.setState({ count: 1 });
+      }
+    }
+
+    class Container2 extends StateContainer<CountState> {
+      doStuff() {
+        this.setState({ count: 2 });
+      }
+    }
+
+    class CounterContainer extends StateContainer<CountState> {
+      state = { count: 1 };
+
+      increment() {
+        this.setState({ count: this.state.count + 1 });
+      }
+    }
+
     it('should call a global listener for every state update', () => {
-      class Container1 extends StateContainer<FooState> {
-        doStuff() {
-          this.setState({ foo: 1 });
-        }
-      }
-
-      class Container2 extends StateContainer<FooState> {
-        doStuff() {
-          this.setState({ foo: 2 });
-        }
-      }
-
       commitsContainer.reset();
       const listener = spy();
       commitsContainer.addListener(listener);
@@ -67,32 +79,41 @@ describe('StateContainer', () => {
 
       let states = listener.lastCall.args[0].commits.map((c: StateCommit) => c.state);
       expect(states).to.deep.equal([
-        { foo: 1 }
+        { count: 1 }
       ]);
 
       container2.doStuff();
 
       states = listener.lastCall.args[0].commits.map((c: StateCommit) => c.state);
       expect(states).to.deep.equal([
-        { foo: 1 },
-        { foo: 2 }
+        { count: 1 },
+        { count: 2 }
       ]);
     });
 
-    it('should allow a previous state to be rolled back', () => {
-      class Container extends StateContainer<FooState> {
-        state = { foo: 1 };
-
-        increment() {
-          this.setState({ foo: this.state.foo + 1 });
-        }
-      }
-
+    it('should allow a previous state to be checked out', () => {
       commitsContainer.reset();
       const listener = spy();
       commitsContainer.addListener(listener);
 
-      const container = new Container();
+      const container = new CounterContainer();
+      container.increment();
+      container.increment();
+
+      const firstUpdate: CommitsState = listener.firstCall.args[0];
+      const firstCommit: StateCommit = firstUpdate.commits[0];
+
+      firstCommit.checkout();
+
+      expect(container.state.count).to.equal(2);
+    });
+
+    it('should not commit a rollback', () => {
+      commitsContainer.reset();
+      const listener = spy();
+      commitsContainer.addListener(listener);
+
+      const container = new CounterContainer();
       container.increment();
       container.increment();
 
@@ -102,10 +123,7 @@ describe('StateContainer', () => {
       listener.resetHistory();
       firstCommit.checkout();
 
-      expect(container.state.foo).to.equal(2);
-
-      // TODO: the rollback will be committed, is this desired?
-      expect(listener.lastCall.args[0].commits).to.not.be.empty;
+      expect(listener).to.not.have.been.called;
     });
   });
 });
