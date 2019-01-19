@@ -1,6 +1,6 @@
 import connectToState from './connect';
-import StateContainer from './state-container';
+import StateContainer, { commitsContainer } from './state-container';
 
 export default connectToState;
 
-export { StateContainer };
+export { StateContainer, commitsContainer };
