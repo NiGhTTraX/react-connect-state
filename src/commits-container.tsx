@@ -26,7 +26,6 @@ class CommitsContainer extends StateContainer<CommitsState> {
 
   private onSetState = (state: any, checkout: () => void, instance: StateContainer<any>) => {
     // We hide updates from us. This also prevents an infinite loop.
-    // TODO: find a better way
     if (instance === this) {
       return;
     }
