@@ -9,7 +9,7 @@ type GlobalListener = (
 
 let globalListener: GlobalListener = () => {};
 
-function attachGlobalListener(listener: GlobalListener) {
+export function attachGlobalListener(listener: GlobalListener) {
   globalListener = listener;
 }
 
@@ -52,45 +52,3 @@ export default abstract class StateContainer<T> {
     this.listeners.push(listener);
   }
 }
-
-export interface StateCommit {
-  state: any;
-  checkout: () => void;
-}
-
-export interface CommitsState {
-  commits: StateCommit[];
-}
-
-class CommitsContainer extends StateContainer<CommitsState> {
-  constructor() {
-    super();
-
-    this.reset();
-
-    attachGlobalListener(this.onSetState);
-  }
-
-  reset() {
-    this.state = { commits: [] };
-  }
-
-  private onSetState = (state: any, checkout: () => void, instance: StateContainer<any>) => {
-    // We hide updates from us. This also prevents an infinite loop.
-    // TODO: find a better way
-    if (instance === this) {
-      return;
-    }
-
-    this.setState({
-      commits: this.state.commits.concat([{
-        state,
-        checkout
-      }])
-    });
-  }
-}
-
-const commitsContainer = new CommitsContainer();
-
-export { commitsContainer };

@@ -1,5 +1,6 @@
 import connectToState from './connect';
-import StateContainer, { commitsContainer } from './state-container';
+import StateContainer from './state-container';
+import commitsContainer from './commits-container';
 
 export default connectToState;
 
