@@ -84,7 +84,7 @@ describe('commitsContainer', () => {
     expect(commitListener.lastCall.args[0].commits).to.have.length(1);
   });
 
-  it('should not allow new commits after a checkout', () => {
+  it('should not record new commits after a checkout', () => {
     const container = new CounterContainer();
     container.increment();
 
