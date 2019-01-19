@@ -1,7 +1,11 @@
 /* eslint-disable react/no-access-state-in-setstate */
 type Listener<T> = (state: T) => void;
 
-type GlobalListener = (state: any, commit: () => void) => void;
+type GlobalListener = (
+  state: any,
+  commit: () => void,
+  instance: StateContainer<any>
+) => void;
 
 let globalListener: GlobalListener = () => {};
 
@@ -18,14 +22,17 @@ export default abstract class StateContainer<T> {
 
   protected setState(partialState: Partial<T>) {
     this.state = Object.assign({}, this.state, partialState);
-
-    this.notifyListeners();
-    globalListener(this.state, this.setState.bind(this, this.state));
+    this.notify();
   }
 
-  // TODO: make this private
-  protected notifyListeners() {
+  private notify() {
     this.listeners.forEach(listener => listener(this.state));
+
+    globalListener(
+      this.state,
+      this.setState.bind(this, this.state),
+      this
+    );
   }
 
   public addListener(listener: Listener<T>) {
@@ -55,14 +62,18 @@ class CommitsContainer extends StateContainer<CommitsState> {
     this.state = { commits: [] };
   }
 
-  private onSetState = (state: any, commit: () => void) => {
-    // We're not using setState because that would cause an infinite loop.
-    this.state.commits = this.state.commits.concat([{
-      state,
-      commit
-    }]);
+  private onSetState = (state: any, commit: () => void, instance: StateContainer<any>) => {
+    // We hide updates from us. This also prevents an infinite loop.
+    if (instance === this) {
+      return;
+    }
 
-    this.notifyListeners();
+    this.setState({
+      commits: this.state.commits.concat([{
+        state,
+        commit
+      }])
+    });
   }
 }
 
