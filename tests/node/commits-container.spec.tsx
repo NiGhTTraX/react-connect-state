@@ -1,12 +1,17 @@
 /* eslint-disable react/no-access-state-in-setstate */
-import { spy } from 'sinon';
+import { SinonSpy, spy } from 'sinon';
 import { describe, it, beforeEach, expect } from './suite';
 import StateContainer from '../../src/state-container';
 import commitsContainer, { CommitsState, StateCommit } from '../../src/commits-container';
 
 describe('commitsContainer', () => {
+  let commitListener: SinonSpy;
+
   beforeEach(() => {
     commitsContainer.reset();
+
+    commitListener = spy();
+    commitsContainer.addListener(commitListener);
   });
 
   interface CountState {
@@ -34,22 +39,19 @@ describe('commitsContainer', () => {
   }
 
   it('should call a global listener for every state update', () => {
-    const listener = spy();
-    commitsContainer.addListener(listener);
-
     const container1 = new Container1();
     const container2 = new Container2();
 
     container1.doStuff();
 
-    let states = listener.lastCall.args[0].commits.map((c: StateCommit) => c.state);
+    let states = commitListener.lastCall.args[0].commits.map((c: StateCommit) => c.state);
     expect(states).to.deep.equal([
       { count: 1 }
     ]);
 
     container2.doStuff();
 
-    states = listener.lastCall.args[0].commits.map((c: StateCommit) => c.state);
+    states = commitListener.lastCall.args[0].commits.map((c: StateCommit) => c.state);
     expect(states).to.deep.equal([
       { count: 1 },
       { count: 2 }
@@ -57,14 +59,11 @@ describe('commitsContainer', () => {
   });
 
   it('should allow a previous state to be checked out', () => {
-    const listener = spy();
-    commitsContainer.addListener(listener);
-
     const container = new CounterContainer();
     container.increment();
     container.increment();
 
-    const firstUpdate: CommitsState = listener.firstCall.args[0];
+    const firstUpdate: CommitsState = commitListener.firstCall.args[0];
     const firstCommit: StateCommit = firstUpdate.commits[0];
 
     firstCommit.checkout();
@@ -73,36 +72,30 @@ describe('commitsContainer', () => {
   });
 
   it('should not commit a checkout', () => {
-    const listener = spy();
-    commitsContainer.addListener(listener);
-
     const container = new CounterContainer();
     container.increment();
 
-    const firstUpdate: CommitsState = listener.firstCall.args[0];
+    const firstUpdate: CommitsState = commitListener.firstCall.args[0];
     const firstCommit: StateCommit = firstUpdate.commits[0];
 
-    listener.resetHistory();
+    commitListener.resetHistory();
     firstCommit.checkout();
 
-    expect(listener.lastCall.args[0].commits).to.have.length(1);
+    expect(commitListener.lastCall.args[0].commits).to.have.length(1);
   });
 
   it('should not allow new commits after a checkout', () => {
-    const listener = spy();
-    commitsContainer.addListener(listener);
-
     const container = new CounterContainer();
     container.increment();
 
-    const firstUpdate: CommitsState = listener.firstCall.args[0];
+    const firstUpdate: CommitsState = commitListener.firstCall.args[0];
     const firstCommit: StateCommit = firstUpdate.commits[0];
 
-    listener.resetHistory();
+    commitListener.resetHistory();
 
     firstCommit.checkout();
     container.increment();
 
-    expect(listener.lastCall.args[0].commits).to.have.length(1);
+    expect(commitListener.lastCall.args[0].commits).to.have.length(1);
   });
 });
