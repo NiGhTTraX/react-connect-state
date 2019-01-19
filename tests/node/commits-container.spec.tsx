@@ -1,10 +1,14 @@
 /* eslint-disable react/no-access-state-in-setstate */
 import { spy } from 'sinon';
-import { describe, it, expect } from './suite';
+import { describe, it, beforeEach, expect } from './suite';
 import StateContainer from '../../src/state-container';
 import commitsContainer, { CommitsState, StateCommit } from '../../src/commits-container';
 
 describe('commitsContainer', () => {
+  beforeEach(() => {
+    commitsContainer.reset();
+  });
+
   interface CountState {
     count: number;
   }
@@ -30,7 +34,6 @@ describe('commitsContainer', () => {
   }
 
   it('should call a global listener for every state update', () => {
-    commitsContainer.reset();
     const listener = spy();
     commitsContainer.addListener(listener);
 
@@ -54,7 +57,6 @@ describe('commitsContainer', () => {
   });
 
   it('should allow a previous state to be checked out', () => {
-    commitsContainer.reset();
     const listener = spy();
     commitsContainer.addListener(listener);
 
@@ -71,7 +73,6 @@ describe('commitsContainer', () => {
   });
 
   it('should not commit a checkout', () => {
-    commitsContainer.reset();
     const listener = spy();
     commitsContainer.addListener(listener);
 
@@ -88,7 +89,6 @@ describe('commitsContainer', () => {
   });
 
   it('should not allow new commits after a checkout', () => {
-    commitsContainer.reset();
     const listener = spy();
     commitsContainer.addListener(listener);
 
