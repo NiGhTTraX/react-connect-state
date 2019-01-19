@@ -70,13 +70,12 @@ describe('commitsContainer', () => {
     expect(container.state.count).to.equal(2);
   });
 
-  it('should not commit a rollback', () => {
+  it('should not commit a checkout', () => {
     commitsContainer.reset();
     const listener = spy();
     commitsContainer.addListener(listener);
 
     const container = new CounterContainer();
-    container.increment();
     container.increment();
 
     const firstUpdate: CommitsState = listener.firstCall.args[0];
@@ -85,6 +84,25 @@ describe('commitsContainer', () => {
     listener.resetHistory();
     firstCommit.checkout();
 
-    expect(listener).to.not.have.been.called;
+    expect(listener.lastCall.args[0].commits).to.have.length(1);
+  });
+
+  it('should not allow new commits after a checkout', () => {
+    commitsContainer.reset();
+    const listener = spy();
+    commitsContainer.addListener(listener);
+
+    const container = new CounterContainer();
+    container.increment();
+
+    const firstUpdate: CommitsState = listener.firstCall.args[0];
+    const firstCommit: StateCommit = firstUpdate.commits[0];
+
+    listener.resetHistory();
+
+    firstCommit.checkout();
+    container.increment();
+
+    expect(listener.lastCall.args[0].commits).to.have.length(1);
   });
 });
