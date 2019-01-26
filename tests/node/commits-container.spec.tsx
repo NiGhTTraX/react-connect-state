@@ -63,12 +63,32 @@ describe('commitsContainer', () => {
     container.increment();
     container.increment();
 
-    const firstUpdate: CommitsState = commitListener.firstCall.args[0];
-    const firstCommit: StateCommit = firstUpdate.master[0];
+    const lastUpdate: CommitsState = commitListener.lastCall.args[0];
+    const firstCommit: StateCommit = lastUpdate.master[0];
 
     firstCommit.checkout();
 
     expect(container.state.count).to.equal(2);
+  });
+
+  it('should checkout a whole range across containers', () => {
+    const container1 = new CounterContainer();
+    const container2 = new CounterContainer();
+
+    container1.increment();
+    container2.increment();
+    container1.increment();
+    container2.increment();
+    container1.increment();
+    container2.increment();
+
+    const lastUpdate: CommitsState = commitListener.lastCall.args[0];
+    const commit: StateCommit = lastUpdate.master[2];
+
+    commit.checkout();
+
+    expect(container1.state.count).to.equal(3);
+    expect(container2.state.count).to.equal(2);
   });
 
   it('should not commit a checkout', () => {
