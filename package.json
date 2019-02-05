@@ -69,7 +69,7 @@
     "lint-staged": "~8.1.0",
     "mocha": "~5.2.0",
     "node-fetch": "~2.3.0",
-    "nyc": "~13.1.0",
+    "nyc": "~13.2.0",
     "react": "~16.7.0",
     "react-dom": "~16.7.0",
     "react-mock-component": "~0.4.1",
