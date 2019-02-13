@@ -1,9 +1,9 @@
 /* eslint-disable react/no-access-state-in-setstate */
-import StateContainer, { attachGlobalListener } from './state-container';
+import StateContainer, { attachGlobalListener, IStateContainer } from './state-container';
 
 export interface StateCommit {
   state: any;
-  instance: StateContainer<any>;
+  instance: IStateContainer<any>;
   checkout: () => void;
   prev: StateCommit | null;
   next: StateCommit | null;
@@ -15,7 +15,11 @@ export interface CommitsState {
   detached: boolean;
 }
 
-class CommitsContainer extends StateContainer<CommitsState> {
+export interface ICommitsContainer extends IStateContainer<CommitsState> {
+  reset(): void;
+}
+
+class CommitsContainer extends StateContainer<CommitsState> implements ICommitsContainer {
   constructor() {
     super();
 
@@ -72,7 +76,7 @@ class CommitsContainer extends StateContainer<CommitsState> {
     this.setState({ detached: true });
 
     let n = this.state.master[i];
-    const earliestCommits = new Map<StateContainer<any>, StateCommit>();
+    const earliestCommits = new Map<IStateContainer<any>, StateCommit>();
     const head = this.state.master[this.state.master.length - 1];
 
     while (n && n.next && n.next !== head) {
