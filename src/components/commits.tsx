@@ -1,10 +1,15 @@
 /* eslint-disable class-methods-use-this */
-import React, { Component } from 'react';
+import React, { Component, ComponentType } from 'react';
 import { ICommitsContainer, StateCommit } from '../commits-container';
 import './commits.less';
 
+export interface CommitProps {
+  commit: StateCommit;
+}
+
 export interface CommitsProps {
-  commits: ICommitsContainer
+  commits: ICommitsContainer,
+  Commit: ComponentType<CommitProps>
 }
 
 export default class Commits extends Component<CommitsProps> {
@@ -17,11 +22,16 @@ export default class Commits extends Component<CommitsProps> {
   }
 
   private connectCommits(commits: StateCommit[]) {
+    const { Commit } = this.props;
     const connectedCommits: any[] = [];
 
     commits.forEach(c => {
       connectedCommits.push(
-        <li className="commit" key={`commit${c.id}`} />,
+        // eslint-disable-next-line react/no-array-index-key
+        <li className="commit-node" key={`commit${c.id}`}>
+          <Commit commit={c} />
+        </li>,
+        // eslint-disable-next-line react/no-array-index-key
         <li className="commit-divider" key={`divider${c.id}`} />
       );
     });

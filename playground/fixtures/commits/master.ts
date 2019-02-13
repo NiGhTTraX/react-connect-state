@@ -1,5 +1,6 @@
 import Commits, { CommitsProps } from '../../../src/components/commits';
 import { StateCommit } from '../../../src/commits-container';
+import Commit from '../../../src/components/commit';
 
 const commit1: StateCommit = {
   id: 1,
@@ -24,6 +25,7 @@ const commit3: StateCommit = {
 };
 
 const props: CommitsProps = {
+  Commit,
   commits: {
     state: {
       master: [commit1, commit2, commit3],

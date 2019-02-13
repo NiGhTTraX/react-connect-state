@@ -1,6 +1,7 @@
 import React from 'react';
+import { createReactStub } from 'react-mock-component';
 import { $render, describe, expect, it } from '../suite';
-import Commits from '../../../src/components/commits';
+import Commits, { CommitProps } from '../../../src/components/commits';
 import { ICommitsContainer, StateCommit } from '../../../src/commits-container';
 
 describe('Commits', () => {
@@ -36,8 +37,15 @@ describe('Commits', () => {
       reset: () => {}
     };
 
-    const $commits = $render(<Commits commits={commits} />);
+    const Commit = createReactStub<CommitProps>();
 
-    expect($commits.find('.master .commit')).to.have.length(3);
+    $render(<Commits
+      Commit={Commit}
+      commits={commits}
+    />);
+
+    expect(Commit.renderedWith({ commit: commit1 })).to.be.true;
+    expect(Commit.renderedWith({ commit: commit2 })).to.be.true;
+    expect(Commit.renderedWith({ commit: commit3 })).to.be.true;
   });
 });
