@@ -127,4 +127,10 @@ describe('commitsContainer', () => {
     expect(lastUpdate.branches).to.have.length(1);
     expect(lastUpdate.branches[0][0].state).to.deep.equal({ count: 3 });
   });
+
+  it('should not replay the entire commit range when checking out an early commit');
+
+  it('should handle checkout out different branches while on them and while not');
+
+  it('should make commits immutable');
 });
