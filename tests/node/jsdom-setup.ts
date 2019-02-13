@@ -1,5 +1,4 @@
 import { JSDOM } from 'jsdom';
-import fetch from 'node-fetch';
 
 declare global {
   namespace NodeJS {
@@ -17,7 +16,6 @@ declare global {
 
 // React needs these.
 global.window = new JSDOM('').window;
-global.fetch = fetch;
 global.document = global.window.document;
 global.navigator = {
   userAgent: 'node.js'
