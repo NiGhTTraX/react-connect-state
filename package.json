@@ -38,7 +38,8 @@
   "author": "Andrei Picus",
   "license": "MIT",
   "dependencies": {
-    "react-bind-component": "~1.0.1"
+    "react-bind-component": "~1.0.1",
+    "classnames": "~2.2.6"
   },
   "peerDependencies": {
     "react": "^16"
@@ -53,6 +54,7 @@
     "@babel/register": "~7.0.0",
     "@nighttrax/eslint-config": "~2.2.0",
     "@types/chai": "~4.1.7",
+    "@types/classnames": "~2.2.7",
     "@types/fetch-mock": "~7.2.1",
     "@types/jquery": "~3.3.22",
     "@types/jsdom": "~12.2.0",

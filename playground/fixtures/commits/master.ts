@@ -30,7 +30,8 @@ const props: CommitsProps = {
     state: {
       master: [commit1, commit2, commit3],
       branches: [],
-      detached: false
+      detached: false,
+      head: commit3.id
     },
     reset: () => {}
   }

@@ -32,7 +32,8 @@ describe('Commits', () => {
       state: {
         master: [commit1, commit2, commit3],
         branches: [],
-        detached: false
+        detached: false,
+        head: commit3.id
       },
       reset: () => {}
     };
@@ -47,5 +48,28 @@ describe('Commits', () => {
     expect(Commit.renderedWith({ commit: commit1 })).to.be.true;
     expect(Commit.renderedWith({ commit: commit2 })).to.be.true;
     expect(Commit.renderedWith({ commit: commit3 })).to.be.true;
+  });
+
+  it('should mark checkouts on master', () => {
+    const commits: ICommitsContainer = {
+      state: {
+        master: [commit1, commit2, commit3],
+        branches: [],
+        detached: false,
+        head: commit2.id
+      },
+      reset: () => {}
+    };
+
+    const Commit = createReactStub<CommitProps>();
+
+    $render(<Commits
+      Commit={Commit}
+      commits={commits}
+    />);
+
+    expect(Commit.renderedWith({ commit: commit1, disabled: false })).to.be.true;
+    expect(Commit.renderedWith({ commit: commit2, disabled: false })).to.be.true;
+    expect(Commit.renderedWith({ commit: commit3, disabled: true })).to.be.true;
   });
 });

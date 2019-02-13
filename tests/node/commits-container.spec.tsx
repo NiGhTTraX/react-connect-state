@@ -128,6 +128,19 @@ describe('commitsContainer', () => {
     expect(lastUpdate.branches[0][0].state).to.deep.equal({ count: 3 });
   });
 
+  it('should update the head when checking out', () => {
+    const container = new CounterContainer();
+    container.increment();
+    container.increment();
+
+    const lastUpdate: CommitsState = commitListener.lastCall.args[0];
+    const firstCommit: StateCommit = lastUpdate.master[0];
+
+    firstCommit.checkout();
+
+    expect((commitListener.lastCall.args[0] as CommitsState).head).to.equal(firstCommit.id);
+  });
+
   it('should not replay the entire commit range when checking out an early commit');
 
   it('should handle checkout out different branches while on them and while not');

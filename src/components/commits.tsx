@@ -5,6 +5,7 @@ import './commits.less';
 
 export interface CommitProps {
   commit: StateCommit;
+  disabled?: boolean; // Assume false.
 }
 
 export interface CommitsProps {
@@ -24,12 +25,13 @@ export default class Commits extends Component<CommitsProps> {
   private connectCommits(commits: StateCommit[]) {
     const { Commit } = this.props;
     const connectedCommits: any[] = [];
+    const head = this.props.commits.state.head || Infinity;
 
     commits.forEach(c => {
       connectedCommits.push(
         // eslint-disable-next-line react/no-array-index-key
         <li className="commit-node" key={`commit${c.id}`}>
-          <Commit commit={c} />
+          <Commit commit={c} disabled={c.id > head} />
         </li>,
         // eslint-disable-next-line react/no-array-index-key
         <li className="commit-divider" key={`divider${c.id}`} />

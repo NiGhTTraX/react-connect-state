@@ -2,6 +2,12 @@
 import StateContainer, { attachGlobalListener, IStateContainer } from './state-container';
 
 export interface StateCommit {
+  /**
+   * Self incrementing number that uniquely identifies a commit.
+   *
+   * Guarantees that if commit1.id < commit2.id then
+   * commit1 happened before commit2.
+   */
   id: number;
   state: any;
   instance: IStateContainer<any>;
@@ -13,6 +19,7 @@ export interface CommitsState {
   master: StateCommit[];
   branches: StateCommit[][];
   detached: boolean;
+  head: StateCommit['id'] | null;
 }
 
 export interface ICommitsContainer extends IStateContainer<CommitsState> {
@@ -39,7 +46,8 @@ class CommitsContainer extends StateContainer<CommitsState> implements ICommitsC
     this.state = {
       master: [],
       branches: [],
-      detached: false
+      detached: false,
+      head: null
     };
 
     this.snapshots.clear();
@@ -89,14 +97,15 @@ class CommitsContainer extends StateContainer<CommitsState> implements ICommitsC
     this.setState({
       master: currentHead ? [
         ...this.state.master.slice(0, -1),
-        { ...currentHead },
+        currentHead,
         newHead
-      ] : [newHead]
+      ] : [newHead],
+      head: newHead.id
     });
   };
 
   private doCheckout(id: number) {
-    this.setState({ detached: true });
+    this.setState({ detached: true, head: id });
 
     const snapshot = this.snapshots.get(id);
 
