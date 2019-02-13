@@ -40,7 +40,7 @@ export function describe(name: string, definition: () => void) {
   });
 }
 
-export function it(name: string, definition: () => Promise<any>|void) {
+export function it(name: string, definition?: () => Promise<any>|void) {
   runnerIt(name, definition);
 }
 

@@ -37,4 +37,10 @@ describe('StateContainer', () => {
     expect(listener1).to.have.been.calledOnceWith({ foo: 42 });
     expect(listener2).to.have.been.calledOnceWith({ foo: 42 });
   });
+
+  it('should not replay the entire commit range when checking out an early commit');
+
+  it('should handle checkout out different branches while on them and while not');
+
+  it('should make commits immutable');
 });
