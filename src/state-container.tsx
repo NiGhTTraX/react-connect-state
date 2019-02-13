@@ -1,5 +1,5 @@
 /* eslint-disable react/no-access-state-in-setstate */
-type Listener<T> = (state: T) => void;
+export type Listener<T> = (state: T) => void;
 
 type GlobalListener = (
   state: any,
@@ -13,7 +13,15 @@ export function attachGlobalListener(listener: GlobalListener) {
   globalListener = listener;
 }
 
-export default abstract class StateContainer<T> {
+export interface IStateContainer<T> {
+  state: T;
+}
+
+export interface IStateEmitter<T> {
+  addListener(listener: Listener<T>): void;
+}
+
+export default abstract class StateContainer<T> implements IStateContainer<T>, IStateEmitter<T> {
   private listeners: Listener<T>[] = [];
 
   // This can result in runtime errors if the derived class doesn't
@@ -48,7 +56,7 @@ export default abstract class StateContainer<T> {
     );
   }
 
-  public addListener(listener: Listener<T>) {
+  addListener(listener: Listener<T>) {
     this.listeners.push(listener);
   }
 }
