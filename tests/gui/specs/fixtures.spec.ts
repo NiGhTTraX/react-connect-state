@@ -6,7 +6,6 @@ import { describe, loadFixture, vit } from '../suite';
 // Some components might render things like portals which need to be handled
 // differently.
 const componentSelectors: {[componentName: string]: string} = {
-  ProxyBuffet: '#root' // because it has fixed positioning and we're interested in the layout
 };
 
 interface Fixture {

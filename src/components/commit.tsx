@@ -4,6 +4,6 @@ import './commit.less';
 
 export default class Commit extends Component<CommitProps> {
   render() {
-    return <div className="commit" />;
+    return <div className="commit" onClick={this.props.commit.checkout} />;
   }
 }
