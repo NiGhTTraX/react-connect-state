@@ -6,8 +6,7 @@ export interface StateCommit {
   state: any;
   instance: IStateContainer<any>;
   checkout: () => void;
-  prev: StateCommit | null;
-  next: StateCommit | null;
+  parent: StateCommit | null;
 }
 
 export interface CommitsState {
@@ -20,8 +19,13 @@ export interface ICommitsContainer extends IStateContainer<CommitsState> {
   reset(): void;
 }
 
+type Snapshot = Map<StateContainer<any>, () => void>;
+type SnapshotMap = Map<StateCommit['id'], Snapshot>;
+
 class CommitsContainer extends StateContainer<CommitsState> implements ICommitsContainer {
-  commitCount = 1;
+  private commitCount = 1;
+
+  private snapshots: SnapshotMap = new Map<StateCommit['id'], Snapshot>();
 
   constructor() {
     super();
@@ -37,6 +41,8 @@ class CommitsContainer extends StateContainer<CommitsState> implements ICommitsC
       branches: [],
       detached: false
     };
+
+    this.snapshots.clear();
   }
 
   private onSetState = (state: any, checkout: () => void, instance: StateContainer<any>) => {
@@ -49,14 +55,15 @@ class CommitsContainer extends StateContainer<CommitsState> implements ICommitsC
     const currentHead = this.state.master[currentHeadIndex] || null;
 
     const newHead: StateCommit = {
-      id: this.commitCount++,
+      id: this.commitCount,
       state,
       instance,
-      checkout: this.doCheckout.bind(this, checkout, currentHeadIndex),
+      checkout: this.doCheckout.bind(this, this.commitCount),
       // TODO: handle different branches
-      prev: currentHead,
-      next: null
+      parent: currentHead
     };
+
+    this.commitCount++;
 
     if (this.state.detached) {
       this.setState({
@@ -67,35 +74,34 @@ class CommitsContainer extends StateContainer<CommitsState> implements ICommitsC
       return;
     }
 
+    // Shallow clone the previous snapshot and update the key for
+    // this instance. Assuming the number of instances remains small
+    // this shouldn't be too expensive.
+    // @ts-ignore
+    const prevSnapshot: Snapshot = currentHead
+      ? this.snapshots.get(currentHead.id)
+      : new Map() as Snapshot;
+    const newSnapshot = new Map(prevSnapshot);
+    newSnapshot.set(instance, checkout);
+
+    this.snapshots.set(newHead.id, newSnapshot);
+
     this.setState({
       master: currentHead ? [
         ...this.state.master.slice(0, -1),
-        { ...currentHead, next: newHead },
+        { ...currentHead },
         newHead
       ] : [newHead]
     });
   };
 
-  private doCheckout(checkout: () => void, i: number) {
+  private doCheckout(id: number) {
     this.setState({ detached: true });
 
-    let n = this.state.master[i];
-    const earliestCommits = new Map<IStateContainer<any>, StateCommit>();
-    const head = this.state.master[this.state.master.length - 1];
+    const snapshot = this.snapshots.get(id);
 
-    while (n && n.next && n.next !== head) {
-      if (!earliestCommits.get(n.instance)) {
-        earliestCommits.set(n.instance, n);
-      }
-
-      n = n.next;
-    }
-
-    earliestCommits.forEach(c => {
-      c.checkout();
-    });
-
-    checkout();
+    // @ts-ignore
+    snapshot.forEach(checkout => checkout());
   }
 }
 

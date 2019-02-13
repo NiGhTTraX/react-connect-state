@@ -8,28 +8,23 @@ describe('Commits', () => {
     id: 1,
     state: { foo: 'bar' },
     checkout: () => {},
-    next: null,
-    prev: null,
+    parent: null,
     instance: { state: { foo: 'bar' } }
   };
   const commit2: StateCommit = {
     id: 2,
     state: { foo: 'baz' },
     checkout: () => {},
-    next: null,
-    prev: commit1,
+    parent: commit1,
     instance: { state: { foo: 'baz' } }
   };
   const commit3: StateCommit = {
     id: 3,
     state: { foo: 'gaga' },
     checkout: () => {},
-    next: null,
-    prev: commit2,
+    parent: commit2,
     instance: { state: { foo: 'gaga' } }
   };
-  commit1.next = commit2;
-  commit2.next = commit3;
 
   it('should render all the master commits', () => {
     const commits: ICommitsContainer = {
