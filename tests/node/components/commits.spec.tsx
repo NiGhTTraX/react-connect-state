@@ -5,6 +5,7 @@ import { ICommitsContainer, StateCommit } from '../../../src/commits-container';
 
 describe('Commits', () => {
   const commit1: StateCommit = {
+    id: 1,
     state: { foo: 'bar' },
     checkout: () => {},
     next: null,
@@ -12,6 +13,7 @@ describe('Commits', () => {
     instance: { state: { foo: 'bar' } }
   };
   const commit2: StateCommit = {
+    id: 2,
     state: { foo: 'baz' },
     checkout: () => {},
     next: null,
@@ -19,6 +21,7 @@ describe('Commits', () => {
     instance: { state: { foo: 'baz' } }
   };
   const commit3: StateCommit = {
+    id: 3,
     state: { foo: 'gaga' },
     checkout: () => {},
     next: null,

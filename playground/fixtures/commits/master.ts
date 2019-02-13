@@ -2,6 +2,7 @@ import Commits, { CommitsProps } from '../../../src/components/commits';
 import { StateCommit } from '../../../src/commits-container';
 
 const commit1: StateCommit = {
+  id: 1,
   state: { foo: 'bar' },
   checkout: () => {},
   next: null,
@@ -9,6 +10,7 @@ const commit1: StateCommit = {
   instance: { state: { foo: 'bar' } }
 };
 const commit2: StateCommit = {
+  id: 2,
   state: { foo: 'baz' },
   checkout: () => {},
   next: null,
@@ -16,6 +18,7 @@ const commit2: StateCommit = {
   instance: { state: { foo: 'baz' } }
 };
 const commit3: StateCommit = {
+  id: 3,
   state: { foo: 'gaga' },
   checkout: () => {},
   next: null,

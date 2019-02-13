@@ -2,6 +2,7 @@
 import StateContainer, { attachGlobalListener, IStateContainer } from './state-container';
 
 export interface StateCommit {
+  id: number;
   state: any;
   instance: IStateContainer<any>;
   checkout: () => void;
@@ -20,6 +21,8 @@ export interface ICommitsContainer extends IStateContainer<CommitsState> {
 }
 
 class CommitsContainer extends StateContainer<CommitsState> implements ICommitsContainer {
+  commitCount = 1;
+
   constructor() {
     super();
 
@@ -46,6 +49,7 @@ class CommitsContainer extends StateContainer<CommitsState> implements ICommitsC
     const currentHead = this.state.master[currentHeadIndex] || null;
 
     const newHead: StateCommit = {
+      id: this.commitCount++,
       state,
       instance,
       checkout: this.doCheckout.bind(this, checkout, currentHeadIndex),
