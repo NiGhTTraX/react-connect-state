@@ -9,5 +9,5 @@ script:
 - npm run lint
 - npm run test
 
-after_success:
+after_script:
 - npm run report-coverage
