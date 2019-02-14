@@ -5,6 +5,8 @@ services:
     extends:
       file: ../../docker-compose.yml
       service: playground
+    environment:
+      - ACCEPTANCE=1
 
   selenium:
     image: selenium/hub:3.14.0-gallium

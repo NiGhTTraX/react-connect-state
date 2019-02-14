@@ -1,3 +1,12 @@
+const globalImports = [
+  'playground/styles.less',
+  'reset.css'
+];
+
+if (process.env.ACCEPTANCE) {
+  globalImports.push('tests/gui/styles.less');
+}
+
 module.exports = {
   rootPath: '../',
 
@@ -6,10 +15,8 @@ module.exports = {
   watchDirs: ['src', 'playground'],
   exclude: [/\.d\.ts$/],
 
-  globalImports: [
-    'playground/styles.less',
-    'reset.css'
-  ],
+  globalImports,
+
   webpackConfigPath: 'webpack.config.js',
 
   hostname: '0.0.0.0',
