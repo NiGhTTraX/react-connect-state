@@ -147,6 +147,21 @@ describe('commitsContainer', () => {
     expect(getLastUpdate().activeBranch).to.equal(0);
   });
 
+  it('should update the active branch when checking out the first commit of a diff branch', () => {
+    const container = new CounterContainer();
+    container.increment();
+    container.increment();
+
+    getLastUpdate().branches[0][0].checkout();
+
+    container.increment();
+
+    getLastUpdate().branches[0][0].checkout();
+    getLastUpdate().branches[1][0].checkout();
+
+    expect(getLastUpdate().activeBranch).to.equal(1);
+  });
+
   it('should not replay the entire commit range when checking out an early commit');
 
   it('should handle checkout out different branches while on them and while not');
