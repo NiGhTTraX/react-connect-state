@@ -219,4 +219,18 @@ describe('commitsContainer', () => {
 
     expect(getLastUpdate().branches[0][0]).to.equal(commit);
   });
+
+  it('should continue the active branch if checking out the head', () => {
+    const container = new CounterContainer();
+    container.increment();
+    container.increment();
+
+    getLastUpdate().branches[0][0].checkout();
+    getLastUpdate().branches[0][1].checkout();
+
+    container.increment();
+
+    expect(getLastUpdate().branches).to.have.length(1);
+    expect(getLastUpdate().branches[0]).to.have.length(3);
+  });
 });
