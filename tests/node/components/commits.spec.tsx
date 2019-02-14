@@ -2,42 +2,23 @@ import React from 'react';
 import { createReactStub } from 'react-mock-component';
 import { $render, describe, expect, it } from '../suite';
 import Commits, { CommitProps } from '../../../src/components/commits';
-import { ICommitsContainer, StateCommit } from '../../../src/commits-container';
+import { ICommitsContainer } from '../../../src/commits-container';
 import { Simulate } from 'react-dom/test-utils';
+import createBranch from '../../../playground/factories/commits';
 
 describe('Commits', () => {
-  const commit1: StateCommit = {
-    id: 1,
-    state: { foo: 'bar' },
-    checkout: () => {},
-    parent: null,
-    instance: { state: { foo: 'bar' } }
-  };
-  const commit2: StateCommit = {
-    id: 2,
-    state: { foo: 'baz' },
-    checkout: () => {},
-    parent: commit1,
-    instance: { state: { foo: 'baz' } }
-  };
-  const commit3: StateCommit = {
-    id: 3,
-    state: { foo: 'gaga' },
-    checkout: () => {},
-    parent: commit2,
-    instance: { state: { foo: 'gaga' } }
-  };
-
   let commits!: ICommitsContainer;
 
   describe('master', () => {
     beforeEach(() => {
+      const master = createBranch(3);
+
       commits = {
         state: {
-          master: [commit1, commit2, commit3],
+          master,
           branches: [],
           detached: false,
-          head: commit3.id
+          head: master[master.length - 1].id
         },
         reset: () => {}
       };
@@ -48,21 +29,21 @@ describe('Commits', () => {
 
       $render(<Commits Commit={Commit} commits={commits} />);
 
-      expect(Commit.renderedWith({ commit: commit1 })).to.be.true;
-      expect(Commit.renderedWith({ commit: commit2 })).to.be.true;
-      expect(Commit.renderedWith({ commit: commit3 })).to.be.true;
+      expect(Commit.renderedWith({ commit: commits.state.master[0] })).to.be.true;
+      expect(Commit.renderedWith({ commit: commits.state.master[1] })).to.be.true;
+      expect(Commit.renderedWith({ commit: commits.state.master[2] })).to.be.true;
     });
 
     it('should mark commits after a checkout', () => {
-      commits.state.head = commit2.id;
+      commits.state.head = commits.state.master[1].id;
 
       const Commit = createReactStub<CommitProps>();
 
       $render(<Commits Commit={Commit} commits={commits} />);
 
-      expect(Commit.renderedWith({ commit: commit1, disabled: false })).to.be.true;
-      expect(Commit.renderedWith({ commit: commit2, disabled: false })).to.be.true;
-      expect(Commit.renderedWith({ commit: commit3, disabled: true })).to.be.true;
+      expect(Commit.renderedWith({ commit: commits.state.master[0], disabled: false })).to.be.true;
+      expect(Commit.renderedWith({ commit: commits.state.master[1], disabled: false })).to.be.true;
+      expect(Commit.renderedWith({ commit: commits.state.master[2], disabled: true })).to.be.true;
     });
 
     it('should preview a checkout on mouse over', () => {
@@ -73,9 +54,9 @@ describe('Commits', () => {
       Commit.sinonStub.resetHistory();
       Simulate.mouseOver($commits.find('.commit-node')[1]);
 
-      expect(Commit.renderedWith({ commit: commit1, disabled: false })).to.be.true;
-      expect(Commit.renderedWith({ commit: commit2, disabled: false })).to.be.true;
-      expect(Commit.renderedWith({ commit: commit3, disabled: true })).to.be.true;
+      expect(Commit.renderedWith({ commit: commits.state.master[0], disabled: false })).to.be.true;
+      expect(Commit.renderedWith({ commit: commits.state.master[1], disabled: false })).to.be.true;
+      expect(Commit.renderedWith({ commit: commits.state.master[2], disabled: true })).to.be.true;
     });
 
     it('should stop previewing a checkout on mouse leave', () => {
@@ -87,13 +68,13 @@ describe('Commits', () => {
       Commit.sinonStub.resetHistory();
       Simulate.mouseLeave($commits.find('.commit-node')[1]);
 
-      expect(Commit.renderedWith({ commit: commit1, disabled: false })).to.be.true;
-      expect(Commit.renderedWith({ commit: commit2, disabled: false })).to.be.true;
-      expect(Commit.renderedWith({ commit: commit3, disabled: false })).to.be.true;
+      expect(Commit.renderedWith({ commit: commits.state.master[0], disabled: false })).to.be.true;
+      expect(Commit.renderedWith({ commit: commits.state.master[1], disabled: false })).to.be.true;
+      expect(Commit.renderedWith({ commit: commits.state.master[2], disabled: false })).to.be.true;
     });
 
     it('should preview a later checkout', () => {
-      commits.state.head = commit1.id;
+      commits.state.head = commits.state.master[0].id;
 
       const Commit = createReactStub<CommitProps>();
 
@@ -101,23 +82,25 @@ describe('Commits', () => {
 
       Simulate.mouseOver($commits.find('.commit-node')[1]);
 
-      expect(Commit.renderedWith({ commit: commit1, disabled: false })).to.be.true;
-      expect(Commit.renderedWith({ commit: commit2, disabled: false })).to.be.true;
-      expect(Commit.renderedWith({ commit: commit3, disabled: true })).to.be.true;
+      expect(Commit.renderedWith({ commit: commits.state.master[0], disabled: false })).to.be.true;
+      expect(Commit.renderedWith({ commit: commits.state.master[1], disabled: false })).to.be.true;
+      expect(Commit.renderedWith({ commit: commits.state.master[2], disabled: true })).to.be.true;
     });
   });
 
   describe('branches', () => {
     beforeEach(() => {
+      const activeBranch = createBranch(2);
+
       commits = {
         state: {
           master: [],
           branches: [
-            [commit1],
-            [commit2, commit3]
+            createBranch(2),
+            activeBranch
           ],
           detached: true,
-          head: commit3.id
+          head: activeBranch[activeBranch.length - 1].id
         },
         reset: () => {}
       };
@@ -128,9 +111,11 @@ describe('Commits', () => {
 
       $render(<Commits commits={commits} Commit={Commit} />);
 
-      expect(Commit.renderedWith({ commit: commit1 })).to.be.true;
-      expect(Commit.renderedWith({ commit: commit2 })).to.be.true;
-      expect(Commit.renderedWith({ commit: commit3 })).to.be.true;
+      commits.state.branches.forEach(branch => {
+        branch.forEach(commit => {
+          expect(Commit.renderedWith({ commit })).to.be.true;
+        });
+      });
     });
   });
 });
