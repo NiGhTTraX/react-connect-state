@@ -1,11 +1,12 @@
 /* eslint-disable react/no-access-state-in-setstate */
 import { spy } from 'sinon';
-import { describe, it, beforeEach, expect } from './suite';
+import { beforeEach, describe, expect, it } from './suite';
 import StateContainer from '../../src/state-container';
 import commitsContainer, { CommitsState, StateCommit } from '../../src/commits-container';
 
 describe('commitsContainer', () => {
   const commitListener = spy();
+  const getLastUpdate: () => CommitsState = () => commitListener.lastCall.args[0];
 
   beforeEach(() => {
     commitsContainer.reset();
@@ -44,14 +45,14 @@ describe('commitsContainer', () => {
 
     container1.doStuff();
 
-    let states = commitListener.lastCall.args[0].master.map((c: StateCommit) => c.state);
+    let states = getLastUpdate().master.map((c: StateCommit) => c.state);
     expect(states).to.deep.equal([
       { count: 1 }
     ]);
 
     container2.doStuff();
 
-    states = commitListener.lastCall.args[0].master.map((c: StateCommit) => c.state);
+    states = getLastUpdate().master.map((c: StateCommit) => c.state);
     expect(states).to.deep.equal([
       { count: 1 },
       { count: 2 }
@@ -63,9 +64,7 @@ describe('commitsContainer', () => {
     container.increment();
     container.increment();
 
-    const lastUpdate: CommitsState = commitListener.lastCall.args[0];
-    const firstCommit: StateCommit = lastUpdate.master[0];
-
+    const firstCommit = getLastUpdate().master[0];
     firstCommit.checkout();
 
     expect(container.state.count).to.equal(2);
@@ -82,9 +81,7 @@ describe('commitsContainer', () => {
     container1.increment();
     container2.increment();
 
-    const lastUpdate: CommitsState = commitListener.lastCall.args[0];
-    const commit: StateCommit = lastUpdate.master[2];
-
+    const commit: StateCommit = getLastUpdate().master[2];
     commit.checkout();
 
     expect(container1.state.count).to.equal(3);
@@ -96,13 +93,12 @@ describe('commitsContainer', () => {
     container.increment();
     container.increment();
 
-    const firstUpdate: CommitsState = commitListener.firstCall.args[0];
-    const firstCommit: StateCommit = firstUpdate.master[0];
+    const firstCommit = getLastUpdate().master[0];
 
     commitListener.resetHistory();
     firstCommit.checkout();
 
-    expect(commitListener.lastCall.args[0].master).to.have.length(2);
+    expect(getLastUpdate().master).to.have.length(2);
   });
 
   it('after a checkout it should record new commits in a new branch', () => {
@@ -110,8 +106,7 @@ describe('commitsContainer', () => {
     container.increment();
     container.increment();
 
-    const firstUpdate: CommitsState = commitListener.firstCall.args[0];
-    const firstCommit: StateCommit = firstUpdate.master[0];
+    const firstCommit: StateCommit = getLastUpdate().master[0];
 
     commitListener.resetHistory();
 
@@ -121,7 +116,7 @@ describe('commitsContainer', () => {
     container.increment();
     expect(container.state.count).to.equal(3);
 
-    const lastUpdate: CommitsState = commitListener.lastCall.args[0];
+    const lastUpdate = getLastUpdate();
 
     expect(lastUpdate.master).to.have.length(2);
     expect(lastUpdate.branches).to.have.length(1);
@@ -133,12 +128,10 @@ describe('commitsContainer', () => {
     container.increment();
     container.increment();
 
-    const lastUpdate: CommitsState = commitListener.lastCall.args[0];
-    const firstCommit: StateCommit = lastUpdate.master[0];
-
+    const firstCommit: StateCommit = getLastUpdate().master[0];
     firstCommit.checkout();
 
-    expect((commitListener.lastCall.args[0] as CommitsState).head).to.equal(firstCommit.id);
+    expect(getLastUpdate().head).to.equal(firstCommit.id);
   });
 
   it('should not replay the entire commit range when checking out an early commit');
