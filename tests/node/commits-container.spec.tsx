@@ -1,16 +1,16 @@
 /* eslint-disable react/no-access-state-in-setstate */
-import { SinonSpy, spy } from 'sinon';
+import { spy } from 'sinon';
 import { describe, it, beforeEach, expect } from './suite';
 import StateContainer from '../../src/state-container';
 import commitsContainer, { CommitsState, StateCommit } from '../../src/commits-container';
 
 describe('commitsContainer', () => {
-  let commitListener: SinonSpy;
+  const commitListener = spy();
 
   beforeEach(() => {
     commitsContainer.reset();
+    commitListener.resetHistory();
 
-    commitListener = spy();
     commitsContainer.addListener(commitListener);
   });
 
