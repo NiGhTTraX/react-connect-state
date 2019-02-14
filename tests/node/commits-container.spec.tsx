@@ -209,5 +209,14 @@ describe('commitsContainer', () => {
     expect(listener).to.have.been.calledOnce;
   });
 
-  it('should make commits immutable');
+  it('should make commits referentially comparable', () => {
+    const container = new CounterContainer();
+    container.increment();
+
+    const commit = getLastUpdate().branches[0][0];
+
+    container.increment();
+
+    expect(getLastUpdate().branches[0][0]).to.equal(commit);
+  });
 });
