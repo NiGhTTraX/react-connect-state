@@ -195,9 +195,19 @@ describe('commitsContainer', () => {
     expect(lastUpdate.branches[1][0].parent).to.equal(lastUpdate.branches[0][0]);
   });
 
-  it('should not replay the entire commit range when checking out an early commit');
+  it('should not replay the entire commit range when checking out an early commit', () => {
+    const container = new CounterContainer();
+    container.increment();
+    container.increment();
+    container.increment();
 
-  it('should handle checkout out different branches while on them and while not');
+    const listener = spy();
+    container.addListener(listener);
+
+    getLastUpdate().branches[0][0].checkout();
+
+    expect(listener).to.have.been.calledOnce;
+  });
 
   it('should make commits immutable');
 });
