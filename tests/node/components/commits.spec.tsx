@@ -29,8 +29,10 @@ describe('Commits', () => {
       instance: { state: { foo: 'gaga' } }
     };
 
-    it('should render all the commits', () => {
-      const commits: ICommitsContainer = {
+    let commits!: ICommitsContainer;
+
+    beforeEach(() => {
+      commits = {
         state: {
           master: [commit1, commit2, commit3],
           branches: [],
@@ -39,7 +41,9 @@ describe('Commits', () => {
         },
         reset: () => {}
       };
+    });
 
+    it('should render all the commits', () => {
       const Commit = createReactStub<CommitProps>();
 
       $render(<Commits
@@ -53,15 +57,7 @@ describe('Commits', () => {
     });
 
     it('should mark commits after a checkout', () => {
-      const commits: ICommitsContainer = {
-        state: {
-          master: [commit1, commit2, commit3],
-          branches: [],
-          detached: false,
-          head: commit2.id
-        },
-        reset: () => {}
-      };
+      commits.state.head = commit2.id;
 
       const Commit = createReactStub<CommitProps>();
 
@@ -76,16 +72,6 @@ describe('Commits', () => {
     });
 
     it('should preview a checkout on mouse over', () => {
-      const commits: ICommitsContainer = {
-        state: {
-          master: [commit1, commit2, commit3],
-          branches: [],
-          detached: false,
-          head: commit3.id
-        },
-        reset: () => {}
-      };
-
       const Commit = createReactStub<CommitProps>();
 
       const $commits = $render(<Commits
@@ -102,16 +88,6 @@ describe('Commits', () => {
     });
 
     it('should stop previewing a checkout on mouse leave', () => {
-      const commits: ICommitsContainer = {
-        state: {
-          master: [commit1, commit2, commit3],
-          branches: [],
-          detached: false,
-          head: commit3.id
-        },
-        reset: () => {}
-      };
-
       const Commit = createReactStub<CommitProps>();
 
       const $commits = $render(<Commits
