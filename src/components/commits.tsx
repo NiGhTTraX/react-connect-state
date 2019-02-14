@@ -14,34 +14,53 @@ export interface CommitsProps {
 }
 
 interface CommitsState {
-  hover: StateCommit['id'];
+  hoverCommit: StateCommit['id'];
+  hoverBranch: number;
 }
 
 export default class Commits extends Component<CommitsProps, CommitsState> {
-  state = { hover: Infinity };
+  state = {
+    hoverCommit: Infinity,
+    hoverBranch: this.props.commits.state.activeBranch
+  };
 
   render() {
-    const { branches } = this.props.commits.state;
-
     return <div>
-      {branches.length ? this.renderBranches() : null}
+      {this.renderBranches()}
     </div>;
   }
 
-  private renderCommits(commits: StateCommit[]) {
+  private renderBranches() {
+    const { branches } = this.props.commits.state;
+
+    return <ul className="branches">
+      {/* eslint-disable-next-line react/no-array-index-key */}
+      {branches.map((branch, i) => <li key={i}>
+        {this.renderCommits(branch, i)}
+      </li>)}
+    </ul>;
+  }
+
+  private renderCommits(commits: StateCommit[], branch: number) {
     const { Commit } = this.props;
-    const connectedCommits: any[] = [];
+    const { hoverBranch, hoverCommit } = this.state;
     const head = this.props.commits.state.head || Infinity;
 
+    const onActiveBranch = branch === hoverBranch;
+
+    const connectedCommits: any[] = [];
+
     commits.forEach(commit => {
-      const disabled = this.state.hover !== Infinity
-        ? commit.id > this.state.hover
+      const afterHead = hoverCommit !== Infinity
+        ? commit.id > hoverCommit
         : commit.id > head;
+
+      const disabled = onActiveBranch && afterHead;
 
       connectedCommits.push(
         // eslint-disable-next-line react/no-array-index-key
         <li className="commit-node" key={`commit${commit.id}`}
-          onMouseOver={this.previewCheckout.bind(this, commit.id)}
+          onMouseOver={this.previewCheckout.bind(this, commit.id, branch)}
           onMouseLeave={this.clearCheckoutPreview}
         >
           <Commit commit={commit} disabled={disabled} />
@@ -56,22 +75,14 @@ export default class Commits extends Component<CommitsProps, CommitsState> {
     </ul>;
   }
 
-  private renderBranches() {
-    const { branches } = this.props.commits.state;
-
-    return <ul className="branches">
-      {/* eslint-disable-next-line react/no-array-index-key */}
-      {branches.map((branch, i) => <li key={i}>
-        {this.renderCommits(branch)}
-      </li>)}
-    </ul>;
-  }
-
-  private previewCheckout(id: number) {
-    this.setState({ hover: id });
+  private previewCheckout(id: number, branch: number) {
+    this.setState({ hoverCommit: id, hoverBranch: branch });
   }
 
   private clearCheckoutPreview = () => {
-    this.setState({ hover: Infinity });
+    this.setState({
+      hoverCommit: Infinity,
+      hoverBranch: this.props.commits.state.activeBranch
+    });
   };
 }

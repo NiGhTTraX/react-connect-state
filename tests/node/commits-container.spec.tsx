@@ -2,7 +2,7 @@
 import { spy } from 'sinon';
 import { beforeEach, describe, expect, it } from './suite';
 import StateContainer from '../../src/state-container';
-import commitsContainer, { TimelineState, StateCommit } from '../../src/commits-container';
+import commitsContainer, { StateCommit, TimelineState } from '../../src/commits-container';
 
 describe('commitsContainer', () => {
   const commitListener = spy();
@@ -131,6 +131,20 @@ describe('commitsContainer', () => {
     firstCommit.checkout();
 
     expect(getLastUpdate().head).to.equal(firstCommit.id);
+  });
+
+  it('should update the active branch when checking out', () => {
+    const container = new CounterContainer();
+    container.increment();
+    container.increment();
+
+    getLastUpdate().branches[0][0].checkout();
+
+    container.increment();
+
+    getLastUpdate().branches[0][0].checkout();
+
+    expect(getLastUpdate().activeBranch).to.equal(0);
   });
 
   it('should not replay the entire commit range when checking out an early commit');

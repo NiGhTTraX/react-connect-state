@@ -88,9 +88,9 @@ describe('Commits', () => {
   });
 
   describe('branches', () => {
-    beforeEach(() => {
-      const activeBranch = createBranch(2);
+    const activeBranch = createBranch(2);
 
+    beforeEach(() => {
       commits = {
         state: {
           branches: [
@@ -113,6 +113,35 @@ describe('Commits', () => {
         branch.forEach(commit => {
           expect(Commit.renderedWith({ commit })).to.be.true;
         });
+      });
+    });
+
+    it('should not mark the inactive branches as checked out', () => {
+      const Commit = createReactStub<CommitProps>();
+
+      $render(<Commits commits={commits} Commit={Commit} />);
+
+      commits.state.branches[0].forEach(commit => {
+        expect(Commit.renderedWith({ commit, disabled: false })).to.be.true;
+      });
+    });
+
+    it('should preview the correct branch on hover', () => {
+      const Commit = createReactStub<CommitProps>();
+
+      const $commits = $render(<Commits commits={commits} Commit={Commit} />);
+      Commit.sinonStub.resetHistory();
+
+      const $firstBranch = $commits.find('.branch').eq(0);
+      Simulate.mouseOver($firstBranch.find('.commit-node')[0]);
+
+      const firstBranch = commits.state.branches[0];
+
+      expect(Commit.renderedWith({ commit: firstBranch[0], disabled: false })).to.be.true;
+      expect(Commit.renderedWith({ commit: firstBranch[1], disabled: true })).to.be.true;
+
+      activeBranch.forEach(commit => {
+        expect(Commit.renderedWith({ commit, disabled: false })).to.be.true;
       });
     });
   });

@@ -57,7 +57,8 @@ class CommitsContainer extends StateContainer<TimelineState> implements ICommits
       return;
     }
 
-    const activeBranch = this.state.branches[this.state.activeBranch];
+    const activeBranchIndex = this.state.activeBranch;
+    const activeBranch = this.state.branches[activeBranchIndex];
     const currentHead = this.state.head ? activeBranch[this.state.head] : null;
     const detached = this.state.head
       ? activeBranch[activeBranch.length - 1].id !== this.state.head
@@ -67,7 +68,7 @@ class CommitsContainer extends StateContainer<TimelineState> implements ICommits
       id: this.commitCount,
       state,
       instance,
-      checkout: this.doCheckout.bind(this, this.commitCount),
+      checkout: this.doCheckout.bind(this, this.commitCount, activeBranchIndex),
       parent: currentHead
     };
 
@@ -86,11 +87,11 @@ class CommitsContainer extends StateContainer<TimelineState> implements ICommits
     this.snapshots.set(newHead.id, newSnapshot);
 
     const newBranches = [...this.state.branches];
-    let newActiveBranch = this.state.activeBranch;
+    let newActiveBranch = activeBranchIndex;
 
     if (!detached) {
-      newBranches[this.state.activeBranch] = [
-        ...this.state.branches[this.state.activeBranch],
+      newBranches[activeBranchIndex] = [
+        ...this.state.branches[activeBranchIndex],
         newHead
       ];
     } else {
@@ -105,8 +106,8 @@ class CommitsContainer extends StateContainer<TimelineState> implements ICommits
     });
   };
 
-  private doCheckout(id: number) {
-    this.setState({ head: id });
+  private doCheckout(id: number, activeBranch: number) {
+    this.setState({ head: id, activeBranch });
 
     const snapshot = this.snapshots.get(id);
 
