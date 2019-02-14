@@ -18,4 +18,30 @@ describe('Example:Counter', () => {
 
     await browser.click('.commit:first-child');
   });
+
+  vit('should create new branches', async browser => {
+    await browser.click('button');
+    await browser.click('button');
+    await browser.click('button');
+
+    await browser.click('.commit:first-child');
+
+    await browser.click('button');
+    await browser.click('button');
+    await browser.click('button');
+  });
+
+  vit('should switch between branches', async browser => {
+    await browser.click('button');
+    await browser.click('button');
+    await browser.click('button');
+
+    await browser.click('.commit:first-child');
+
+    await browser.click('button');
+    await browser.click('button');
+    await browser.click('button');
+
+    await browser.click('.commit:first-child');
+  });
 });
