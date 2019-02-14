@@ -21,14 +21,17 @@ export default class Commits extends Component<CommitsProps, CommitsState> {
   state = { hover: Infinity };
 
   render() {
-    const { master } = this.props.commits.state;
+    const { master, branches } = this.props.commits.state;
 
     return <div>
-      {this.connectCommits(master)}
+      <div className="master">
+        {this.renderCommits(master)}
+      </div>
+      {branches.length ? this.renderBranches() : null}
     </div>;
   }
 
-  private connectCommits(commits: StateCommit[]) {
+  private renderCommits(commits: StateCommit[]) {
     const { Commit } = this.props;
     const connectedCommits: any[] = [];
     const head = this.props.commits.state.head || Infinity;
@@ -51,8 +54,19 @@ export default class Commits extends Component<CommitsProps, CommitsState> {
       );
     });
 
-    return <ul className="master">
+    return <ul className="branch">
       {connectedCommits.slice(0, -1)}
+    </ul>;
+  }
+
+  private renderBranches() {
+    const { branches } = this.props.commits.state;
+
+    return <ul className="branches">
+      {/* eslint-disable-next-line react/no-array-index-key */}
+      {branches.map((branch, i) => <li key={i}>
+        {this.renderCommits(branch)}
+      </li>)}
     </ul>;
   }
 

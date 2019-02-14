@@ -106,4 +106,31 @@ describe('Commits', () => {
       expect(Commit.renderedWith({ commit: commit3, disabled: true })).to.be.true;
     });
   });
+
+  describe('branches', () => {
+    beforeEach(() => {
+      commits = {
+        state: {
+          master: [],
+          branches: [
+            [commit1],
+            [commit2, commit3]
+          ],
+          detached: true,
+          head: commit3.id
+        },
+        reset: () => {}
+      };
+    });
+
+    it('should render all commits', () => {
+      const Commit = createReactStub<CommitProps>();
+
+      $render(<Commits commits={commits} Commit={Commit} />);
+
+      expect(Commit.renderedWith({ commit: commit1 })).to.be.true;
+      expect(Commit.renderedWith({ commit: commit2 })).to.be.true;
+      expect(Commit.renderedWith({ commit: commit3 })).to.be.true;
+    });
+  });
 });
