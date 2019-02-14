@@ -39,7 +39,7 @@ describe('commitsContainer', () => {
     }
   }
 
-  it('should call a global listener for every state update', () => {
+  it('should make a commit for every state update', () => {
     const container1 = new Container1();
     const container2 = new Container2();
 
@@ -57,6 +57,27 @@ describe('commitsContainer', () => {
       { count: 1 },
       { count: 2 }
     ]);
+  });
+
+  it('should have a head pointing to the last commit', () => {
+    const container = new CounterContainer();
+    container.increment();
+    container.increment();
+    container.increment();
+
+    const lastUpdate = getLastUpdate();
+    expect(lastUpdate.head).to.equal(lastUpdate.branches[0][2]);
+  });
+
+  it('should link the commits', () => {
+    const container = new CounterContainer();
+    container.increment();
+    container.increment();
+    container.increment();
+
+    const lastUpdate = getLastUpdate();
+    expect(lastUpdate.branches[0][2].parent).to.equal(lastUpdate.branches[0][1]);
+    expect(lastUpdate.branches[0][1].parent).to.equal(lastUpdate.branches[0][0]);
   });
 
   it('should allow a previous state to be checked out', () => {
@@ -130,7 +151,7 @@ describe('commitsContainer', () => {
     const firstCommit: StateCommit = getLastUpdate().branches[0][0];
     firstCommit.checkout();
 
-    expect(getLastUpdate().head).to.equal(firstCommit.id);
+    expect(getLastUpdate().head).to.equal(firstCommit);
   });
 
   it('should update the active branch when checking out', () => {
@@ -160,6 +181,18 @@ describe('commitsContainer', () => {
     getLastUpdate().branches[1][0].checkout();
 
     expect(getLastUpdate().activeBranch).to.equal(1);
+  });
+
+  it('should create a new branch from the currently checked out commit', () => {
+    const container = new CounterContainer();
+    container.increment();
+    container.increment();
+
+    getLastUpdate().branches[0][0].checkout();
+    container.increment();
+
+    const lastUpdate = getLastUpdate();
+    expect(lastUpdate.branches[1][0].parent).to.equal(lastUpdate.branches[0][0]);
   });
 
   it('should not replay the entire commit range when checking out an early commit');

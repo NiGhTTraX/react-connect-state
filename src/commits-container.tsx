@@ -17,7 +17,7 @@ export interface StateCommit {
 
 export interface TimelineState {
   branches: StateCommit[][];
-  head: StateCommit['id'] | null;
+  head: StateCommit | null;
   activeBranch: number;
 }
 
@@ -59,9 +59,9 @@ class CommitsContainer extends StateContainer<TimelineState> implements ICommits
 
     const activeBranchIndex = this.state.activeBranch;
     const activeBranch = this.state.branches[activeBranchIndex];
-    const currentHead = this.state.head ? activeBranch[this.state.head] : null;
-    const detached = this.state.head
-      ? activeBranch[activeBranch.length - 1].id !== this.state.head
+    const currentHead = this.state.head;
+    const detached = currentHead
+      ? activeBranch[activeBranch.length - 1].id !== currentHead.id
       : false;
 
     const newActiveBranch = detached ? activeBranchIndex + 1 : activeBranchIndex;
@@ -70,7 +70,7 @@ class CommitsContainer extends StateContainer<TimelineState> implements ICommits
       id: this.commitCount,
       state,
       instance,
-      checkout: this.doCheckout.bind(this, this.commitCount, newActiveBranch),
+      checkout: () => this.doCheckout(newHead, newActiveBranch),
       parent: currentHead
     };
 
@@ -80,8 +80,8 @@ class CommitsContainer extends StateContainer<TimelineState> implements ICommits
     // this instance. Assuming the number of instances remains small
     // this shouldn't be too expensive.
     // @ts-ignore
-    const prevSnapshot: Snapshot = this.state.head
-      ? this.snapshots.get(this.state.head)
+    const prevSnapshot: Snapshot = currentHead
+      ? this.snapshots.get(currentHead.id)
       : new Map() as Snapshot;
     const newSnapshot = new Map(prevSnapshot);
     newSnapshot.set(instance, checkout);
@@ -102,14 +102,14 @@ class CommitsContainer extends StateContainer<TimelineState> implements ICommits
     this.setState({
       branches: newBranches,
       activeBranch: newActiveBranch,
-      head: newHead.id
+      head: newHead
     });
   };
 
-  private doCheckout(id: number, activeBranch: number) {
-    this.setState({ head: id, activeBranch });
+  private doCheckout(head: StateCommit, activeBranch: number) {
+    this.setState({ head, activeBranch });
 
-    const snapshot = this.snapshots.get(id);
+    const snapshot = this.snapshots.get(head.id);
 
     // @ts-ignore
     snapshot.forEach(checkout => checkout());

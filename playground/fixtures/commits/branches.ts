@@ -13,7 +13,7 @@ const props: CommitsProps = {
         activeBranch
       ],
       activeBranch: 1,
-      head: activeBranch[activeBranch.length - 1].id
+      head: activeBranch[activeBranch.length - 1]
     },
     reset: () => {}
   }

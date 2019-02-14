@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 import React from 'react';
 import { createReactStub } from 'react-mock-component';
 import { $render, describe, expect, it } from '../suite';
@@ -17,7 +18,7 @@ describe('Commits', () => {
         state: {
           branches: [master],
           activeBranch: 0,
-          head: master[master.length - 1].id
+          head: master[master.length - 1]
         },
         reset: () => {}
       };
@@ -34,7 +35,7 @@ describe('Commits', () => {
     });
 
     it('should mark commits after a checkout', () => {
-      commits.state.head = master[1].id;
+      commits.state.head = master[1];
 
       const Commit = createReactStub<CommitProps>();
 
@@ -73,7 +74,7 @@ describe('Commits', () => {
     });
 
     it('should preview a later checkout', () => {
-      commits.state.head = master[0].id;
+      commits.state.head = master[0];
 
       const Commit = createReactStub<CommitProps>();
 
@@ -98,7 +99,7 @@ describe('Commits', () => {
             activeBranch
           ],
           activeBranch: 1,
-          head: activeBranch[activeBranch.length - 1].id
+          head: activeBranch[activeBranch.length - 1]
         },
         reset: () => {}
       };

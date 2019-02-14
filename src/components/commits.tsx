@@ -44,7 +44,7 @@ export default class Commits extends Component<CommitsProps, CommitsState> {
   private renderCommits(commits: StateCommit[], branch: number) {
     const { Commit } = this.props;
     const { hoverBranch, hoverCommit } = this.state;
-    const head = this.props.commits.state.head || Infinity;
+    const { head } = this.props.commits.state;
 
     const onActiveBranch = branch === hoverBranch;
 
@@ -53,7 +53,7 @@ export default class Commits extends Component<CommitsProps, CommitsState> {
     commits.forEach(commit => {
       const afterHead = hoverCommit !== Infinity
         ? commit.id > hoverCommit
-        : commit.id > head;
+        : commit.id > (head ? head.id : Infinity);
 
       const disabled = onActiveBranch && afterHead;
 

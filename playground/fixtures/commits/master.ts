@@ -10,7 +10,7 @@ const props: CommitsProps = {
     state: {
       branches: [master],
       activeBranch: 0,
-      head: master[master.length - 1].id
+      head: master[master.length - 1]
     },
     reset: () => {}
   }
