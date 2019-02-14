@@ -15,21 +15,21 @@ export interface StateCommit {
   parent: StateCommit | null;
 }
 
-export interface CommitsState {
+export interface TimelineState {
   master: StateCommit[];
   branches: StateCommit[][];
   detached: boolean;
   head: StateCommit['id'] | null;
 }
 
-export interface ICommitsContainer extends IStateContainer<CommitsState> {
+export interface ICommitsContainer extends IStateContainer<TimelineState> {
   reset(): void;
 }
 
 type Snapshot = Map<StateContainer<any>, () => void>;
 type SnapshotMap = Map<StateCommit['id'], Snapshot>;
 
-class CommitsContainer extends StateContainer<CommitsState> implements ICommitsContainer {
+class CommitsContainer extends StateContainer<TimelineState> implements ICommitsContainer {
   private commitCount = 1;
 
   private snapshots: SnapshotMap = new Map<StateCommit['id'], Snapshot>();

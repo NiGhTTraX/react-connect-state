@@ -2,11 +2,11 @@
 import { spy } from 'sinon';
 import { beforeEach, describe, expect, it } from './suite';
 import StateContainer from '../../src/state-container';
-import commitsContainer, { CommitsState, StateCommit } from '../../src/commits-container';
+import commitsContainer, { TimelineState, StateCommit } from '../../src/commits-container';
 
 describe('commitsContainer', () => {
   const commitListener = spy();
-  const getLastUpdate: () => CommitsState = () => commitListener.lastCall.args[0];
+  const getLastUpdate: () => TimelineState = () => commitListener.lastCall.args[0];
 
   beforeEach(() => {
     commitsContainer.reset();

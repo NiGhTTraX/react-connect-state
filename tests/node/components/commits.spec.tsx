@@ -3,6 +3,7 @@ import { createReactStub } from 'react-mock-component';
 import { $render, describe, expect, it } from '../suite';
 import Commits, { CommitProps } from '../../../src/components/commits';
 import { ICommitsContainer, StateCommit } from '../../../src/commits-container';
+import { Simulate } from 'react-dom/test-utils';
 
 describe('Commits', () => {
   describe('master', () => {
@@ -72,6 +73,59 @@ describe('Commits', () => {
       expect(Commit.renderedWith({ commit: commit1, disabled: false })).to.be.true;
       expect(Commit.renderedWith({ commit: commit2, disabled: false })).to.be.true;
       expect(Commit.renderedWith({ commit: commit3, disabled: true })).to.be.true;
+    });
+
+    it('should preview a checkout on mouse over', () => {
+      const commits: ICommitsContainer = {
+        state: {
+          master: [commit1, commit2, commit3],
+          branches: [],
+          detached: false,
+          head: commit3.id
+        },
+        reset: () => {}
+      };
+
+      const Commit = createReactStub<CommitProps>();
+
+      const $commits = $render(<Commits
+        Commit={Commit}
+        commits={commits}
+      />);
+
+      Commit.sinonStub.resetHistory();
+      Simulate.mouseOver($commits.find('.commit-node')[1]);
+
+      expect(Commit.renderedWith({ commit: commit1, disabled: false })).to.be.true;
+      expect(Commit.renderedWith({ commit: commit2, disabled: false })).to.be.true;
+      expect(Commit.renderedWith({ commit: commit3, disabled: true })).to.be.true;
+    });
+
+    it('should stop previewing a checkout on mouse leave', () => {
+      const commits: ICommitsContainer = {
+        state: {
+          master: [commit1, commit2, commit3],
+          branches: [],
+          detached: false,
+          head: commit3.id
+        },
+        reset: () => {}
+      };
+
+      const Commit = createReactStub<CommitProps>();
+
+      const $commits = $render(<Commits
+        Commit={Commit}
+        commits={commits}
+      />);
+
+      Simulate.mouseOver($commits.find('.commit-node')[1]);
+      Commit.sinonStub.resetHistory();
+      Simulate.mouseLeave($commits.find('.commit-node')[1]);
+
+      expect(Commit.renderedWith({ commit: commit1, disabled: false })).to.be.true;
+      expect(Commit.renderedWith({ commit: commit2, disabled: false })).to.be.true;
+      expect(Commit.renderedWith({ commit: commit3, disabled: false })).to.be.true;
     });
   });
 });

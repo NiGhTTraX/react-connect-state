@@ -13,7 +13,13 @@ export interface CommitsProps {
   Commit: ComponentType<CommitProps>
 }
 
-export default class Commits extends Component<CommitsProps> {
+interface CommitsState {
+  hover: StateCommit['id'];
+}
+
+export default class Commits extends Component<CommitsProps, CommitsState> {
+  state = { hover: Infinity };
+
   render() {
     const { master } = this.props.commits.state;
 
@@ -30,8 +36,11 @@ export default class Commits extends Component<CommitsProps> {
     commits.forEach(c => {
       connectedCommits.push(
         // eslint-disable-next-line react/no-array-index-key
-        <li className="commit-node" key={`commit${c.id}`}>
-          <Commit commit={c} disabled={c.id > head} />
+        <li className="commit-node" key={`commit${c.id}`}
+          onMouseOver={this.previewCheckout.bind(this, c.id)}
+          onMouseLeave={this.clearCheckoutPreview}
+        >
+          <Commit commit={c} disabled={c.id > head || c.id > this.state.hover} />
         </li>,
         // eslint-disable-next-line react/no-array-index-key
         <li className="commit-divider" key={`divider${c.id}`} />
@@ -42,4 +51,12 @@ export default class Commits extends Component<CommitsProps> {
       {connectedCommits.slice(0, -1)}
     </ul>;
   }
+
+  private previewCheckout(id: number) {
+    this.setState({ hover: id });
+  }
+
+  private clearCheckoutPreview = () => {
+    this.setState({ hover: Infinity });
+  };
 }
