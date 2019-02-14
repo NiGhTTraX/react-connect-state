@@ -6,31 +6,31 @@ import { ICommitsContainer, StateCommit } from '../../../src/commits-container';
 import { Simulate } from 'react-dom/test-utils';
 
 describe('Commits', () => {
+  const commit1: StateCommit = {
+    id: 1,
+    state: { foo: 'bar' },
+    checkout: () => {},
+    parent: null,
+    instance: { state: { foo: 'bar' } }
+  };
+  const commit2: StateCommit = {
+    id: 2,
+    state: { foo: 'baz' },
+    checkout: () => {},
+    parent: commit1,
+    instance: { state: { foo: 'baz' } }
+  };
+  const commit3: StateCommit = {
+    id: 3,
+    state: { foo: 'gaga' },
+    checkout: () => {},
+    parent: commit2,
+    instance: { state: { foo: 'gaga' } }
+  };
+
+  let commits!: ICommitsContainer;
+
   describe('master', () => {
-    const commit1: StateCommit = {
-      id: 1,
-      state: { foo: 'bar' },
-      checkout: () => {},
-      parent: null,
-      instance: { state: { foo: 'bar' } }
-    };
-    const commit2: StateCommit = {
-      id: 2,
-      state: { foo: 'baz' },
-      checkout: () => {},
-      parent: commit1,
-      instance: { state: { foo: 'baz' } }
-    };
-    const commit3: StateCommit = {
-      id: 3,
-      state: { foo: 'gaga' },
-      checkout: () => {},
-      parent: commit2,
-      instance: { state: { foo: 'gaga' } }
-    };
-
-    let commits!: ICommitsContainer;
-
     beforeEach(() => {
       commits = {
         state: {
@@ -46,10 +46,7 @@ describe('Commits', () => {
     it('should render all the commits', () => {
       const Commit = createReactStub<CommitProps>();
 
-      $render(<Commits
-        Commit={Commit}
-        commits={commits}
-      />);
+      $render(<Commits Commit={Commit} commits={commits} />);
 
       expect(Commit.renderedWith({ commit: commit1 })).to.be.true;
       expect(Commit.renderedWith({ commit: commit2 })).to.be.true;
@@ -61,10 +58,7 @@ describe('Commits', () => {
 
       const Commit = createReactStub<CommitProps>();
 
-      $render(<Commits
-        Commit={Commit}
-        commits={commits}
-      />);
+      $render(<Commits Commit={Commit} commits={commits} />);
 
       expect(Commit.renderedWith({ commit: commit1, disabled: false })).to.be.true;
       expect(Commit.renderedWith({ commit: commit2, disabled: false })).to.be.true;
@@ -74,10 +68,7 @@ describe('Commits', () => {
     it('should preview a checkout on mouse over', () => {
       const Commit = createReactStub<CommitProps>();
 
-      const $commits = $render(<Commits
-        Commit={Commit}
-        commits={commits}
-      />);
+      const $commits = $render(<Commits Commit={Commit} commits={commits} />);
 
       Commit.sinonStub.resetHistory();
       Simulate.mouseOver($commits.find('.commit-node')[1]);
@@ -90,10 +81,7 @@ describe('Commits', () => {
     it('should stop previewing a checkout on mouse leave', () => {
       const Commit = createReactStub<CommitProps>();
 
-      const $commits = $render(<Commits
-        Commit={Commit}
-        commits={commits}
-      />);
+      const $commits = $render(<Commits Commit={Commit} commits={commits} />);
 
       Simulate.mouseOver($commits.find('.commit-node')[1]);
       Commit.sinonStub.resetHistory();
@@ -109,10 +97,7 @@ describe('Commits', () => {
 
       const Commit = createReactStub<CommitProps>();
 
-      const $commits = $render(<Commits
-        Commit={Commit}
-        commits={commits}
-      />);
+      const $commits = $render(<Commits Commit={Commit} commits={commits} />);
 
       Simulate.mouseOver($commits.find('.commit-node')[1]);
 
