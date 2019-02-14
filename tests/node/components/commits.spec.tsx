@@ -103,5 +103,22 @@ describe('Commits', () => {
       expect(Commit.renderedWith({ commit: commit2, disabled: false })).to.be.true;
       expect(Commit.renderedWith({ commit: commit3, disabled: false })).to.be.true;
     });
+
+    it('should preview a later checkout', () => {
+      commits.state.head = commit1.id;
+
+      const Commit = createReactStub<CommitProps>();
+
+      const $commits = $render(<Commits
+        Commit={Commit}
+        commits={commits}
+      />);
+
+      Simulate.mouseOver($commits.find('.commit-node')[1]);
+
+      expect(Commit.renderedWith({ commit: commit1, disabled: false })).to.be.true;
+      expect(Commit.renderedWith({ commit: commit2, disabled: false })).to.be.true;
+      expect(Commit.renderedWith({ commit: commit3, disabled: true })).to.be.true;
+    });
   });
 });

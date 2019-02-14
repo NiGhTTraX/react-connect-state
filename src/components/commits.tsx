@@ -33,17 +33,21 @@ export default class Commits extends Component<CommitsProps, CommitsState> {
     const connectedCommits: any[] = [];
     const head = this.props.commits.state.head || Infinity;
 
-    commits.forEach(c => {
+    commits.forEach(commit => {
+      const disabled = this.state.hover !== Infinity
+        ? commit.id > this.state.hover
+        : commit.id > head;
+
       connectedCommits.push(
         // eslint-disable-next-line react/no-array-index-key
-        <li className="commit-node" key={`commit${c.id}`}
-          onMouseOver={this.previewCheckout.bind(this, c.id)}
+        <li className="commit-node" key={`commit${commit.id}`}
+          onMouseOver={this.previewCheckout.bind(this, commit.id)}
           onMouseLeave={this.clearCheckoutPreview}
         >
-          <Commit commit={c} disabled={c.id > head || c.id > this.state.hover} />
+          <Commit commit={commit} disabled={disabled} />
         </li>,
         // eslint-disable-next-line react/no-array-index-key
-        <li className="commit-divider" key={`divider${c.id}`} />
+        <li className="commit-divider" key={`divider${commit.id}`} />
       );
     });
 
