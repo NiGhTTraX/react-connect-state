@@ -8,12 +8,11 @@ const props: CommitsProps = {
   Commit,
   commits: {
     state: {
-      master: [],
       branches: [
         createBranch(5),
         activeBranch
       ],
-      detached: true,
+      activeBranch: 1,
       head: activeBranch[activeBranch.length - 1].id
     },
     reset: () => {}

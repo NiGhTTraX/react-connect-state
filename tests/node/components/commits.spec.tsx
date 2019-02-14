@@ -10,14 +10,13 @@ describe('Commits', () => {
   let commits!: ICommitsContainer;
 
   describe('master', () => {
-    beforeEach(() => {
-      const master = createBranch(3);
+    const master = createBranch(3);
 
+    beforeEach(() => {
       commits = {
         state: {
-          master,
-          branches: [],
-          detached: false,
+          branches: [master],
+          activeBranch: 0,
           head: master[master.length - 1].id
         },
         reset: () => {}
@@ -29,21 +28,21 @@ describe('Commits', () => {
 
       $render(<Commits Commit={Commit} commits={commits} />);
 
-      expect(Commit.renderedWith({ commit: commits.state.master[0] })).to.be.true;
-      expect(Commit.renderedWith({ commit: commits.state.master[1] })).to.be.true;
-      expect(Commit.renderedWith({ commit: commits.state.master[2] })).to.be.true;
+      expect(Commit.renderedWith({ commit: master[0] })).to.be.true;
+      expect(Commit.renderedWith({ commit: master[1] })).to.be.true;
+      expect(Commit.renderedWith({ commit: master[2] })).to.be.true;
     });
 
     it('should mark commits after a checkout', () => {
-      commits.state.head = commits.state.master[1].id;
+      commits.state.head = master[1].id;
 
       const Commit = createReactStub<CommitProps>();
 
       $render(<Commits Commit={Commit} commits={commits} />);
 
-      expect(Commit.renderedWith({ commit: commits.state.master[0], disabled: false })).to.be.true;
-      expect(Commit.renderedWith({ commit: commits.state.master[1], disabled: false })).to.be.true;
-      expect(Commit.renderedWith({ commit: commits.state.master[2], disabled: true })).to.be.true;
+      expect(Commit.renderedWith({ commit: master[0], disabled: false })).to.be.true;
+      expect(Commit.renderedWith({ commit: master[1], disabled: false })).to.be.true;
+      expect(Commit.renderedWith({ commit: master[2], disabled: true })).to.be.true;
     });
 
     it('should preview a checkout on mouse over', () => {
@@ -54,9 +53,9 @@ describe('Commits', () => {
       Commit.sinonStub.resetHistory();
       Simulate.mouseOver($commits.find('.commit-node')[1]);
 
-      expect(Commit.renderedWith({ commit: commits.state.master[0], disabled: false })).to.be.true;
-      expect(Commit.renderedWith({ commit: commits.state.master[1], disabled: false })).to.be.true;
-      expect(Commit.renderedWith({ commit: commits.state.master[2], disabled: true })).to.be.true;
+      expect(Commit.renderedWith({ commit: master[0], disabled: false })).to.be.true;
+      expect(Commit.renderedWith({ commit: master[1], disabled: false })).to.be.true;
+      expect(Commit.renderedWith({ commit: master[2], disabled: true })).to.be.true;
     });
 
     it('should stop previewing a checkout on mouse leave', () => {
@@ -68,13 +67,13 @@ describe('Commits', () => {
       Commit.sinonStub.resetHistory();
       Simulate.mouseLeave($commits.find('.commit-node')[1]);
 
-      expect(Commit.renderedWith({ commit: commits.state.master[0], disabled: false })).to.be.true;
-      expect(Commit.renderedWith({ commit: commits.state.master[1], disabled: false })).to.be.true;
-      expect(Commit.renderedWith({ commit: commits.state.master[2], disabled: false })).to.be.true;
+      expect(Commit.renderedWith({ commit: master[0], disabled: false })).to.be.true;
+      expect(Commit.renderedWith({ commit: master[1], disabled: false })).to.be.true;
+      expect(Commit.renderedWith({ commit: master[2], disabled: false })).to.be.true;
     });
 
     it('should preview a later checkout', () => {
-      commits.state.head = commits.state.master[0].id;
+      commits.state.head = master[0].id;
 
       const Commit = createReactStub<CommitProps>();
 
@@ -82,9 +81,9 @@ describe('Commits', () => {
 
       Simulate.mouseOver($commits.find('.commit-node')[1]);
 
-      expect(Commit.renderedWith({ commit: commits.state.master[0], disabled: false })).to.be.true;
-      expect(Commit.renderedWith({ commit: commits.state.master[1], disabled: false })).to.be.true;
-      expect(Commit.renderedWith({ commit: commits.state.master[2], disabled: true })).to.be.true;
+      expect(Commit.renderedWith({ commit: master[0], disabled: false })).to.be.true;
+      expect(Commit.renderedWith({ commit: master[1], disabled: false })).to.be.true;
+      expect(Commit.renderedWith({ commit: master[2], disabled: true })).to.be.true;
     });
   });
 
@@ -94,12 +93,11 @@ describe('Commits', () => {
 
       commits = {
         state: {
-          master: [],
           branches: [
             createBranch(2),
             activeBranch
           ],
-          detached: true,
+          activeBranch: 1,
           head: activeBranch[activeBranch.length - 1].id
         },
         reset: () => {}

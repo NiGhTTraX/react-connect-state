@@ -45,14 +45,14 @@ describe('commitsContainer', () => {
 
     container1.doStuff();
 
-    let states = getLastUpdate().master.map((c: StateCommit) => c.state);
+    let states = getLastUpdate().branches[0].map((c: StateCommit) => c.state);
     expect(states).to.deep.equal([
       { count: 1 }
     ]);
 
     container2.doStuff();
 
-    states = getLastUpdate().master.map((c: StateCommit) => c.state);
+    states = getLastUpdate().branches[0].map((c: StateCommit) => c.state);
     expect(states).to.deep.equal([
       { count: 1 },
       { count: 2 }
@@ -64,7 +64,7 @@ describe('commitsContainer', () => {
     container.increment();
     container.increment();
 
-    const firstCommit = getLastUpdate().master[0];
+    const firstCommit = getLastUpdate().branches[0][0];
     firstCommit.checkout();
 
     expect(container.state.count).to.equal(2);
@@ -81,7 +81,7 @@ describe('commitsContainer', () => {
     container1.increment();
     container2.increment();
 
-    const commit: StateCommit = getLastUpdate().master[2];
+    const commit: StateCommit = getLastUpdate().branches[0][2];
     commit.checkout();
 
     expect(container1.state.count).to.equal(3);
@@ -93,12 +93,12 @@ describe('commitsContainer', () => {
     container.increment();
     container.increment();
 
-    const firstCommit = getLastUpdate().master[0];
+    const firstCommit = getLastUpdate().branches[0][0];
 
     commitListener.resetHistory();
     firstCommit.checkout();
 
-    expect(getLastUpdate().master).to.have.length(2);
+    expect(getLastUpdate().branches[0]).to.have.length(2);
   });
 
   it('after a checkout it should record new commits in a new branch', () => {
@@ -106,7 +106,7 @@ describe('commitsContainer', () => {
     container.increment();
     container.increment();
 
-    const firstCommit: StateCommit = getLastUpdate().master[0];
+    const firstCommit: StateCommit = getLastUpdate().branches[0][0];
 
     commitListener.resetHistory();
 
@@ -118,9 +118,8 @@ describe('commitsContainer', () => {
 
     const lastUpdate = getLastUpdate();
 
-    expect(lastUpdate.master).to.have.length(2);
-    expect(lastUpdate.branches).to.have.length(1);
-    expect(lastUpdate.branches[0][0].state).to.deep.equal({ count: 3 });
+    expect(lastUpdate.branches).to.have.length(2);
+    expect(lastUpdate.branches[1][0].state).to.deep.equal({ count: 3 });
   });
 
   it('should update the head when checking out', () => {
@@ -128,7 +127,7 @@ describe('commitsContainer', () => {
     container.increment();
     container.increment();
 
-    const firstCommit: StateCommit = getLastUpdate().master[0];
+    const firstCommit: StateCommit = getLastUpdate().branches[0][0];
     firstCommit.checkout();
 
     expect(getLastUpdate().head).to.equal(firstCommit.id);

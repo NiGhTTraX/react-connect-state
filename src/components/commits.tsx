@@ -21,12 +21,9 @@ export default class Commits extends Component<CommitsProps, CommitsState> {
   state = { hover: Infinity };
 
   render() {
-    const { master, branches } = this.props.commits.state;
+    const { branches } = this.props.commits.state;
 
     return <div>
-      <div className="master">
-        {this.renderCommits(master)}
-      </div>
       {branches.length ? this.renderBranches() : null}
     </div>;
   }
