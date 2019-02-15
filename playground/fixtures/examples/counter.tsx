@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import StateContainer from '../../../src/state-container';
 import connectToState, { commitsContainer } from '../../../src';
-import Commits from '../../../src/components/commits';
+import CommitGraph from '../../../src/components/commit-graph';
 import Commit from '../../../src/components/commit';
 
 interface CounterState {
@@ -33,7 +33,7 @@ class CounterView extends Component<CounterViewProps> {
 }
 
 const ConnectedCounterView = connectToState(CounterView, new CounterStore(), 'counter');
-const ConnectedCommits = connectToState(Commits, commitsContainer, 'commits');
+const ConnectedCommits = connectToState(CommitGraph, commitsContainer, 'commits');
 
 class ReplayableCounter extends Component {
   render() {

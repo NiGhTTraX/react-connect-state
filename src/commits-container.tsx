@@ -15,20 +15,21 @@ export interface StateCommit {
   parent: StateCommit | null;
 }
 
-export interface TimelineState {
+export interface CommitGraphState {
   branches: StateCommit[][];
   head: StateCommit | null;
   activeBranch: number;
 }
 
-export interface ICommitsContainer extends IStateContainer<TimelineState> {
+export interface ICommitGraphContainer extends IStateContainer<CommitGraphState> {
   reset(): void;
 }
 
 type Snapshot = Map<StateContainer<any>, () => void>;
 type SnapshotMap = Map<StateCommit['id'], Snapshot>;
 
-class CommitsContainer extends StateContainer<TimelineState> implements ICommitsContainer {
+// eslint-disable-next-line max-len
+class CommitGraphContainer extends StateContainer<CommitGraphState> implements ICommitGraphContainer {
   private commitCount = 1;
 
   private snapshots: SnapshotMap = new Map<StateCommit['id'], Snapshot>();
@@ -116,4 +117,4 @@ class CommitsContainer extends StateContainer<TimelineState> implements ICommits
   }
 }
 
-export default new CommitsContainer();
+export default new CommitGraphContainer();

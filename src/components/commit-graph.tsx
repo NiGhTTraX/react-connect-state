@@ -1,6 +1,6 @@
 /* eslint-disable class-methods-use-this */
 import React, { Component, ComponentType } from 'react';
-import { ICommitsContainer, StateCommit } from '../commits-container';
+import { ICommitGraphContainer, StateCommit } from '../commits-container';
 import './commits.less';
 
 export interface CommitProps {
@@ -8,17 +8,17 @@ export interface CommitProps {
   disabled?: boolean; // Assume false.
 }
 
-export interface CommitsProps {
-  commits: ICommitsContainer,
+export interface CommitGraphProps {
+  commits: ICommitGraphContainer,
   Commit: ComponentType<CommitProps>
 }
 
-interface CommitsState {
+interface CommitGraphViewState {
   hoverCommit: StateCommit['id'];
   hoverBranch: number;
 }
 
-export default class Commits extends Component<CommitsProps, CommitsState> {
+export default class CommitGraph extends Component<CommitGraphProps, CommitGraphViewState> {
   state = {
     hoverCommit: Infinity,
     hoverBranch: this.props.commits.state.activeBranch

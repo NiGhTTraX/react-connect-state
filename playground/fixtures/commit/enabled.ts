@@ -1,5 +1,5 @@
 import Commit from '../../../src/components/commit';
-import { CommitProps } from '../../../src/components/commits';
+import { CommitProps } from '../../../src/components/commit-graph';
 
 const props: CommitProps = {
   commit: {

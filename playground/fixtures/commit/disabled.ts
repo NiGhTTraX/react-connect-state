@@ -1,5 +1,5 @@
 import enabled from './enabled';
-import { CommitProps } from '../../../src/components/commits';
+import { CommitProps } from '../../../src/components/commit-graph';
 
 const props:CommitProps = {
   ...enabled.props,

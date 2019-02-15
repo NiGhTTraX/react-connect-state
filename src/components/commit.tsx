@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
-import { CommitProps } from './commits';
+import { CommitProps } from './commit-graph';
 import './commit.less';
 
 export default class Commit extends Component<CommitProps> {

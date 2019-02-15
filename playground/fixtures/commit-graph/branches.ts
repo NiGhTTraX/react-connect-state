@@ -1,10 +1,10 @@
-import Commits, { CommitsProps } from '../../../src/components/commits';
+import CommitGraph, { CommitGraphProps } from '../../../src/components/commit-graph';
 import Commit from '../../../src/components/commit';
-import createBranch from '../../factories/commits';
+import createBranch from '../../factories/commit';
 
 const activeBranch = createBranch(3);
 
-const props: CommitsProps = {
+const props: CommitGraphProps = {
   Commit,
   commits: {
     state: {
@@ -20,6 +20,6 @@ const props: CommitsProps = {
 };
 
 export default {
-  component: Commits,
+  component: CommitGraph,
   props
 };

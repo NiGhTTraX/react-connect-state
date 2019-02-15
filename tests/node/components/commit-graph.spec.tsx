@@ -2,13 +2,13 @@
 import React from 'react';
 import { createReactStub } from 'react-mock-component';
 import { $render, describe, expect, it } from '../suite';
-import Commits, { CommitProps } from '../../../src/components/commits';
-import { ICommitsContainer } from '../../../src/commits-container';
+import CommitGraph, { CommitProps } from '../../../src/components/commit-graph';
+import { ICommitGraphContainer } from '../../../src/commits-container';
 import { Simulate } from 'react-dom/test-utils';
-import createBranch from '../../../playground/factories/commits';
+import createBranch from '../../../playground/factories/commit';
 
-describe('Commits', () => {
-  let commits!: ICommitsContainer;
+describe('CommitGraph', () => {
+  let commits!: ICommitGraphContainer;
 
   describe('master', () => {
     const master = createBranch(3);
@@ -27,7 +27,7 @@ describe('Commits', () => {
     it('should render all the commits', () => {
       const Commit = createReactStub<CommitProps>();
 
-      $render(<Commits Commit={Commit} commits={commits} />);
+      $render(<CommitGraph Commit={Commit} commits={commits} />);
 
       expect(Commit.renderedWith({ commit: master[0] })).to.be.true;
       expect(Commit.renderedWith({ commit: master[1] })).to.be.true;
@@ -39,7 +39,7 @@ describe('Commits', () => {
 
       const Commit = createReactStub<CommitProps>();
 
-      $render(<Commits Commit={Commit} commits={commits} />);
+      $render(<CommitGraph Commit={Commit} commits={commits} />);
 
       expect(Commit.renderedWith({ commit: master[0], disabled: false })).to.be.true;
       expect(Commit.renderedWith({ commit: master[1], disabled: false })).to.be.true;
@@ -49,7 +49,7 @@ describe('Commits', () => {
     it('should preview a checkout on mouse over', () => {
       const Commit = createReactStub<CommitProps>();
 
-      const $commits = $render(<Commits Commit={Commit} commits={commits} />);
+      const $commits = $render(<CommitGraph Commit={Commit} commits={commits} />);
 
       Commit.sinonStub.resetHistory();
       Simulate.mouseOver($commits.find('.commit-node')[1]);
@@ -62,7 +62,7 @@ describe('Commits', () => {
     it('should stop previewing a checkout on mouse leave', () => {
       const Commit = createReactStub<CommitProps>();
 
-      const $commits = $render(<Commits Commit={Commit} commits={commits} />);
+      const $commits = $render(<CommitGraph Commit={Commit} commits={commits} />);
 
       Simulate.mouseOver($commits.find('.commit-node')[1]);
       Commit.sinonStub.resetHistory();
@@ -78,7 +78,7 @@ describe('Commits', () => {
 
       const Commit = createReactStub<CommitProps>();
 
-      const $commits = $render(<Commits Commit={Commit} commits={commits} />);
+      const $commits = $render(<CommitGraph Commit={Commit} commits={commits} />);
 
       Simulate.mouseOver($commits.find('.commit-node')[1]);
 
@@ -108,7 +108,7 @@ describe('Commits', () => {
     it('should render all commits', () => {
       const Commit = createReactStub<CommitProps>();
 
-      $render(<Commits commits={commits} Commit={Commit} />);
+      $render(<CommitGraph commits={commits} Commit={Commit} />);
 
       commits.state.branches.forEach(branch => {
         branch.forEach(commit => {
@@ -120,7 +120,7 @@ describe('Commits', () => {
     it('should not mark the inactive branches as checked out', () => {
       const Commit = createReactStub<CommitProps>();
 
-      $render(<Commits commits={commits} Commit={Commit} />);
+      $render(<CommitGraph commits={commits} Commit={Commit} />);
 
       commits.state.branches[0].forEach(commit => {
         expect(Commit.renderedWith({ commit, disabled: false })).to.be.true;
@@ -130,7 +130,7 @@ describe('Commits', () => {
     it('should preview the correct branch on hover', () => {
       const Commit = createReactStub<CommitProps>();
 
-      const $commits = $render(<Commits commits={commits} Commit={Commit} />);
+      const $commits = $render(<CommitGraph commits={commits} Commit={Commit} />);
       Commit.sinonStub.resetHistory();
 
       const $firstBranch = $commits.find('.branch').eq(0);
