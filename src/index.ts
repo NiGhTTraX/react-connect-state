@@ -1,7 +1,9 @@
 import connectToState from './connect';
-import StateContainer from './state-container';
-import commitsContainer from './commit-graph';
+import StateContainer, { setStateCommitListener } from './state-container';
+import StateCommitGraph from './commit-graph';
 
 export default connectToState;
 
-export { StateContainer, commitsContainer };
+const stateCommitGraph = new StateCommitGraph(setStateCommitListener);
+
+export { StateContainer, stateCommitGraph };

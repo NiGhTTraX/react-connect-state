@@ -1,15 +1,15 @@
 /* eslint-disable react/no-access-state-in-setstate */
 export type Listener<T> = (state: T) => void;
 
-type GlobalListener = (
+export type StateCommitListener = (
   state: any,
   checkout: () => void,
   instance: StateContainer<any>
 ) => void;
 
-let globalListener: GlobalListener = () => {};
+let globalListener: StateCommitListener = () => {};
 
-export function setGlobalListener(listener: GlobalListener) {
+export function setStateCommitListener(listener: StateCommitListener) {
   globalListener = listener;
 }
 

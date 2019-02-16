@@ -2,9 +2,10 @@
 import { spy } from 'sinon';
 import { beforeEach, describe, expect, it } from './suite';
 import StateContainer from '../../src/state-container';
-import commitsContainer, { StateCommit, CommitGraphState } from '../../src/commit-graph';
+import { StateCommit, CommitGraphState } from '../../src/commit-graph';
+import { stateCommitGraph } from '../../src';
 
-describe('commitGraph', () => {
+describe('stateCommitGraph', () => {
   const commitListener = spy();
   const getLastUpdate: () => CommitGraphState = () => commitListener.lastCall.args[0];
 
@@ -21,10 +22,10 @@ describe('commitGraph', () => {
   }
 
   beforeEach(() => {
-    commitsContainer.reset();
+    stateCommitGraph.reset();
     commitListener.resetHistory();
 
-    commitsContainer.addListener(commitListener);
+    stateCommitGraph.addListener(commitListener);
   });
 
   it('should make a commit for every state update', () => {
