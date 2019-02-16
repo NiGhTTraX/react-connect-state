@@ -1,4 +1,4 @@
-import { StateCommit } from '../../src/commits-container';
+import { StateCommit } from '../../src/commit-graph';
 
 let id = 1;
 

@@ -1,5 +1,5 @@
 /* eslint-disable react/no-access-state-in-setstate */
-import StateContainer, { attachGlobalListener, IStateContainer } from './state-container';
+import StateContainer, { setGlobalListener, IStateContainer } from './state-container';
 
 export interface StateCommit {
   /**
@@ -28,8 +28,7 @@ export interface ICommitGraphContainer extends IStateContainer<CommitGraphState>
 type Snapshot = Map<StateContainer<any>, () => void>;
 type SnapshotMap = Map<StateCommit['id'], Snapshot>;
 
-// eslint-disable-next-line max-len
-class CommitGraphContainer extends StateContainer<CommitGraphState> implements ICommitGraphContainer {
+class StateCommitGraph extends StateContainer<CommitGraphState> implements ICommitGraphContainer {
   private commitCount = 1;
 
   private snapshots: SnapshotMap = new Map<StateCommit['id'], Snapshot>();
@@ -39,7 +38,7 @@ class CommitGraphContainer extends StateContainer<CommitGraphState> implements I
 
     this.reset();
 
-    attachGlobalListener(this.onSetState);
+    setGlobalListener(this.onSetState);
   }
 
   reset() {
@@ -117,4 +116,4 @@ class CommitGraphContainer extends StateContainer<CommitGraphState> implements I
   }
 }
 
-export default new CommitGraphContainer();
+export default new StateCommitGraph();

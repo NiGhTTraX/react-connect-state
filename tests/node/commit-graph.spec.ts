@@ -2,9 +2,9 @@
 import { spy } from 'sinon';
 import { beforeEach, describe, expect, it } from './suite';
 import StateContainer from '../../src/state-container';
-import commitsContainer, { StateCommit, CommitGraphState } from '../../src/commits-container';
+import commitsContainer, { StateCommit, CommitGraphState } from '../../src/commit-graph';
 
-describe('commitsContainer', () => {
+describe('commitGraph', () => {
   const commitListener = spy();
   const getLastUpdate: () => CommitGraphState = () => commitListener.lastCall.args[0];
 

@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 import React, { Component, ComponentType } from 'react';
-import { ICommitGraphContainer, StateCommit } from '../commits-container';
-import './commits.less';
+import { ICommitGraphContainer, StateCommit } from '../commit-graph';
+import './commit-graph.less';
 
 export interface CommitProps {
   commit: StateCommit;
@@ -9,7 +9,7 @@ export interface CommitProps {
 }
 
 export interface CommitGraphProps {
-  commits: ICommitGraphContainer,
+  commitGraph: ICommitGraphContainer,
   Commit: ComponentType<CommitProps>
 }
 
@@ -21,7 +21,7 @@ interface CommitGraphViewState {
 export default class CommitGraph extends Component<CommitGraphProps, CommitGraphViewState> {
   state = {
     hoverCommit: Infinity,
-    hoverBranch: this.props.commits.state.activeBranch
+    hoverBranch: this.props.commitGraph.state.activeBranch
   };
 
   render() {
@@ -31,7 +31,7 @@ export default class CommitGraph extends Component<CommitGraphProps, CommitGraph
   }
 
   private renderBranches() {
-    const { branches } = this.props.commits.state;
+    const { branches } = this.props.commitGraph.state;
 
     return <ul className="branches">
       {/* eslint-disable-next-line react/no-array-index-key */}
@@ -44,7 +44,7 @@ export default class CommitGraph extends Component<CommitGraphProps, CommitGraph
   private renderCommits(commits: StateCommit[], branch: number) {
     const { Commit } = this.props;
     const { hoverBranch, hoverCommit } = this.state;
-    const { head } = this.props.commits.state;
+    const { head } = this.props.commitGraph.state;
 
     const onActiveBranch = branch === hoverBranch;
 
@@ -82,7 +82,7 @@ export default class CommitGraph extends Component<CommitGraphProps, CommitGraph
   private clearCheckoutPreview = () => {
     this.setState({
       hoverCommit: Infinity,
-      hoverBranch: this.props.commits.state.activeBranch
+      hoverBranch: this.props.commitGraph.state.activeBranch
     });
   };
 }

@@ -9,7 +9,7 @@ type GlobalListener = (
 
 let globalListener: GlobalListener = () => {};
 
-export function attachGlobalListener(listener: GlobalListener) {
+export function setGlobalListener(listener: GlobalListener) {
   globalListener = listener;
 }
 

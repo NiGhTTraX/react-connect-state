@@ -33,7 +33,7 @@ class CounterView extends Component<CounterViewProps> {
 }
 
 const ConnectedCounterView = connectToState(CounterView, new CounterStore(), 'counter');
-const ConnectedCommits = connectToState(CommitGraph, commitsContainer, 'commits');
+const ConnectedCommits = connectToState(CommitGraph, commitsContainer, 'commitGraph');
 
 class ReplayableCounter extends Component {
   render() {

@@ -6,7 +6,7 @@ const activeBranch = createBranch(3);
 
 const props: CommitGraphProps = {
   Commit,
-  commits: {
+  commitGraph: {
     state: {
       branches: [
         createBranch(5),
