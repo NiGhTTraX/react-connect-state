@@ -18,6 +18,8 @@ interface CommitGraphViewState {
   hoverBranch: number;
 }
 
+// TODO: find a  better name; it's not just displaying the commit graph, but it's also allowing
+// commits to be checked out; time travel? debug? replay? interactive?
 export default class CommitGraph extends Component<CommitGraphProps, CommitGraphViewState> {
   state = {
     hoverCommit: Infinity,
