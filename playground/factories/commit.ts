@@ -13,11 +13,13 @@ export default function createBranch(num: number): StateCommit[] {
   const commits: StateCommit[] = [];
 
   for (let i = 0; i < num; i++) {
-    commits.push({ ...commit, id: ++id });
+    const newCommit = { ...commit, id: ++id };
 
     if (i > 1) {
-      commits[i].parent = commits[i - 1];
+      newCommit.parent = commits[i - 1];
     }
+
+    commits.push(newCommit);
   }
 
   return commits;

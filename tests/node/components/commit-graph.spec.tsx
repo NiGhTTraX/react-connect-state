@@ -89,13 +89,15 @@ describe('CommitGraph', () => {
   });
 
   describe('branches', () => {
+    const masterBranch = createBranch(4);
     const activeBranch = createBranch(2);
+    activeBranch[0].parent = masterBranch[1];
 
     beforeEach(() => {
       commits = {
         state: {
           branches: [
-            createBranch(2),
+            masterBranch,
             activeBranch
           ],
           activeBranch: 1,
@@ -122,7 +124,7 @@ describe('CommitGraph', () => {
 
       $render(<CommitGraph commitGraph={commits} Commit={Commit} />);
 
-      commits.state.branches[0].forEach(commit => {
+      masterBranch.forEach(commit => {
         expect(Commit.renderedWith({ commit, disabled: false })).to.be.true;
       });
     });
@@ -136,14 +138,31 @@ describe('CommitGraph', () => {
       const $firstBranch = $commits.find('.branch').eq(0);
       Simulate.mouseOver($firstBranch.find('.commit-node')[0]);
 
-      const firstBranch = commits.state.branches[0];
 
-      expect(Commit.renderedWith({ commit: firstBranch[0], disabled: false })).to.be.true;
-      expect(Commit.renderedWith({ commit: firstBranch[1], disabled: true })).to.be.true;
+      expect(Commit.renderedWith({ commit: masterBranch[0], disabled: false })).to.be.true;
+      masterBranch.slice(1).forEach(commit => {
+        expect(Commit.renderedWith({ commit, disabled: true })).to.be.true;
+      });
 
       activeBranch.forEach(commit => {
         expect(Commit.renderedWith({ commit, disabled: false })).to.be.true;
       });
+    });
+
+    it('should properly position branches', () => {
+      const Commit = createReactStub<CommitProps>();
+      Commit.withProps({}).renders(<span>X</span>);
+
+      const $commits = $render(<CommitGraph commitGraph={commits} Commit={Commit} />);
+      const cells = $commits.find('.commit-node')
+        .map((_, n) => n.textContent)
+        .get();
+
+      expect(cells).to.deep.equal([
+        'X', 'X', 'X', 'X',
+        // eslint-disable-next-line no-multi-spaces
+        '',  'X', 'X', ''
+      ]);
     });
   });
 });

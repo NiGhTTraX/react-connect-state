@@ -21,60 +21,110 @@ interface CommitGraphViewState {
 // TODO: find a  better name; it's not just displaying the commit graph, but it's also allowing
 // commits to be checked out; time travel? debug? replay? interactive?
 export default class CommitGraph extends Component<CommitGraphProps, CommitGraphViewState> {
+  private static addPadding(row: any[], num: number) {
+    for (let i = 0; i < num; i++) {
+      row.push(
+        <td className="commit-node" key={`commit-${row.length}`} />,
+        <td className="tdd" key={`divider-${row.length}`} />
+      );
+    }
+  }
+
   state = {
     hoverCommit: Infinity,
     hoverBranch: this.props.commitGraph.state.activeBranch
   };
 
   render() {
-    return <div>
-      {this.renderBranches()}
-    </div>;
+    const { head } = this.props.commitGraph.state;
+
+    if (!head) {
+      return null;
+    }
+
+    return <table className="branches">
+      <tbody>
+        {this.renderBranches()}
+      </tbody>
+    </table>;
   }
 
   private renderBranches() {
     const { branches } = this.props.commitGraph.state;
+    const [commitPositions, width] = this.getCommitPositions();
 
-    return <ul className="branches">
-      {/* eslint-disable-next-line react/no-array-index-key */}
-      {branches.map((branch, i) => <li key={i}>
-        {this.renderCommits(branch, i)}
-      </li>)}
-    </ul>;
+    return branches.map((branch, i) => {
+      const row: any[] = [];
+
+      const leftPadding = commitPositions.get(branch[0].id);
+      // @ts-ignore
+      const rightPadding = width - branch.length - leftPadding;
+
+      // @ts-ignore
+      CommitGraph.addPadding(row, leftPadding);
+
+      branch.forEach(commit => {
+        row.push(...this.renderCommitCell(commit, i));
+      });
+
+      // Pop the last divider.
+      row.pop();
+
+      if (rightPadding > 0) {
+        row.push(<td className="tdd" key="divider-before-padding" />);
+        CommitGraph.addPadding(row, rightPadding);
+      }
+
+      // eslint-disable-next-line react/no-array-index-key
+      return <tr className="branch" key={`row-${i}`}>{row}</tr>;
+    });
   }
 
-  private renderCommits(commits: StateCommit[], branch: number) {
+  private renderCommitCell(commit: StateCommit, branchNo: number) {
     const { Commit } = this.props;
     const { hoverBranch, hoverCommit } = this.state;
     const { head } = this.props.commitGraph.state;
+    const onActiveBranch = branchNo === hoverBranch;
 
-    const onActiveBranch = branch === hoverBranch;
+    const afterHead = hoverCommit !== Infinity
+      ? commit.id > hoverCommit
+      : commit.id > (head ? head.id : Infinity);
 
-    const connectedCommits: any[] = [];
+    const disabled = onActiveBranch && afterHead;
 
-    commits.forEach(commit => {
-      const afterHead = hoverCommit !== Infinity
-        ? commit.id > hoverCommit
-        : commit.id > (head ? head.id : Infinity);
+    return [
+      <td className="commit-node" key={`commit${commit.id}`}
+        onMouseOver={this.previewCheckout.bind(this, commit.id, branchNo)}
+        onMouseLeave={this.clearCheckoutPreview}
+      >
+        <Commit commit={commit} disabled={disabled} />
+      </td>,
+      <td className="tdd" key={`divider${commit.id}`}><div className="commit-divider" /></td>
+    ];
+  }
 
-      const disabled = onActiveBranch && afterHead;
+  private getCommitPositions(): [Map<number, number>, number] {
+    const { branches } = this.props.commitGraph.state;
 
-      connectedCommits.push(
-        // eslint-disable-next-line react/no-array-index-key
-        <li className="commit-node" key={`commit${commit.id}`}
-          onMouseOver={this.previewCheckout.bind(this, commit.id, branch)}
-          onMouseLeave={this.clearCheckoutPreview}
-        >
-          <Commit commit={commit} disabled={disabled} />
-        </li>,
-        // eslint-disable-next-line react/no-array-index-key
-        <li className="commit-divider" key={`divider${commit.id}`} />
-      );
+    const positions = new Map<number, number>();
+    let width = 0;
+
+    const setPositions = (branch: StateCommit[], offset: number) => {
+      branch.forEach((commit, i) => {
+        positions.set(commit.id, i + offset);
+        width = Math.max(width, i);
+      });
+    };
+
+    setPositions(branches[0], 0);
+
+    branches.slice(1).forEach(branch => {
+      const offset = positions.get(branch[0].parent ? branch[0].parent.id : -1) || 0;
+
+      setPositions(branch, offset);
     });
 
-    return <ul className="branch">
-      {connectedCommits.slice(0, -1)}
-    </ul>;
+    return [positions, width + 1];
   }
 
   private previewCheckout(id: number, branch: number) {

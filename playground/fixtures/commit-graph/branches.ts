@@ -1,16 +1,26 @@
+/* eslint-disable prefer-destructuring */
 import CommitGraph, { CommitGraphProps } from '../../../src/components/commit-graph';
 import Commit from '../../../src/components/commit';
 import createBranch from '../../factories/commit';
 
-const activeBranch = createBranch(3);
+const masterBranch = createBranch(5);
+const activeBranch = createBranch(4);
+const inactiveBranch = createBranch(7);
+const anotherInactiveBranch = createBranch(2);
+
+activeBranch[0].parent = masterBranch[2];
+inactiveBranch[0].parent = masterBranch[1];
+anotherInactiveBranch[0].parent = activeBranch[3];
 
 const props: CommitGraphProps = {
   Commit,
   commitGraph: {
     state: {
       branches: [
-        createBranch(5),
-        activeBranch
+        masterBranch,
+        activeBranch,
+        inactiveBranch,
+        anotherInactiveBranch
       ],
       activeBranch: 1,
       head: activeBranch[activeBranch.length - 1]
