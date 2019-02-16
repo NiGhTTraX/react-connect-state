@@ -237,5 +237,20 @@ describe('stateCommitGraph', () => {
 
       expect(getLastUpdate().activeBranch).to.equal(1);
     });
+
+    it('should update the active branch when creating a new branch while on an early branch', () => {
+      const container = new CounterContainer();
+      container.increment();
+      container.increment();
+      getLastUpdate().branches[0][0].checkout();
+
+      container.increment();
+      container.increment();
+      getLastUpdate().branches[0][0].checkout();
+
+      container.increment();
+
+      expect(getLastUpdate().activeBranch).to.equal(2);
+    });
   });
 });

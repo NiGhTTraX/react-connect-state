@@ -65,7 +65,7 @@ export default class StateCommitGraph extends StateContainer<CommitGraphState> i
       ? activeBranch[activeBranch.length - 1].id !== currentHead.id
       : false;
 
-    const newActiveBranch = detached ? activeBranchIndex + 1 : activeBranchIndex;
+    const newActiveBranch = detached ? this.state.branches.length : activeBranchIndex;
 
     const newHead: StateCommit = {
       id: this.commitCount,
