@@ -19,6 +19,8 @@ export interface IStateContainer<T> {
 
 export interface IStateEmitter<T> {
   addListener(listener: Listener<T>): void;
+
+  removeListener(listener: Listener<T>): void;
 }
 
 export default abstract class StateContainer<T> implements IStateContainer<T>, IStateEmitter<T> {
@@ -58,5 +60,9 @@ export default abstract class StateContainer<T> implements IStateContainer<T>, I
 
   addListener(listener: Listener<T>) {
     this.listeners.push(listener);
+  }
+
+  removeListener(listener: Listener<T>) {
+    this.listeners = this.listeners.filter(l => l !== listener);
   }
 }

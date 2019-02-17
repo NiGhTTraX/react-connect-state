@@ -20,7 +20,13 @@ export default function connectToState<
     }
 
     componentDidMount() {
-      container.addListener(() => this.forceUpdate());
+      container.addListener(this.onStateUpdate);
     }
+
+    componentWillUnmount() {
+      container.removeListener(this.onStateUpdate);
+    }
+
+    private onStateUpdate = () => this.forceUpdate();
   };
 }

@@ -1,11 +1,29 @@
 import React from 'react';
 import { Mock } from 'typemoq';
-import { $render, describe, expect, it } from './suite';
+import { $render, describe, expect, it, unmount, beforeEach, afterEach } from './suite';
 import connectToState from '../../src';
 import StateContainer from '../../src/state-container';
 import { createReactStub } from 'react-mock-component';
 
 describe('connectToState', () => {
+  let originalConsoleError: (msg?: string, ...args: any[]) => void;
+
+  beforeEach(() => {
+    originalConsoleError = console.error;
+
+    console.error = (message?: any, ...args: any[]) => {
+      if (message && /^Warning:/.test(message)) {
+        throw new Error(message);
+      }
+
+      originalConsoleError(message, ...args);
+    };
+  });
+
+  afterEach(() => {
+    console.error = originalConsoleError;
+  });
+
   it('should pass the container on the first render', () => {
     interface FooState {
       bar: number;
@@ -115,5 +133,30 @@ describe('connectToState', () => {
       foo: fooContainer1.object,
       bar: fooContainer2.object
     })).to.be.true;
+  });
+
+  it('should remove the listener after unmounting', () => {
+    interface FooState {
+      bar: number;
+    }
+
+    class FooContainer extends StateContainer<FooState> {
+      increment = () => {
+        this.setState({ bar: 42 });
+      }
+    }
+    const fooContainer = new FooContainer();
+
+    interface ViewProps {
+      foo: StateContainer<FooState>;
+    }
+
+    const View = createReactStub<ViewProps>();
+    const ConnectedView = connectToState(View, fooContainer, 'foo');
+
+    $render(<ConnectedView />);
+    unmount();
+
+    expect(fooContainer.increment).to.not.throw();
   });
 });
