@@ -22,8 +22,6 @@ findFixtureFiles({ rootPath, fileMatch, exclude }).then(fixtureFiles => {
   const fixtureModules = getFixtureModules(fixtureFiles);
   const components = getComponents({ fixtureModules, fixtureFiles });
 
-  // TODO: do we need to filter components with no fixtures, or does
-  // getComponents do that for us?
   const serialized = components.map(({
     name: componentName,
     namespace: componentNamespace,
