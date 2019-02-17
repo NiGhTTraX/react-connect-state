@@ -144,7 +144,7 @@ import connectToState, { stateCommitGraph, CommitGraph } from 'react-state-conne
 
 ReactDOM.render(
   connectToState(CommitGraph, stateCommitGraph, 'commitGraph'),
-  document.getElementById('#log')
+  document.getElementById('log')
 );
 ```
 
