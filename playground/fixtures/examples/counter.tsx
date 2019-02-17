@@ -24,7 +24,7 @@ interface CounterViewProps {
 class CounterView extends Component<CounterViewProps> {
   render() {
     return <div>
-      Counter: {this.props.counter.state.count}
+      Counter: <span id="count">{this.props.counter.state.count}</span>
       <button type="button" onClick={this.props.counter.increment}>
         Increment me
       </button>
