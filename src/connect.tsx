@@ -15,6 +15,8 @@ export default function connectToState<
   const BoundView = bindComponent(View, { [prop]: container });
 
   return class ConnectedView extends Component<Omit<ViewProps, K>> {
+    static displayName = `connected(${View.displayName || View.name})`;
+
     render() {
       return <BoundView {...this.props} />;
     }
