@@ -382,3 +382,65 @@ higher up the call stack - the `CounterView` component is reusable and
 can be connected to any container and the component we're exporting
 binds it to a particular container, effectively binding itself to that
 container.
+
+### Expressing dependencies between containers
+
+You can subscribe to containers via their `addListener` method so there's
+nothing from stopping a container listening to another container: just
+pass their instances in the constructor and subscribe to them there.
+
+```tsx
+interface ToggleState {
+  toggled: number;
+}
+
+class Toggle extends StateContainer<ToggleState> {
+  state = { toggled: false };
+  
+  toggle = () => {
+    this.setState({ toggled: !this.state.toggled });
+  }
+}
+
+interface ToggleCountState {
+  on: number;
+  off: number;
+}
+
+const ToggleView = ({ toggle: StateContainer<ToggleState> }) => <div>
+  {toggle.state.toggled ? 'I am on' : 'I am off'}
+  <button onClick={toggle.toggle}>Toggle me!</button>
+</div>;
+
+class ToggleCount extends StateContainer<ToggleCountState> {
+  state = { on: 0, off: 0 };
+  
+  constructor(toggle: StateContainer<ToggleState>) {
+    toggle.addListener(this.onToggle);
+  }
+  
+  onToggle = (toggleState: ToggleCountState) => {
+    if (toggleState.toggled) {
+      this.setState({ on: this.state.on + 1 });
+    } else {
+      this.setState({ off: this.state.off + 1 });
+    }
+  }
+}
+
+const ToggleCountView = ({ toggleCount: StateContainer<ToggleCountState> }) => <div>
+  <p>Number of times toggled on: {toggleCount.state.on}</p>
+  <p>Number of times toggled off: {toggleCount.state.off}</p>
+</div>;
+
+const toggle = new Toggle();
+const toggleCount = new ToggleCount(toggle);
+
+const ConnectedToggle = connectToState(ToggleView, toggle, 'toggle');
+const ConnectedToggleCount = connectToState(ToggleCountView, toggleCount, 'toggleCount');
+
+ReactDOM.render(<div>
+  <ConnectedToggle />
+  <ConnectedToggleCount />
+</div>, document.getElementById('root'));
+```
