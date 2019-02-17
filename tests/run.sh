@@ -5,7 +5,6 @@ set -e
 cd "$( dirname "${BASH_SOURCE[0]}" )"
 
 # --silent so we don't get the npm err epilogue.
-# TODO: don't print coverage report here
 npm run test:node:coverage --silent
 npm run test:gui --silent
 
