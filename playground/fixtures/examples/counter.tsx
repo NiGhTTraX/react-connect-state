@@ -37,7 +37,7 @@ const ConnectedCommits = connectToState(CommitGraph, stateCommitGraph, 'commitGr
 
 class ReplayableCounter extends Component {
   render() {
-    return <div>
+    return <div style={{ display: 'inline-block' }}>
       <ConnectedCounterView />
       <ConnectedCommits Commit={Commit} />
     </div>;
