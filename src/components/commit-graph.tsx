@@ -57,10 +57,10 @@ export default class CommitGraph extends Component<CommitGraphProps, CommitGraph
       const row: any[] = [];
 
       const leftPadding = commitPositions.get(branch[0].id);
-      // @ts-ignore
+      // @ts-ignore because `leftPadding` will always be defined
       const rightPadding = width - branch.length - leftPadding;
 
-      // @ts-ignore
+      // @ts-ignore because `leftPadding` will always be defined
       CommitGraph.addPadding(row, leftPadding);
 
       branch.forEach(commit => {

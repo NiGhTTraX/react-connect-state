@@ -80,7 +80,7 @@ export default class StateCommitGraph extends StateContainer<CommitGraphState> i
     // Shallow clone the previous snapshot and update the key for
     // this instance. Assuming the number of instances remains small
     // this shouldn't be too expensive.
-    // @ts-ignore
+    // @ts-ignore because `this.snapshots` will always have the ID
     const prevSnapshot: Snapshot = currentHead
       ? this.snapshots.get(currentHead.id)
       : new Map() as Snapshot;
@@ -112,7 +112,7 @@ export default class StateCommitGraph extends StateContainer<CommitGraphState> i
 
     const snapshot = this.snapshots.get(head.id);
 
-    // @ts-ignore
+    // @ts-ignore because `snapshot` will always be defined
     snapshot.forEach(checkout => checkout());
   }
 }

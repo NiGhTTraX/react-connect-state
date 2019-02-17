@@ -1,7 +1,7 @@
 import { remote, Client, RawResult } from 'webdriverio';
-// @ts-ignore
+// @ts-ignore because no types
 import Mugshot from 'mugshot';
-// @ts-ignore
+// @ts-ignore because no types
 import WebdriverIOAdapter from 'mugshot-webdriverio';
 import path from 'path';
 import fs from 'fs';
@@ -140,7 +140,7 @@ function collectCoverage(testName: string): Promise<void> {
   const safeTestName = getSafeFilename(testName);
 
   return Promise.resolve(rootSuiteBrowser.execute(function getCoverage() {
-    // @ts-ignore
+    // @ts-ignore because `__coverage__` is added by nyc
     return JSON.stringify(window.__coverage__);
   })).then(({ value: coverage }) => {
     fs.writeFileSync(
