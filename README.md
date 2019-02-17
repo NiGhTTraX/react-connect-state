@@ -115,6 +115,8 @@ render(<ConnectedView />);
 
 ## Debugging and time travel
 
+![time-travel-todomvc](time-travel.gif)
+
 If you want to see how the state evolves, or who triggered a specific state
 mutation, the lib exports a state container which holds the graph of all
 state commits made by all the containers:
@@ -147,8 +149,6 @@ ReactDOM.render(
   document.getElementById('log')
 );
 ```
-
-![time-travel](./time-travel.gif)
 
 Each commit has a `checkout` method which you can use to travel back in time.
 Checking out a commit will reset every container's state to the state they
