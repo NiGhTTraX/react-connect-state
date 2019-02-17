@@ -112,6 +112,49 @@ const ConnectedView = connectToState(
 render(<ConnectedView />);
 ```
 
+
+## Debugging and time travel
+
+If you want to see how the state evolves, or who triggered a specific state
+mutation, the lib exports a state container which holds the graph of all
+state commits made by all the containers:
+
+```tsx
+import { stateCommitGraph } from 'react-state-connect';
+
+console.log(stateCommitGraph.state.branches[0]);
+// [{
+//   id: 0,
+//   state: { count: 2 },
+//   checkout,
+//   instance
+// }]
+```
+
+Each `setState` call in a container will create a new commit in the state
+commit graph. Calls will not be bundled so a rapid succession of `setState`
+calls will generate multiple commits.
+
+Since the commit graph is a state container you can easily connect it to
+a view to monitor your app's state in real time. The lib comes bundled
+with a view that renders the commit graph as a, well, a commit graph:
+
+```tsx
+import connectToState, { stateCommitGraph, CommitGraph } from 'react-state-connect';
+
+ReactDOM.render(
+  connectToState(CommitGraph, stateCommitGraph, 'commitGraph'),
+  document.getElementById('#log')
+);
+```
+
+![time-travel](./time-travel.gif)
+
+Each commit has a `checkout` method which you can use to travel back in time.
+Checking out a commit will reset every container's state to the state they
+held at that moment in time.
+
+
 ## Motivation
 
 Turn this
