@@ -103,6 +103,21 @@ export default class CommitGraph extends Component<CommitGraphProps, CommitGraph
     ];
   }
 
+  /**
+   * Arrange the commits in a horizontal gitk style with
+   * the branches one after the other.
+   *
+   * @example
+   *           | 0 | 1 | 2 | 3 | 4 |
+   *           |---|---|---|---|---|
+   * branch[0] | X | X | X | X | X |
+   *           |   | | |   |   |   |
+   * branch[1] |   | X | X |   |   |
+   *           |   |   | | |   |   |
+   * branch[2] |   |   | X | X |   |
+   *
+   * @returns A Map with the positions (id -> index) and the width of the table.
+   */
   private getCommitPositions(): [Map<number, number>, number] {
     const { branches } = this.props.commitGraph.state;
 
