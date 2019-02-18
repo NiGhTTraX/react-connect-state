@@ -135,11 +135,15 @@ console.log(stateCommitGraph.state.branches[0]);
 
 Each `setState` call in a container will create a new commit in the state
 commit graph. Calls will not be bundled so a rapid succession of `setState`
-calls will generate multiple commits.
+calls will generate multiple commits. After checking out a past commit,
+any new state commits will create a new branch. This way no commits are
+overridden and you can easily go back and forth between different paths
+of your state flow.
 
 Since the commit graph is a state container you can easily connect it to
 a view to monitor your app's state in real time. The lib comes bundled
-with a view that renders the commit graph as a, well, a commit graph:
+with a view that renders the commit graph in a git tree fashion and
+allows you to inspect the commits and travel back in time.
 
 ```typescript jsx
 import connectToState, { stateCommitGraph, CommitGraph } from 'react-state-connect';
