@@ -162,9 +162,10 @@ function getSafeFilename(fileName: string): string {
 
 function setupHooks() {
   runnerBefore(function connectToSelenium() {
-    const options = {
+    const options: WebdriverIO.Options = {
       host: SELENIUM_HOST,
-      desiredCapabilities: { browserName: BROWSER }
+      desiredCapabilities: { browserName: BROWSER },
+      deprecationWarnings: false
     };
 
     rootSuiteBrowser = remote(options).init();
