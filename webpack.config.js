@@ -2,6 +2,26 @@ const { HotModuleReplacementPlugin, NoEmitOnErrorsPlugin } = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
+const plugins = [
+  new HotModuleReplacementPlugin(),
+  new NoEmitOnErrorsPlugin(),
+  new HtmlWebpackPlugin({
+    template: './index.html'
+  })
+];
+
+// Disable type checking in dev because it's slow.
+if (process.env.ACCEPTANCE) {
+  plugins.push(new ForkTsCheckerWebpackPlugin({
+    async: false, // so we don't emit on type errors
+    // don't compile tests
+    reportFiles: [
+      'src/**/*',
+      'playground/**/*'
+    ]
+  }));
+}
+
 module.exports = {
   mode: 'development',
   devtool: 'cheap-module-eval-source-map',
@@ -29,21 +49,7 @@ module.exports = {
     extensions: ['.js', '.jsx', '.ts', '.tsx']
   },
 
-  plugins: [
-    new HotModuleReplacementPlugin(),
-    new ForkTsCheckerWebpackPlugin({
-      async: false, // so we don't emit on type errors
-      // don't compile tests
-      reportFiles: [
-        'src/**/*',
-        'playground/**/*'
-      ]
-    }),
-    new NoEmitOnErrorsPlugin(),
-    new HtmlWebpackPlugin({
-      template: './index.html'
-    })
-  ],
+  plugins,
 
   devServer: {
     host: '0.0.0.0',
