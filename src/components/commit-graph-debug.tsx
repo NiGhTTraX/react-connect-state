@@ -18,9 +18,9 @@ interface CommitGraphViewState {
   hoverBranch: number;
 }
 
-// TODO: find a  better name; it's not just displaying the commit graph, but it's also allowing
-// commits to be checked out; time travel? debug? replay? interactive?
-export default class CommitGraph extends Component<CommitGraphProps, CommitGraphViewState> {
+// This is named *View to avoid a naming clash with the index export.
+// eslint-disable-next-line max-len
+export default class CommitGraphDebugView extends Component<CommitGraphProps, CommitGraphViewState> {
   private static addPadding(row: any[], num: number) {
     for (let i = 0; i < num; i++) {
       row.push(
@@ -61,7 +61,7 @@ export default class CommitGraph extends Component<CommitGraphProps, CommitGraph
       const rightPadding = width - branch.length - leftPadding;
 
       // @ts-ignore because `leftPadding` will always be defined
-      CommitGraph.addPadding(row, leftPadding);
+      CommitGraphDebugView.addPadding(row, leftPadding);
 
       branch.forEach(commit => {
         row.push(...this.renderCommitCell(commit, i));
@@ -72,7 +72,7 @@ export default class CommitGraph extends Component<CommitGraphProps, CommitGraph
 
       if (rightPadding > 0) {
         row.push(<td className="tdd" key="divider-before-padding" />);
-        CommitGraph.addPadding(row, rightPadding);
+        CommitGraphDebugView.addPadding(row, rightPadding);
       }
 
       // eslint-disable-next-line react/no-array-index-key

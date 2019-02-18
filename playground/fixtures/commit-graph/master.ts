@@ -1,4 +1,4 @@
-import CommitGraph, { CommitGraphProps } from '../../../src/components/commit-graph';
+import CommitGraphDebugView, { CommitGraphProps } from '../../../src/components/commit-graph-debug';
 import Commit from '../../../src/components/commit';
 import createBranch from '../../factories/commit';
 
@@ -17,6 +17,6 @@ const props: CommitGraphProps = {
 };
 
 export default {
-  component: CommitGraph,
+  component: CommitGraphDebugView,
   props
 };

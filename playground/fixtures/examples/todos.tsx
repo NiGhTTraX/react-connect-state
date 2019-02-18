@@ -1,9 +1,7 @@
 /* eslint-disable react/no-access-state-in-setstate */
 import React, { Component } from 'react';
-import connectToState, { stateCommitGraph } from '../../../src';
+import connectToState, { CommitGraphDebug } from '../../../src';
 import StateContainer from '../../../src/state-container';
-import CommitGraph from '../../../src/components/commit-graph';
-import Commit from '../../../src/components/commit';
 
 interface TodosState {
   todos: string[];
@@ -43,13 +41,12 @@ const TodosView = ({ todos }: { todos: Todos }) => <div>
 </div>;
 
 const ConnectedTodos = connectToState(TodosView, new Todos(), 'todos');
-const ConnectedCommits = connectToState(CommitGraph, stateCommitGraph, 'commitGraph');
 
 class ReplayableTodos extends Component {
   render() {
     return <div style={{ display: 'inline-block' }}>
       <ConnectedTodos />
-      <ConnectedCommits Commit={Commit} />
+      <CommitGraphDebug />
     </div>;
   }
 }

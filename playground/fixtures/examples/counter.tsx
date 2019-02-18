@@ -1,9 +1,7 @@
 /* eslint-disable react/no-multi-comp,react/no-access-state-in-setstate */
 import React, { Component } from 'react';
 import StateContainer from '../../../src/state-container';
-import connectToState, { stateCommitGraph } from '../../../src';
-import CommitGraph from '../../../src/components/commit-graph';
-import Commit from '../../../src/components/commit';
+import connectToState, { CommitGraphDebug } from '../../../src';
 
 interface CounterState {
   count: number;
@@ -33,13 +31,12 @@ class CounterView extends Component<CounterViewProps> {
 }
 
 const ConnectedCounterView = connectToState(CounterView, new CounterStore(), 'counter');
-const ConnectedCommits = connectToState(CommitGraph, stateCommitGraph, 'commitGraph');
 
 class ReplayableCounter extends Component {
   render() {
     return <div style={{ display: 'inline-block' }}>
       <ConnectedCounterView />
-      <ConnectedCommits Commit={Commit} />
+      <CommitGraphDebug />
     </div>;
   }
 }

@@ -2,12 +2,12 @@
 import React from 'react';
 import { createReactStub } from 'react-mock-component';
 import { $render, describe, expect, it } from '../suite';
-import CommitGraph, { CommitProps } from '../../../src/components/commit-graph';
+import CommitGraphDebugView, { CommitProps } from '../../../src/components/commit-graph-debug';
 import { ICommitGraphContainer } from '../../../src/commit-graph';
 import { Simulate } from 'react-dom/test-utils';
 import createBranch from '../../../playground/factories/commit';
 
-describe('CommitGraph', () => {
+describe('CommitGraphDebugView', () => {
   let commits!: ICommitGraphContainer;
 
   describe('master', () => {
@@ -27,7 +27,7 @@ describe('CommitGraph', () => {
     it('should render all the commits', () => {
       const Commit = createReactStub<CommitProps>();
 
-      $render(<CommitGraph Commit={Commit} commitGraph={commits} />);
+      $render(<CommitGraphDebugView Commit={Commit} commitGraph={commits} />);
 
       expect(Commit.renderedWith({ commit: master[0] })).to.be.true;
       expect(Commit.renderedWith({ commit: master[1] })).to.be.true;
@@ -39,7 +39,7 @@ describe('CommitGraph', () => {
 
       const Commit = createReactStub<CommitProps>();
 
-      $render(<CommitGraph Commit={Commit} commitGraph={commits} />);
+      $render(<CommitGraphDebugView Commit={Commit} commitGraph={commits} />);
 
       expect(Commit.renderedWith({ commit: master[0], disabled: false })).to.be.true;
       expect(Commit.renderedWith({ commit: master[1], disabled: false })).to.be.true;
@@ -49,7 +49,7 @@ describe('CommitGraph', () => {
     it('should preview a checkout on mouse over', () => {
       const Commit = createReactStub<CommitProps>();
 
-      const $commits = $render(<CommitGraph Commit={Commit} commitGraph={commits} />);
+      const $commits = $render(<CommitGraphDebugView Commit={Commit} commitGraph={commits} />);
 
       Commit.sinonStub.resetHistory();
       Simulate.mouseOver($commits.find('.commit-node')[1]);
@@ -62,7 +62,7 @@ describe('CommitGraph', () => {
     it('should stop previewing a checkout on mouse leave', () => {
       const Commit = createReactStub<CommitProps>();
 
-      const $commits = $render(<CommitGraph Commit={Commit} commitGraph={commits} />);
+      const $commits = $render(<CommitGraphDebugView Commit={Commit} commitGraph={commits} />);
 
       Simulate.mouseOver($commits.find('.commit-node')[1]);
       Commit.sinonStub.resetHistory();
@@ -78,7 +78,7 @@ describe('CommitGraph', () => {
 
       const Commit = createReactStub<CommitProps>();
 
-      const $commits = $render(<CommitGraph Commit={Commit} commitGraph={commits} />);
+      const $commits = $render(<CommitGraphDebugView Commit={Commit} commitGraph={commits} />);
 
       Simulate.mouseOver($commits.find('.commit-node')[1]);
 
@@ -110,7 +110,7 @@ describe('CommitGraph', () => {
     it('should render all commits', () => {
       const Commit = createReactStub<CommitProps>();
 
-      $render(<CommitGraph commitGraph={commits} Commit={Commit} />);
+      $render(<CommitGraphDebugView commitGraph={commits} Commit={Commit} />);
 
       commits.state.branches.forEach(branch => {
         branch.forEach(commit => {
@@ -122,7 +122,7 @@ describe('CommitGraph', () => {
     it('should not mark the inactive branches as checked out', () => {
       const Commit = createReactStub<CommitProps>();
 
-      $render(<CommitGraph commitGraph={commits} Commit={Commit} />);
+      $render(<CommitGraphDebugView commitGraph={commits} Commit={Commit} />);
 
       masterBranch.forEach(commit => {
         expect(Commit.renderedWith({ commit, disabled: false })).to.be.true;
@@ -132,7 +132,7 @@ describe('CommitGraph', () => {
     it('should preview the correct branch on hover', () => {
       const Commit = createReactStub<CommitProps>();
 
-      const $commits = $render(<CommitGraph commitGraph={commits} Commit={Commit} />);
+      const $commits = $render(<CommitGraphDebugView commitGraph={commits} Commit={Commit} />);
       Commit.sinonStub.resetHistory();
 
       const $firstBranch = $commits.find('.branch').eq(0);
@@ -153,7 +153,7 @@ describe('CommitGraph', () => {
       const Commit = createReactStub<CommitProps>();
       Commit.withProps({}).renders(<span>X</span>);
 
-      const $commits = $render(<CommitGraph commitGraph={commits} Commit={Commit} />);
+      const $commits = $render(<CommitGraphDebugView commitGraph={commits} Commit={Commit} />);
       const cells = $commits.find('.commit-node')
         .map((_, n) => n.textContent)
         .get();
