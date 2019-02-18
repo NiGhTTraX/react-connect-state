@@ -1,6 +1,6 @@
 /* eslint-disable prefer-destructuring */
+import master from './master';
 import CommitGraphDebugView, { CommitGraphProps } from '../../../src/components/commit-graph-debug';
-import Commit from '../../../src/components/commit';
 import createBranch from '../../factories/commit';
 
 const masterBranch = createBranch(5);
@@ -13,7 +13,7 @@ inactiveBranch[0].parent = masterBranch[1];
 anotherInactiveBranch[0].parent = activeBranch[3];
 
 const props: CommitGraphProps = {
-  Commit,
+  ...master.props,
   commitGraph: {
     state: {
       branches: [

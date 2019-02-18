@@ -4,6 +4,7 @@ import StateContainer, { setStateCommitListener } from './state-container';
 import StateCommitGraph from './commit-graph';
 import CommitGraphDebugView from './components/commit-graph-debug';
 import Commit from './components/commit';
+import Tooltip from '@material-ui/core/Tooltip';
 
 export default connectToState;
 
@@ -11,7 +12,7 @@ const stateCommitGraph = new StateCommitGraph(setStateCommitListener);
 
 const ConnectedCommitGraphDebug = bindComponent(
   connectToState(CommitGraphDebugView, stateCommitGraph, 'commitGraph'),
-  { Commit }
+  { Commit: bindComponent(Commit, { Tooltip }) }
 );
 
 export {
