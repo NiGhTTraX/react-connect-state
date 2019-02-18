@@ -127,7 +127,7 @@ import { stateCommitGraph } from 'react-state-connect';
 console.log(stateCommitGraph.state.branches[0]);
 // [{
 //   id: 0,
-//   state: { count: 2 },
+//   state: { todos: [], typingTodo: 'b' },
 //   checkout,
 //   instance
 // }]
