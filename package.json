@@ -37,6 +37,10 @@
   },
   "author": "Andrei Picus",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:NiGhTTraX/react-state-connect.git"
+  },
   "dependencies": {
     "react-bind-component": "~1.0.1",
     "classnames": "~2.2.6",
