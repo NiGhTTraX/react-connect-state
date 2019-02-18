@@ -9,6 +9,8 @@
 
 ```typescript jsx
 import connectToState, { StateContainer } from 'react-state-connect';
+import React from 'react';
+import ReactDOM from 'react-dom';
 
 interface CounterState {
   count: number;
@@ -35,7 +37,8 @@ const CounterView = ({ counter }: CounterViewProps) => <div>
 
 const ConnectedCounterView = connectToState(
   CounterView,
-  new CounterContainer()
+  new CounterContainer(),
+  'counter'
 );
 
 ReactDOM.render(
@@ -55,19 +58,22 @@ If your container needs some dependencies in order to work you can pass
 them through the constructor.
 
 ```typescript jsx
+import { StateContainer } from 'react-state-connect';
+
 class MyStateContainer extends StateContainer<{ foo: number }> {
-  state = { foo: number };
+  constructor(private foo: number) {
+    super();
+    this.state = { foo };
+  }
   
-  constructor(private foo: number) { super(); }
-  
-  doSomething() {
+  increment() {
     this.setState({ foo: this.foo + 1 });
   }
 }
 
-const ConnectedView = connectToState(View, new MyStateContainer(42), 'container');
-
-render(<ConnectedView />);
+const container = new MyStateContainer(42);
+container.increment();
+console.log(container.state.foo); // 43
 ```
 
 ### `connectToState(View, container, propName)`
@@ -81,35 +87,40 @@ You can connect the same container to multiple views in a singleton
 pattern by just passing the same reference to multiple connect calls.
 
 ```typescript jsx
+import connectToState, { StateContainer } from 'react-state-connect';
+import React from 'react';
+
+class MyStateContainer extends StateContainer<any> { }
 const container = new MyStateContainer();
+
+const View1 = ({ foo }: { foo: StateContainer<any> }) => null;
+const View2 = ({ bar }: { foo: StateContainer<any> }) => null;
 
 const ConnectedView1 = connectToState(View1, container, 'foo');
 const ConnectedView2 = connectToState(View2, container, 'bar');
-
-render(<div>
-  <ConnectedView1 />
-  <ConnectedView2 />
-</div>);
 ```
 
 You can also chain multiple `connectToState` calls to connect a view
 to multiple containers.
 
 ```typescript jsx
+import connectToState, { StateContainer } from 'react-state-connect';
+import React from 'react';
+
+class MyStateContainer extends StateContainer<any> { }
+
 interface ViewProps {
-  foo: ContainerState<State1>,
-  bar: ContainerState<State2>,
+  foo: StateContainer<any>,
+  bar: StateContainer<any>,
 }
 
 const View = ({ foo, bar }: ViewProps) => <div>...</div>;
 
 const ConnectedView = connectToState(
-  connectToState(View, container1, 'foo'),
-  container2,
+  connectToState(View, new MyStateContainer(), 'foo'),
+  new MyStateContainer(),
   'bar'
 );
-
-render(<ConnectedView />);
 ```
 
 
@@ -142,6 +153,8 @@ fashion and allows you to inspect the commits and perform checkouts.
 
 ```typescript jsx
 import { CommitGraphDebug } from 'react-state-connect';
+import React from 'react';
+import ReactDOM from 'react-dom';
 
 ReactDOM.render(<CommitGraphDebug />, document.getElementById('log'));
 ```
@@ -152,11 +165,13 @@ ReactDOM.render(<CommitGraphDebug />, document.getElementById('log'));
 Turn this
 
 ```typescript jsx
+import React, { Component } from 'react';
+
 interface ViewState {
   foo: number
 }
 
-class View extends React.Component<{}, ViewState> {
+class View extends Component<{}, ViewState> {
   state = { foo: 1 };
   
   render() {
@@ -176,6 +191,9 @@ class View extends React.Component<{}, ViewState> {
 into this
 
 ```typescript jsx
+import connectToState, { StateContainer } from 'react-state-connect';
+import React from 'react';
+
 interface FooState {
   foo: number;
 }
@@ -223,6 +241,11 @@ a view to a state container the view will have a prop interface accepting
 that type of container.
 
 ```typescript jsx
+import connectToState, { StateContainer } from 'react-state-connect';
+
+interface SomeState { foo: number; }
+interface ADifferentState { bar: string; }
+
 interface ViewProps {
   foo: StateContainer<SomeState>;
 }
@@ -254,6 +277,7 @@ with other libs.
 
 ```typescript jsx
 import connectToState, { StateContainer } from 'react-connect-state';
+import React from 'react';
 
 interface DropdownState {
   items: { id: number; name: string; }[];
@@ -287,8 +311,10 @@ Taking the first example from above, the tests might look something
 like this:
 
 ```typescript jsx
-import { StateContainerMock } from 'react-state-connect';
+import { StateContainer } from 'react-state-connect';
+import { describe, it } from 'mocha';
 import { spy } from 'sinon';
+import { expect } from 'chai';
 import { CounterContainer, CounterView, CounterState } from '../src';
 
 describe('CounterContainer', () => {
@@ -341,7 +367,7 @@ interface CounterViewProps {
   counter: CounterContainer
 }
 
-const CounterView = ({ counter }: CounterViewProps) => <div>...</div>;
+const CounterView = ({ counter }: CounterViewProps) => null;
 
 export default connectToState(
   CounterView,
@@ -360,10 +386,12 @@ the box readiness" at the expense of loose coupling.
 import connectToState from 'react-state-connect';
 import container from './container';
 import CounterView from './view';
+import React from 'react';
 
 // Connect the view once, outside your render method.
 const ConnectedCounterView = connectToState(CounterView, container, 'foo');
 
+// And now use it in your exported component.
 export default () => <div>
   <ConnectedCounterView />
 </div>;
@@ -382,6 +410,10 @@ nothing from stopping a container listening to another container: just
 pass their instances in the constructor and subscribe to them there.
 
 ```typescript jsx
+import connectToState, { StateContainer } from 'react-state-connect';
+import React from 'react';
+import ReactDOM from 'react-dom';
+
 interface ToggleState {
   toggled: number;
 }
@@ -408,6 +440,7 @@ class ToggleCount extends StateContainer<ToggleCountState> {
   state = { on: 0, off: 0 };
   
   constructor(toggle: StateContainer<ToggleState>) {
+    super();
     toggle.subscribe(this.onToggle);
   }
   
