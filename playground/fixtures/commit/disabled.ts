@@ -1,7 +1,9 @@
+/* eslint-disable no-unused-vars */
+import { Component } from 'react';
 import enabled from './enabled';
-import { CommitProps } from '../../../src/components/commit-graph-debug';
+import Commit from '../../../src/components/commit';
 
-const props:CommitProps = {
+const props: Commit extends Component<infer T> ? T : never = {
   ...enabled.props,
   disabled: true
 };

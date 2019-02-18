@@ -3,8 +3,8 @@ import { createReactStub } from 'react-mock-component';
 import { spy } from 'sinon';
 import { Simulate } from 'react-dom/test-utils';
 import { describe, it, $render, expect } from '../suite';
-import Commit, { TooltipProps } from '../../../src/components/commit';
-import { Mock } from 'typemoq';
+import Commit, { PrettyPrinter, TooltipProps } from '../../../src/components/commit';
+import { It, Mock } from 'typemoq';
 
 describe('Commit', () => {
   it('should checkout the commit when clicked', () => {
@@ -33,8 +33,12 @@ describe('Commit', () => {
       checkout: () => {}
     };
     const Tooltip = createReactStub<TooltipProps>();
-    const prettyPrintSpy = Mock.ofType<(object: any) => string>();
-    prettyPrintSpy.setup(x => x(commit.state)).returns(() => 'this is the state');
+    const prettyPrintSpy = Mock.ofType<PrettyPrinter>();
+    prettyPrintSpy
+      // TODO: I don't care about the 2nd argument, especially since
+      // it's optional; find a way to not have to specify it here
+      .setup(x => x(commit.state, It.isAny()))
+      .returns(() => 'this is the state');
 
     $render(<Commit
       Tooltip={Tooltip}
