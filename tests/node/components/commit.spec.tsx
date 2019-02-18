@@ -4,6 +4,7 @@ import { spy } from 'sinon';
 import { Simulate } from 'react-dom/test-utils';
 import { describe, it, $render, expect } from '../suite';
 import Commit, { TooltipProps } from '../../../src/components/commit';
+import { Mock } from 'typemoq';
 
 describe('Commit', () => {
   it('should checkout the commit when clicked', () => {
@@ -16,7 +17,7 @@ describe('Commit', () => {
     };
     const Tooltip = (props: TooltipProps) => props.children;
 
-    const $commit = $render(<Commit Tooltip={Tooltip} commit={commit} />);
+    const $commit = $render(<Commit Tooltip={Tooltip} commit={commit} prettyPrint={() => ''} />);
 
     Simulate.click($commit[0]);
 
@@ -32,11 +33,17 @@ describe('Commit', () => {
       checkout: () => {}
     };
     const Tooltip = createReactStub<TooltipProps>();
+    const prettyPrintSpy = Mock.ofType<(object: any) => string>();
+    prettyPrintSpy.setup(x => x(commit.state)).returns(() => 'this is the state');
 
-    $render(<Commit Tooltip={Tooltip} commit={commit} />);
+    $render(<Commit
+      Tooltip={Tooltip}
+      commit={commit}
+      prettyPrint={prettyPrintSpy.object}
+    />);
 
     expect(
       $render(<span>{Tooltip.lastProps.title}</span>).text()
-    ).to.contain(JSON.stringify(commit.state));
+    ).to.contain('this is the state');
   });
 });

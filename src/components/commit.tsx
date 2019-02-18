@@ -1,5 +1,6 @@
 import React, { Component, ComponentType, ReactElement, ReactNode } from 'react';
 import classNames from 'classnames';
+// eslint-disable-next-line no-unused-vars
 import { CommitProps } from './commit-graph-debug';
 import './commit.less';
 
@@ -10,11 +11,15 @@ export interface TooltipProps {
 
 interface CommitDeps {
   Tooltip: ComponentType<TooltipProps>;
+  prettyPrint?: (object: any) => string;
 }
 
-export default class Commit extends Component<CommitProps & CommitDeps> {
-  static defaultProps: Partial<CommitProps> = {
-    disabled: false
+type Props = CommitProps & CommitDeps;
+
+export default class Commit extends Component<Props> {
+  static defaultProps = {
+    disabled: false,
+    prettyPrint: JSON.stringify
   };
 
   render() {
@@ -29,8 +34,13 @@ export default class Commit extends Component<CommitProps & CommitDeps> {
   }
 
   private renderCommitInfo() {
+    // TODO: https://github.com/DefinitelyTyped/DefinitelyTyped/issues/11640
+    const { prettyPrint } = this.props as Props & typeof Commit.defaultProps;
+
     return <div className="commit-info">
-      {JSON.stringify(this.props.commit.state)}
+      <div className="commit-state">
+        {prettyPrint(this.props.commit.state)}
+      </div>
     </div>;
   }
 }
