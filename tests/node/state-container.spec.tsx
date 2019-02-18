@@ -19,7 +19,7 @@ describe('StateContainer', () => {
     const listener = spy();
 
     const foo = new Foo();
-    foo.addListener(listener);
+    foo.subscribe(listener);
     foo.increment();
 
     expect(listener).to.have.been.calledOnceWith({ foo: 42 });
@@ -30,8 +30,8 @@ describe('StateContainer', () => {
     const listener2 = spy();
 
     const foo = new Foo();
-    foo.addListener(listener1);
-    foo.addListener(listener2);
+    foo.subscribe(listener1);
+    foo.subscribe(listener2);
     foo.increment();
 
     expect(listener1).to.have.been.calledOnceWith({ foo: 42 });

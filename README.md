@@ -377,7 +377,7 @@ container.
 
 ### Expressing dependencies between containers
 
-You can subscribe to containers via their `addListener` method so there's
+You can subscribe to containers via their `subscribe` method so there's
 nothing from stopping a container listening to another container: just
 pass their instances in the constructor and subscribe to them there.
 
@@ -408,7 +408,7 @@ class ToggleCount extends StateContainer<ToggleCountState> {
   state = { on: 0, off: 0 };
   
   constructor(toggle: StateContainer<ToggleState>) {
-    toggle.addListener(this.onToggle);
+    toggle.subscribe(this.onToggle);
   }
   
   onToggle = (toggleState: ToggleCountState) => {

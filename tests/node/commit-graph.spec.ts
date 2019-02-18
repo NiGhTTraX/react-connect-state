@@ -25,7 +25,7 @@ describe('stateCommitGraph', () => {
     stateCommitGraph.reset();
     commitListener.resetHistory();
 
-    stateCommitGraph.addListener(commitListener);
+    stateCommitGraph.subscribe(commitListener);
   });
 
   it('should make a commit for every state update', () => {
@@ -156,7 +156,7 @@ describe('stateCommitGraph', () => {
       container.increment();
 
       const listener = spy();
-      container.addListener(listener);
+      container.subscribe(listener);
 
       getLastUpdate().branches[0][0].checkout();
 

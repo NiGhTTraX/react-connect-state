@@ -22,11 +22,11 @@ export default function connectToState<
     }
 
     componentDidMount() {
-      container.addListener(this.onStateUpdate);
+      container.subscribe(this.onStateUpdate);
     }
 
     componentWillUnmount() {
-      container.removeListener(this.onStateUpdate);
+      container.unsubscribe(this.onStateUpdate);
     }
 
     private onStateUpdate = () => this.forceUpdate();
