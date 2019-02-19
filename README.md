@@ -1,4 +1,4 @@
-> Connect state containers to React views in a type safe and dead simple way
+> Simple, type safe and time travelling state management for React
 
 [![Build Status](https://travis-ci.com/NiGhTTraX/react-state-connect.svg?branch=master)](https://travis-ci.com/NiGhTTraX/react-state-connect)
 [![codecov](https://codecov.io/gh/NiGhTTraX/react-state-connect/branch/master/graph/badge.svg)](https://codecov.io/gh/NiGhTTraX/react-state-connect)
