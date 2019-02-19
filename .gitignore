@@ -5,3 +5,5 @@ results
 .nyc_output
 fixtures.json
 .idea
+*.diff.png
+*.new.png

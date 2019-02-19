@@ -3,5 +3,9 @@
 
   "include": [
     "src/**/*"
-  ]
+  ],
+
+  "compilerOptions": {
+    "types": []
+  }
 }

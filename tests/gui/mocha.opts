@@ -1,0 +1,4 @@
+--require ts-node/register
+--recursive
+--timeout 15000
+tests/gui/**/*.spec.ts
