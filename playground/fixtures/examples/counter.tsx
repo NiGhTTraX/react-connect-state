@@ -1,7 +1,7 @@
 /* eslint-disable react/no-multi-comp,react/no-access-state-in-setstate */
 import React, { Component } from 'react';
 import StateContainer from '../../../src/state-container';
-import connectToState, { CommitGraphDebug } from '../../../src';
+import connectToState, { CommitGraphDebug, stateCommitGraph } from '../../../src';
 
 interface CounterState {
   count: number;
@@ -12,6 +12,10 @@ class CounterStore extends StateContainer<CounterState> {
 
   increment = () => {
     this.setState({ count: this.state.count + 1 });
+  };
+
+  reset = () => {
+    this.setState({ count: 1 });
   };
 }
 
@@ -30,7 +34,8 @@ class CounterView extends Component<CounterViewProps> {
   }
 }
 
-const ConnectedCounterView = connectToState(CounterView, new CounterStore(), 'counter');
+const counterStore = new CounterStore();
+const ConnectedCounterView = connectToState(CounterView, counterStore, 'counter');
 
 class ReplayableCounter extends Component {
   render() {
@@ -38,6 +43,11 @@ class ReplayableCounter extends Component {
       <ConnectedCounterView />
       <CommitGraphDebug />
     </div>;
+  }
+
+  componentWillUnmount() {
+    counterStore.reset();
+    stateCommitGraph.reset();
   }
 }
 

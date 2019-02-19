@@ -1,6 +1,6 @@
 /* eslint-disable react/no-access-state-in-setstate */
 import React, { Component } from 'react';
-import connectToState, { CommitGraphDebug } from '../../../src';
+import connectToState, { CommitGraphDebug, stateCommitGraph } from '../../../src';
 import StateContainer from '../../../src/state-container';
 
 interface TodosState {
@@ -24,6 +24,10 @@ class Todos extends StateContainer<TodosState> {
   onTypeTodo = (name: string) => {
     this.setState({ typingTodo: name });
   };
+
+  reset = () => {
+    this.setState({ todos: [], typingTodo: '' });
+  };
 }
 
 const TodosView = ({ todos }: { todos: Todos }) => <div>
@@ -40,7 +44,8 @@ const TodosView = ({ todos }: { todos: Todos }) => <div>
   </ul>
 </div>;
 
-const ConnectedTodos = connectToState(TodosView, new Todos(), 'todos');
+const todosStore = new Todos();
+const ConnectedTodos = connectToState(TodosView, todosStore, 'todos');
 
 class ReplayableTodos extends Component {
   render() {
@@ -48,6 +53,11 @@ class ReplayableTodos extends Component {
       <ConnectedTodos />
       <CommitGraphDebug />
     </div>;
+  }
+
+  componentWillUnmount() {
+    todosStore.reset();
+    stateCommitGraph.reset();
   }
 }
 
