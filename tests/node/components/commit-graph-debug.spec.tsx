@@ -10,6 +10,24 @@ import createBranch from '../../../playground/factories/commit';
 describe('CommitGraphDebugView', () => {
   let commits!: ICommitGraphContainer;
 
+  it('should not render anything if there are no commits', () => {
+    const Commit = createReactStub<CommitProps>();
+
+    const commitGraph = {
+      state: {
+        activeBranch: 0,
+        branches: [[]],
+        head: null
+      },
+      reset(): void {}
+    };
+
+    const $graph = $render(<CommitGraphDebugView Commit={Commit} commitGraph={commitGraph} />);
+
+    expect(Commit.rendered).to.be.false;
+    expect($graph.html()).to.be.undefined;
+  });
+
   describe('master', () => {
     const master = createBranch(3);
 
