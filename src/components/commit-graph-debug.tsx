@@ -88,7 +88,9 @@ export default class CommitGraphDebugView extends Component<CommitGraphProps, Co
 
     const afterHead = hoverCommit !== Infinity
       ? commit.id > hoverCommit
-      : commit.id > (head ? head.id : Infinity);
+      // @ts-ignore because no head means no commits and we don't reach
+      // this point in that case.
+      : commit.id > head.id;
 
     const disabled = onActiveBranch && afterHead;
 
@@ -134,9 +136,9 @@ export default class CommitGraphDebugView extends Component<CommitGraphProps, Co
     setPositions(branches[0], 0);
 
     branches.slice(1).forEach(branch => {
-      const offset = positions.get(branch[0].parent ? branch[0].parent.id : -1) || 0;
-
-      setPositions(branch, offset);
+      // @ts-ignore because every non-master branch has a parent and
+      // the map will contain a position for it.
+      setPositions(branch, positions.get(branch[0].parent.id));
     });
 
     return [positions, width + 1];
