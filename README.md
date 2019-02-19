@@ -128,6 +128,8 @@ const ConnectedView = connectToState(
 
 ![time-travel-todomvc](time-travel.gif)
 
+### `stateCommitGraph`
+
 If you want to see how the state evolves, or who triggered a specific state
 mutation, the lib exports a state container which holds the graph of all
 state commits made by all the containers:
@@ -137,14 +139,22 @@ import { stateCommitGraph } from 'react-state-connect';
 
 console.log(stateCommitGraph.state.branches[0]);
 // [{
-//   id: 0,
+//   id: 1,
 //   state: { todos: [], typingTodo: 'b' },
 //   checkout,
 //   instance
 // }]
 ```
 
-Each `setState` call in a container will create a new commit in the state commit graph. Each commit has a `checkout` method which you can use to travel back in time. Checking out a commit will reset every container's state to the state they held at that moment in time. After that, any new state commits will create a new branch. This way no commits are overridden and you can easily go back and forth between different paths of your state flow.
+### `StateCommit`
+
+Each `setState` call in a container will create a new commit in the state commit graph. Each commit has a `checkout` method which you can use to travel back in time. Checking out a commit will reset every container's state to the state they held at that moment in time.
+
+### Branches
+
+After a checkout, any new state commits will create a new branch. This way no commits are overridden and you can easily go back and forth between different paths of your state flow.
+
+### `CommitGraphDebug`
 
 Since the commit graph is a state container you can easily connect it to
 a view to monitor your app's state in real time. The lib exports a view
