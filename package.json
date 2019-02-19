@@ -1,6 +1,7 @@
 {
   "name": "react-state-connect",
   "description": "Simple, type safe and time travelling state management for React",
+  "keywords": ["react", "state", "typescript"],
   "version": "2.0.0",
   "main": "dist/index",
   "types": "dist/index",
