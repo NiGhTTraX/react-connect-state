@@ -1,14 +1,6 @@
-/* eslint-disable no-unused-vars */
-import { Component } from 'react';
 import enabled from './enabled';
-import Commit from '../../../src/components/commit';
+import { extendFixture } from '../../fixture-helper';
 
-const props: Commit extends Component<infer T> ? T : never = {
-  ...enabled.props,
+export default extendFixture(enabled, {
   disabled: true
-};
-
-export default {
-  ...enabled,
-  props
-};
+});

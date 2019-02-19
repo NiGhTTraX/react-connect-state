@@ -1,8 +1,5 @@
-// eslint-disable-next-line no-unused-vars
-import { Component } from 'react';
 import enabled from './enabled';
-// eslint-disable-next-line no-unused-vars
-import Commit from '../../../src/components/commit';
+import { extendFixture } from '../../fixture-helper';
 
 const complexState = {
   foo: 'bar',
@@ -15,16 +12,10 @@ const complexState = {
   }
 };
 
-const props: Commit extends Component<infer T> ? T : never = {
-  ...enabled.props,
+export default extendFixture(enabled, {
   commit: {
     ...enabled.props.commit,
     state: complexState,
     instance: { state: complexState }
   }
-};
-
-export default {
-  ...enabled,
-  props
-};
+});

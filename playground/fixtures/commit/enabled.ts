@@ -1,10 +1,9 @@
 // eslint-disable-next-line no-unused-vars
-import { Component } from 'react';
 import Tooltip from '@material-ui/core/Tooltip/Tooltip';
 import Commit from '../../../src/components/commit';
+import createFixture from '../../fixture-helper';
 
-// TODO: extract helper for inferring the type
-const props: Commit extends Component<infer T> ? T : never = {
+export default createFixture(Commit, {
   Tooltip,
   commit: {
     id: 1,
@@ -13,9 +12,4 @@ const props: Commit extends Component<infer T> ? T : never = {
     state: { foo: 'bar' },
     instance: { state: { foo: 'bar' } }
   }
-};
-
-export default {
-  component: Commit,
-  props
-};
+});

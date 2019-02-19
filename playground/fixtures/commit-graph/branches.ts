@@ -1,7 +1,7 @@
 /* eslint-disable prefer-destructuring */
 import master from './master';
-import CommitGraphDebugView, { CommitGraphProps } from '../../../src/components/commit-graph-debug';
 import createBranch from '../../factories/commit';
+import { extendFixture } from '../../fixture-helper';
 
 const masterBranch = createBranch(5);
 const activeBranch = createBranch(4);
@@ -12,8 +12,7 @@ activeBranch[0].parent = masterBranch[2];
 inactiveBranch[0].parent = masterBranch[1];
 anotherInactiveBranch[0].parent = activeBranch[3];
 
-const props: CommitGraphProps = {
-  ...master.props,
+export default extendFixture(master, {
   commitGraph: {
     state: {
       branches: [
@@ -27,9 +26,4 @@ const props: CommitGraphProps = {
     },
     reset: () => {}
   }
-};
-
-export default {
-  component: CommitGraphDebugView,
-  props
-};
+});
