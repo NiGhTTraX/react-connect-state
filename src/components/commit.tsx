@@ -1,9 +1,7 @@
-import React, { Component, ComponentType, ReactElement, ReactNode } from 'react';
-import classNames from 'classnames';
+import React, { Component, ComponentType, CSSProperties, ReactElement, ReactNode } from 'react';
 // eslint-disable-next-line no-unused-vars
 import { CommitProps } from './commit-graph-debug';
 import stringifyObject from 'stringify-object';
-import './commit.less';
 
 export interface TooltipProps {
   children: ReactElement<any>;
@@ -33,11 +31,22 @@ export default class Commit extends Component<Props> {
   render() {
     const { Tooltip, disabled } = this.props;
 
+    const styles: CSSProperties = {
+      boxSizing: 'border-box',
+      width: 10,
+      height: 10,
+      borderRadius: '50%',
+      background: 'beige',
+      border: '1px solid chocolate',
+      transition: 'all .2s'
+    };
+
+    if (disabled) {
+      styles.background = '#ccc';
+    }
+
     return <Tooltip title={this.renderCommitInfo()}>
-      <div
-        className={classNames('commit', { disabled })}
-        onClick={this.props.commit.checkout}
-      />
+      <div style={styles} className="commit" onClick={this.props.commit.checkout} />
     </Tooltip>;
   }
 

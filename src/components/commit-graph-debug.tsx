@@ -1,7 +1,6 @@
 /* eslint-disable class-methods-use-this */
-import React, { Component, ComponentType } from 'react';
+import React, { Component, ComponentType, CSSProperties } from 'react';
 import { ICommitGraphContainer, StateCommit } from '../commit-graph';
-import './commit-graph.less';
 
 export interface CommitProps {
   commit: StateCommit;
@@ -18,14 +17,36 @@ interface CommitGraphViewState {
   hoverBranch: number;
 }
 
+const STYLES = {
+  commitNode: {
+    verticalAlign: 'middle',
+    textAlign: 'center',
+    height: 10,
+    width: 10
+  } as CSSProperties,
+
+  commitConnector: {
+    width: '100%',
+    height: 2,
+    border: '1px solid coral',
+    background: 'chocolate'
+  } as CSSProperties,
+
+  commitDivider: {
+    verticalAlign: 'middle',
+    textAlign: 'center',
+    width: 20
+  } as CSSProperties
+};
+
 // This is named *View to avoid a naming clash with the index export.
 // eslint-disable-next-line max-len
 export default class CommitGraphDebugView extends Component<CommitGraphProps, CommitGraphViewState> {
   private static addPadding(row: any[], num: number) {
     for (let i = 0; i < num; i++) {
       row.push(
-        <td className="commit-node" key={`commit-${row.length}`} />,
-        <td className="tdd" key={`divider-${row.length}`} />
+        <td style={STYLES.commitNode} className="commit-node" key={`commit-${row.length}`} />,
+        <td style={STYLES.commitDivider} key={`divider-${row.length}`} />
       );
     }
   }
@@ -42,7 +63,7 @@ export default class CommitGraphDebugView extends Component<CommitGraphProps, Co
       return null;
     }
 
-    return <table className="branches">
+    return <table>
       <tbody>
         {this.renderBranches()}
       </tbody>
@@ -71,7 +92,7 @@ export default class CommitGraphDebugView extends Component<CommitGraphProps, Co
       row.pop();
 
       if (rightPadding > 0) {
-        row.push(<td className="tdd" key="divider-before-padding" />);
+        row.push(<td style={STYLES.commitDivider} key="divider-before-padding" />);
         CommitGraphDebugView.addPadding(row, rightPadding);
       }
 
@@ -95,13 +116,15 @@ export default class CommitGraphDebugView extends Component<CommitGraphProps, Co
     const disabled = onActiveBranch && afterHead;
 
     return [
-      <td className="commit-node" key={`commit${commit.id}`}
+      <td style={STYLES.commitNode} className="commit-node" key={`commit${commit.id}`}
         onMouseOver={this.previewCheckout.bind(this, commit.id, branchNo)}
         onMouseLeave={this.clearCheckoutPreview}
       >
         <Commit commit={commit} disabled={disabled} />
       </td>,
-      <td className="tdd" key={`divider${commit.id}`}><div className="commit-divider" /></td>
+      <td style={STYLES.commitDivider} key={`divider${commit.id}`}>
+        <div style={STYLES.commitConnector} />
+      </td>
     ];
   }
 
