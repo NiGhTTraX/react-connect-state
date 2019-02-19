@@ -1,6 +1,6 @@
 {
   "name": "react-state-connect",
-  "description": "Connect state containers to React views",
+  "description": "Simple, type safe and time travelling state management for React",
   "version": "2.0.0",
   "main": "dist/index",
   "types": "dist/index",
