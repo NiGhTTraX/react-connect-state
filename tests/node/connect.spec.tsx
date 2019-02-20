@@ -24,17 +24,22 @@ describe('connectToState', () => {
     console.error = originalConsoleError;
   });
 
+  interface FooState {
+    bar: number;
+  }
+
+  interface ViewProps {
+    foo: StateContainer<FooState>;
+  }
+
+  class FooContainer extends StateContainer<FooState> {
+    increment = () => {
+      this.setState({ bar: 42 });
+    };
+  }
+
   it('should pass the container on the first render', () => {
-    interface FooState {
-      bar: number;
-    }
-
     const fooContainer = Mock.ofType<StateContainer<FooState>>();
-
-    interface ViewProps {
-      foo: StateContainer<FooState>;
-    }
-
     const View = createReactStub<ViewProps>();
     const ConnectedView = connectToState(View, fooContainer.object, 'foo');
 
@@ -44,21 +49,7 @@ describe('connectToState', () => {
   });
 
   it('should support one listener', () => {
-    interface FooState {
-      bar: number;
-    }
-
-    class FooContainer extends StateContainer<FooState> {
-      increment() {
-        this.setState({ bar: 42 });
-      }
-    }
     const fooContainer = new FooContainer();
-
-    interface ViewProps {
-      foo: StateContainer<FooState>;
-    }
-
     const View = createReactStub<ViewProps>();
     const ConnectedView = connectToState(View, fooContainer, 'foo');
 
@@ -72,20 +63,7 @@ describe('connectToState', () => {
   });
 
   it('should support multiple listeners', () => {
-    interface FooState {
-      bar: number;
-    }
-
-    class FooContainer extends StateContainer<FooState> {
-      increment() {
-        this.setState({ bar: 42 });
-      }
-    }
     const fooContainer = new FooContainer();
-
-    interface ViewProps {
-      foo: StateContainer<FooState>;
-    }
 
     const View1 = createReactStub<ViewProps>();
     const View2 = createReactStub<ViewProps>();
@@ -108,19 +86,15 @@ describe('connectToState', () => {
   });
 
   it('should bind multiple containers', () => {
-    interface FooState {
-      bar: number;
-    }
-
     const fooContainer1 = Mock.ofType<StateContainer<FooState>>();
     const fooContainer2 = Mock.ofType<StateContainer<FooState>>();
 
-    interface ViewProps {
+    interface ViewWithMultipleContainersProps {
       foo: StateContainer<FooState>;
       bar: StateContainer<FooState>;
     }
 
-    const View = createReactStub<ViewProps>();
+    const View = createReactStub<ViewWithMultipleContainersProps>();
     const ConnectedView = connectToState(
       connectToState(View, fooContainer1.object, 'foo'),
       fooContainer2.object,
@@ -136,21 +110,7 @@ describe('connectToState', () => {
   });
 
   it('should remove the listener after unmounting', () => {
-    interface FooState {
-      bar: number;
-    }
-
-    class FooContainer extends StateContainer<FooState> {
-      increment = () => {
-        this.setState({ bar: 42 });
-      }
-    }
     const fooContainer = new FooContainer();
-
-    interface ViewProps {
-      foo: StateContainer<FooState>;
-    }
-
     const View = createReactStub<ViewProps>();
     const ConnectedView = connectToState(View, fooContainer, 'foo');
 
