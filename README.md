@@ -325,6 +325,7 @@ import { describe, it } from 'mocha';
 import { spy } from 'sinon';
 import { expect } from 'chai';
 import { render } from 'some-testing-framework';
+import React from 'react';
 import { CounterContainer, CounterView } from '../src';
 
 describe('CounterContainer', () => {
