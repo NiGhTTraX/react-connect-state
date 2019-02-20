@@ -117,6 +117,6 @@
     "webdriverio": "~4.14.1",
     "webpack": "~4.29.0",
     "webpack-cli": "~3.2.0",
-    "webpack-dev-server": "~3.1.10"
+    "webpack-dev-server": "~3.2.0"
   }
 }
