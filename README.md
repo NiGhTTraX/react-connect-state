@@ -321,11 +321,11 @@ Taking the first example from above, the tests might look something
 like this:
 
 ```typescript jsx
-import { StateContainer } from 'react-state-connect';
 import { describe, it } from 'mocha';
 import { spy } from 'sinon';
 import { expect } from 'chai';
-import { CounterContainer, CounterView, CounterState } from '../src';
+import { render } from 'some-testing-framework';
+import { CounterContainer, CounterView } from '../src';
 
 describe('CounterContainer', () => {
   it('should start at zero', () => {
@@ -340,23 +340,21 @@ describe('CounterContainer', () => {
 });
 
 describe('CounterView', () => {
-  class CounterMock extends StateContainer<CounterState> {
-    state = { count: 23 };
-    
-    increment = spy();
-  }
+  // You can use simple objects as containers.
+  const counterMock = {
+    state: { count: 23 },
+    increment: spy()
+  };
   
   it('should display the counter', () => {
-    const container = new CounterMock();
-    const component = render(<CounterView counter={container} />);
+    const component = render(<CounterView counter={counterMock} />);
     expect(component.text()).to.include('23');
   });
   
   it('should call to increment', () => {
-    const container = new CounterMock();
-    const component = render(<CounterView counter={container} />);
+    const component = render(<CounterView counter={counterMock} />);
     component.click('button');
-    expect(container.increment).to.have.been.calledOnce;
+    expect(counterMock.increment).to.have.been.calledOnce;
   });
 });
 ```
