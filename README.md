@@ -37,8 +37,7 @@ const CounterView = ({ counter }: CounterViewProps) => <div>
 
 const ConnectedCounterView = connectToState(
   CounterView,
-  new CounterContainer(),
-  'counter'
+  { counter: new CounterContainer() }
 );
 
 ReactDOM.render(
@@ -76,12 +75,12 @@ container.increment();
 console.log(container.state.foo); // 43
 ```
 
-### `connectToState(View, container, propName)`
+### `connectToState(View, { [propName]: container })`
 
-The method takes a component and a state container and connects them
-together so that whenever the container updates its state the view
+The method takes a component and a mapping of props to state containers and connects them
+together so that whenever the containers update their state the view
 will be re-rendered. The returned HOC will accept the same props as
-the original component, minus the prop that will hold the container.
+the original component, minus the props that will hold the containers.
 
 You can connect the same container to multiple views in a singleton
 pattern by just passing the same reference to multiple connect calls.
@@ -96,12 +95,11 @@ const container = new MyStateContainer();
 const View1 = ({ foo }: { foo: StateContainer<any> }) => null;
 const View2 = ({ bar }: { foo: StateContainer<any> }) => null;
 
-const ConnectedView1 = connectToState(View1, container, 'foo');
-const ConnectedView2 = connectToState(View2, container, 'bar');
+const ConnectedView1 = connectToState(View1, { foo: container });
+const ConnectedView2 = connectToState(View2, { bar: container });
 ```
 
-You can also chain multiple `connectToState` calls to connect a view
-to multiple containers.
+You can also pass multiple containers:
 
 ```typescript jsx
 import connectToState, { StateContainer } from 'react-state-connect';
@@ -116,11 +114,10 @@ interface ViewProps {
 
 const View = ({ foo, bar }: ViewProps) => <div>...</div>;
 
-const ConnectedView = connectToState(
-  connectToState(View, new MyStateContainer(), 'foo'),
-  new MyStateContainer(),
-  'bar'
-);
+const ConnectedView = connectToState(View, {
+  foo: new MyStateContainer(),
+  bar: MyStateContainer()
+});
 ```
 
 
@@ -228,7 +225,7 @@ const View = (props: ViewProps) => <div>
   Foo is {props.foo.state.foo}
 </div>;
 
-const ConnectedView = connectToState(View, new FooContainer(), 'foo'); 
+const ConnectedView = connectToState(View, { foo: new FooContainer() }); 
 ```
 
 Decoupling state from your React views has some advantages. First of all,
@@ -267,13 +264,13 @@ const someContainer = new SomeContainer();
 const someOtherContainer = new SomeOtherContainer();
 
 // All good here.
-connectToState(View, someContainer, 'foo');
+connectToState(View, { foo: someContainer });
 
 // Will throw a compiler error because `View` does not accept `ADifferentState`.
-connectToState(View, someOtherContainer, 'foo');
+connectToState(View, { foo: someOtherContainer });
 
 // Will throw a compiler error because `View` does not accept `bar`.
-connectToState(View, someContainer, 'bar');
+connectToState(View, { bar: someContainer });
 ```
 
 ### Dependency Injection
@@ -310,8 +307,8 @@ const Dropdown = ({ items }: DropdownProps) => <select>
 
 // We're using the same Dropdown component and binding it to different
 // state containers.
-const UserDropdown = connectToState(Dropdown, new UsersContainer(), 'items');
-const ArticlesDropdown = connectToState(Dropdown, new ArticlesContainer(), 'items');
+const UserDropdown = connectToState(Dropdown, { items: new UsersContainer() });
+const ArticlesDropdown = connectToState(Dropdown, { items: new ArticlesContainer() });
 ```
 
 ### Easy testing
@@ -378,11 +375,7 @@ interface CounterViewProps {
 
 const CounterView = ({ counter }: CounterViewProps) => null;
 
-export default connectToState(
-  CounterView,
-  new CounterContainer(),
-  'counter'
-);
+export default connectToState(CounterView, { counter: new CounterContainer() });
 ```
 
 This pattern is perfectly valid, though it couples the view to the
@@ -398,7 +391,7 @@ import CounterView from './view';
 import React from 'react';
 
 // Connect the view once, outside your render method.
-const ConnectedCounterView = connectToState(CounterView, container, 'foo');
+const ConnectedCounterView = connectToState(CounterView, { foo: container });
 
 // And now use it in your exported component.
 export default () => <div>
@@ -470,8 +463,8 @@ const ToggleCountView = ({ toggleCount }: { toggleCount: StateContainer<ToggleCo
 const toggle = new Toggle();
 const toggleCount = new ToggleCount(toggle);
 
-const ConnectedToggle = connectToState(ToggleView, toggle, 'toggle');
-const ConnectedToggleCount = connectToState(ToggleCountView, toggleCount, 'toggleCount');
+const ConnectedToggle = connectToState(ToggleView, { toggle: toggle });
+const ConnectedToggleCount = connectToState(ToggleCountView, { toggleCount: toggleCount });
 
 ReactDOM.render(<div>
   <ConnectedToggle />

@@ -45,7 +45,7 @@ const TodosView = ({ todos }: { todos: Todos }) => <div>
 </div>;
 
 const todosStore = new Todos();
-const ConnectedTodos = connectToState(TodosView, todosStore, 'todos');
+const ConnectedTodos = connectToState(TodosView, { todos: todosStore });
 
 class ReplayableTodos extends Component {
   render() {

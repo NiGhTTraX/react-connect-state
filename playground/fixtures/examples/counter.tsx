@@ -35,7 +35,7 @@ class CounterView extends Component<CounterViewProps> {
 }
 
 const counterStore = new CounterStore();
-const ConnectedCounterView = connectToState(CounterView, counterStore, 'counter');
+const ConnectedCounterView = connectToState(CounterView, { counter: counterStore });
 
 class ReplayableCounter extends Component {
   render() {

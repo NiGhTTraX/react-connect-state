@@ -11,7 +11,7 @@ export default connectToState;
 const stateCommitGraph = new StateCommitGraph(setStateCommitListener);
 
 const ConnectedCommitGraphDebug = bindComponent(
-  connectToState(CommitGraphDebugView, stateCommitGraph, 'commitGraph'),
+  connectToState(CommitGraphDebugView, { commitGraph: stateCommitGraph }),
   { Commit: bindComponent(Commit, { Tooltip }) }
 );
 

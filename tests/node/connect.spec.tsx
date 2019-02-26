@@ -1,10 +1,9 @@
 import React from 'react';
 import { Mock } from 'typemoq';
 import { $render, describe, expect, it, unmount, beforeEach, afterEach } from './suite';
-import connectToState from '../../src';
 import StateContainer, { IStateContainer } from '../../src/state-container';
 import { createReactStub } from 'react-mock-component';
-import connectToState2 from '../../src/connect2';
+import connectToState from '../../src/connect';
 
 describe('connectToState', () => {
   let originalConsoleError: (msg?: string, ...args: any[]) => void;
@@ -42,7 +41,7 @@ describe('connectToState', () => {
   it('should pass the container on the first render', () => {
     const fooContainer = Mock.ofType<StateContainer<FooState>>();
     const View = createReactStub<ViewProps>();
-    const ConnectedView = connectToState(View, fooContainer.object, 'foo');
+    const ConnectedView = connectToState(View, { foo: fooContainer.object });
 
     $render(<ConnectedView />);
 
@@ -52,7 +51,7 @@ describe('connectToState', () => {
   it('should support one listener', () => {
     const fooContainer = new FooContainer();
     const View = createReactStub<ViewProps>();
-    const ConnectedView = connectToState(View, fooContainer, 'foo');
+    const ConnectedView = connectToState(View, { foo: fooContainer });
 
     $render(<ConnectedView />);
 
@@ -69,8 +68,8 @@ describe('connectToState', () => {
     const View1 = createReactStub<ViewProps>();
     const View2 = createReactStub<ViewProps>();
 
-    const ConnectedView1 = connectToState(View1, fooContainer, 'foo');
-    const ConnectedView2 = connectToState(View2, fooContainer, 'foo');
+    const ConnectedView1 = connectToState(View1, { foo: fooContainer });
+    const ConnectedView2 = connectToState(View2, { foo: fooContainer });
 
     $render(<div>
       <ConnectedView1 />
@@ -96,7 +95,7 @@ describe('connectToState', () => {
     }
 
     const View = createReactStub<ViewWithMultipleContainersProps>();
-    const ConnectedView = connectToState2(View, {
+    const ConnectedView = connectToState(View, {
       foo: fooContainer1.object,
       bar: fooContainer2.object
     });
@@ -121,7 +120,7 @@ describe('connectToState', () => {
     }
 
     const View = createReactStub<ViewWithMultipleContainersProps>();
-    const ConnectedView = connectToState2(View, {
+    const ConnectedView = connectToState(View, {
       foo: fooContainer1.object,
       bar: fooContainer2.object
     });
@@ -138,7 +137,7 @@ describe('connectToState', () => {
   it('should remove the listener after unmounting', () => {
     const fooContainer = new FooContainer();
     const View = createReactStub<ViewProps>();
-    const ConnectedView = connectToState(View, fooContainer, 'foo');
+    const ConnectedView = connectToState(View, { foo: fooContainer });
 
     $render(<ConnectedView />);
     unmount();
