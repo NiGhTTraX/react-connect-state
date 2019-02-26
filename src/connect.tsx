@@ -4,8 +4,8 @@ import bindComponent, { Omit } from 'react-bind-component';
 import { IStateContainer, IStateEmitter } from './state-container';
 
 type PropsThatAllowContainers<ViewProps> = {
-  [P in keyof ViewProps]: ViewProps[P] extends IStateContainer<any> ? ViewProps[P] : never
-};
+  [P in keyof ViewProps]: ViewProps[P] extends IStateContainer<any> ? P : never
+}[keyof ViewProps];
 
 type BindableContainers<ViewProps> = {
   [P in keyof ViewProps]: ViewProps[P] extends IStateContainer<infer U> ? IStateEmitter<U> : never
@@ -13,7 +13,7 @@ type BindableContainers<ViewProps> = {
 
 export default function connectToState<
   ViewProps,
-  K extends keyof PropsThatAllowContainers<ViewProps>
+  K extends PropsThatAllowContainers<ViewProps>
 >(
   View: ComponentType<ViewProps>,
   containersToBindTo: Pick<BindableContainers<ViewProps>, K>
