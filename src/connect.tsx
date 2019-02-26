@@ -3,6 +3,11 @@ import bindComponent, { Omit } from 'react-bind-component';
 // eslint-disable-next-line no-unused-vars
 import { IStateContainer, IStateEmitter } from './state-container';
 
+// TODO: ViewProps is extending ContainerProps which means the props
+// you are binding are dictating the type of component connectToState
+// accepts. What if we want it the other way around - ContainerProps
+// should be a subset of ViewProps => maybe this will improve
+// autocompletion in IDEs?
 export default function connectToState<
   ViewProps extends {
     // eslint-disable-next-line
