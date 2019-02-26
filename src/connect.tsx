@@ -8,7 +8,8 @@ type PropsThatAllowContainers<ViewProps> = {
 }[keyof ViewProps];
 
 type BindableContainers<ViewProps> = {
-  [P in keyof ViewProps]: ViewProps[P] extends IStateContainer<infer U> ? IStateEmitter<U> : never
+  // eslint-disable-next-line max-len
+  [P in keyof ViewProps]: ViewProps[P] extends IStateContainer<infer U> ? IStateContainer<U> & IStateEmitter<U> : never
 };
 
 export default function connectToState<
