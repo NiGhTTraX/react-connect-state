@@ -3,25 +3,25 @@ import bindComponent, { Omit } from 'react-bind-component';
 // eslint-disable-next-line no-unused-vars
 import { IStateContainer, IStateEmitter } from './state-container';
 
-// TODO: ViewProps is extending ContainerProps which means the props
-// you are binding are dictating the type of component connectToState
-// accepts. What if we want it the other way around - ContainerProps
-// should be a subset of ViewProps => maybe this will improve
-// autocompletion in IDEs?
+type PropsThatAllowContainers<ViewProps> = {
+  [P in keyof ViewProps]: ViewProps[P] extends IStateContainer<any> ? ViewProps[P] : never
+};
+
+type BindableContainers<ViewProps> = {
+  [P in keyof ViewProps]: ViewProps[P] extends IStateContainer<infer U> ? IStateEmitter<U> : never
+};
+
 export default function connectToState<
-  ViewProps extends {
-    // eslint-disable-next-line
-    [K in keyof ContainerProps]: ContainerProps[K] extends IStateEmitter<infer U> ? IStateContainer<U> : never
-  },
-  ContainerProps extends Record<string, IStateEmitter<any>>
+  ViewProps,
+  K extends keyof PropsThatAllowContainers<ViewProps>
 >(
   View: ComponentType<ViewProps>,
-  containerProps: ContainerProps
-): ComponentType<Omit<ViewProps, keyof ContainerProps>> {
-  // @ts-ignore TODO: https://github.com/Microsoft/TypeScript/issues/13948
-  const BoundView = bindComponent(View, containerProps);
+  containersToBindTo: Pick<BindableContainers<ViewProps>, K>
+): ComponentType<Omit<ViewProps, K>> {
+  // @ts-ignore
+  const BoundView = bindComponent(View, containersToBindTo);
 
-  return class ConnectedView extends Component<Omit<ViewProps, keyof ContainerProps>> {
+  return class ConnectedView extends Component<Omit<ViewProps, K>> {
     static displayName = `connected(${View.displayName || View.name})`;
 
     render() {
@@ -29,13 +29,13 @@ export default function connectToState<
     }
 
     componentDidMount() {
-      Object.values(containerProps).forEach(
+      Object.values(containersToBindTo as Record<string, IStateEmitter<any>>).forEach(
         container => container.subscribe(this.onStateUpdate)
       );
     }
 
     componentWillUnmount() {
-      Object.values(containerProps).forEach(
+      Object.values(containersToBindTo as Record<string, IStateEmitter<any>>).forEach(
         container => container.unsubscribe(this.onStateUpdate)
       );
     }

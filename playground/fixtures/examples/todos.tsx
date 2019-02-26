@@ -9,7 +9,12 @@ interface TodosState {
 }
 
 class Todos extends StateContainer<TodosState> {
-  state = { todos: [], typingTodo: '' };
+  constructor() {
+    super();
+
+    // I don't know why it doesn't work to init it through a class member.
+    this.state = { todos: [], typingTodo: '' };
+  }
 
   addTodo = () => {
     if (!this.state.typingTodo) {
