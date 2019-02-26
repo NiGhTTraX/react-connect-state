@@ -1,5 +1,5 @@
 {
-  "name": "react-state-connect",
+  "name": "react-connect-state",
   "description": "Simple, type safe and time travelling state management for React",
   "keywords": [
     "react",
@@ -44,7 +44,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git@github.com:NiGhTTraX/react-state-connect.git"
+    "url": "git@github.com:NiGhTTraX/react-connect-state.git"
   },
   "dependencies": {
     "@material-ui/core": "~3.9.2",
