@@ -2,8 +2,9 @@ import React from 'react';
 import { Mock } from 'typemoq';
 import { $render, describe, expect, it, unmount, beforeEach, afterEach } from './suite';
 import connectToState from '../../src';
-import StateContainer from '../../src/state-container';
+import StateContainer, { IStateContainer } from '../../src/state-container';
 import { createReactStub } from 'react-mock-component';
+import connectToState2 from '../../src/connect2';
 
 describe('connectToState', () => {
   let originalConsoleError: (msg?: string, ...args: any[]) => void;
@@ -90,22 +91,47 @@ describe('connectToState', () => {
     const fooContainer2 = Mock.ofType<StateContainer<FooState>>();
 
     interface ViewWithMultipleContainersProps {
-      foo: StateContainer<FooState>;
-      bar: StateContainer<FooState>;
+      foo: IStateContainer<FooState>;
+      bar: IStateContainer<FooState>;
     }
 
     const View = createReactStub<ViewWithMultipleContainersProps>();
-    const ConnectedView = connectToState(
-      connectToState(View, fooContainer1.object, 'foo'),
-      fooContainer2.object,
-      'bar'
-    );
+    const ConnectedView = connectToState2(View, {
+      foo: fooContainer1.object,
+      bar: fooContainer2.object
+    });
 
     $render(<ConnectedView />);
 
     expect(View.renderedWith({
       foo: fooContainer1.object,
       bar: fooContainer2.object
+    })).to.be.true;
+  });
+
+  it('should bind multiple containers and require the rest', () => {
+    const fooContainer1 = Mock.ofType<StateContainer<FooState>>();
+    const fooContainer2 = Mock.ofType<StateContainer<FooState>>();
+    const fooContainer3 = Mock.ofType<StateContainer<FooState>>();
+
+    interface ViewWithMultipleContainersProps {
+      foo: IStateContainer<FooState>;
+      bar: IStateContainer<FooState>;
+      baz: IStateContainer<FooState>;
+    }
+
+    const View = createReactStub<ViewWithMultipleContainersProps>();
+    const ConnectedView = connectToState2(View, {
+      foo: fooContainer1.object,
+      bar: fooContainer2.object
+    });
+
+    $render(<ConnectedView baz={fooContainer3.object} />);
+
+    expect(View.renderedWith({
+      foo: fooContainer1.object,
+      bar: fooContainer2.object,
+      baz: fooContainer3.object
     })).to.be.true;
   });
 
