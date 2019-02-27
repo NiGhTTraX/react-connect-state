@@ -30,17 +30,20 @@ export default function connectToState<
     }
 
     componentDidMount() {
-      Object.values(containersToBindTo as Record<string, IStateEmitter<any>>).forEach(
-        container => container.subscribe(this.onStateUpdate)
-      );
+      this.subOrUnsub('subscribe');
     }
 
     componentWillUnmount() {
-      Object.values(containersToBindTo as Record<string, IStateEmitter<any>>).forEach(
-        container => container.unsubscribe(this.onStateUpdate)
-      );
+      this.subOrUnsub('unsubscribe');
     }
 
     private onStateUpdate = () => this.forceUpdate();
+
+    private subOrUnsub(method: 'subscribe'|'unsubscribe') {
+      // TODO: I'm not sure why `containersToBindTo` needs to be cast.
+      Object.values(containersToBindTo as Record<string, IStateEmitter<any>>).forEach(
+        container => container[method](this.onStateUpdate)
+      );
+    }
   };
 }
