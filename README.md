@@ -247,31 +247,7 @@ This lib is written in TypeScript and it makes sure that when you connect
 a view to a state container the view will have a prop interface accepting
 that type of container.
 
-```typescript jsx
-import connectToState, { StateContainer } from 'react-connect-state';
-
-interface SomeState { foo: number; }
-interface ADifferentState { bar: string; }
-
-interface ViewProps {
-  foo: StateContainer<SomeState>;
-}
-const View = (props: ViewProps) => null;
-
-class SomeContainer extends StateContainer<SomeState> {}
-class SomeOtherContainer extends StateContainer<ADifferentState> {}
-const someContainer = new SomeContainer();
-const someOtherContainer = new SomeOtherContainer();
-
-// All good here.
-connectToState(View, { foo: someContainer });
-
-// Will throw a compiler error because `View` does not accept `ADifferentState`.
-connectToState(View, { foo: someOtherContainer });
-
-// Will throw a compiler error because `View` does not accept `bar`.
-connectToState(View, { bar: someContainer });
-```
+![typescript](./typescript.gif)
 
 ### Dependency Injection
 
