@@ -8,8 +8,9 @@ type PropsThatAllowContainers<ViewProps> = {
 }[keyof ViewProps];
 
 type BindableContainers<ViewProps> = {
-  // eslint-disable-next-line max-len
-  [P in keyof ViewProps]: ViewProps[P] extends IStateContainer<infer U> ? IStateContainer<U> & IStateEmitter<U> : never
+  [P in PropsThatAllowContainers<ViewProps>]: ViewProps[P] extends IStateContainer<infer U>
+    ? ViewProps[P] & IStateEmitter<U>
+    : never
 };
 
 export default function connectToState<
@@ -19,7 +20,6 @@ export default function connectToState<
   View: ComponentType<ViewProps>,
   containersToBindTo: Pick<BindableContainers<ViewProps>, K>
 ): ComponentType<Omit<ViewProps, K>> {
-  // @ts-ignore
   const BoundView = bindComponent(View, containersToBindTo);
 
   return class ConnectedView extends Component<Omit<ViewProps, K>> {
