@@ -13,7 +13,10 @@ module.exports = {
   fileMatch: ['**/fixtures/**/*.{ts,tsx}'],
 
   watchDirs: ['src', 'playground'],
-  exclude: [/\.d\.ts$/],
+  exclude: [
+    /\.d\.ts$/,
+    /fixtures\.json/
+  ],
 
   globalImports,
 
