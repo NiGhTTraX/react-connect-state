@@ -20,7 +20,7 @@ const { BROWSER = 'chrome', SELENIUM_HOST = 'localhost' } = process.env;
 
 enum TIMEOUT {
   // eslint-disable-next-line no-unused-vars
-  FIXTURE_LOAD = 10 * 1000
+  FIXTURE_LOAD = 15 * 1000
 }
 
 let suiteNesting = 0;
