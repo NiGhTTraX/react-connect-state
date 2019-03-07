@@ -1,17 +1,17 @@
 /* eslint-disable prefer-destructuring */
 import React from 'react';
-import { createReactStub } from 'react-mock-component';
+import createReactMock from 'react-mock-component';
+import { Simulate } from 'react-dom/test-utils';
 import { $render, describe, expect, it } from '../suite';
 import CommitGraphDebugView, { CommitProps } from '../../../src/components/commit-graph-debug';
 import { ICommitGraphContainer } from '../../../src/commit-graph';
-import { Simulate } from 'react-dom/test-utils';
 import createBranch from '../../../playground/factories/commit';
 
 describe('CommitGraphDebugView', () => {
   let commits!: ICommitGraphContainer;
 
   it('should not render anything if there are no commits', () => {
-    const Commit = createReactStub<CommitProps>();
+    const Commit = createReactMock<CommitProps>();
 
     const commitGraph = {
       state: {
@@ -43,7 +43,7 @@ describe('CommitGraphDebugView', () => {
     });
 
     it('should render all the commits', () => {
-      const Commit = createReactStub<CommitProps>();
+      const Commit = createReactMock<CommitProps>();
 
       $render(<CommitGraphDebugView Commit={Commit} commitGraph={commits} />);
 
@@ -55,7 +55,7 @@ describe('CommitGraphDebugView', () => {
     it('should mark commits after a checkout', () => {
       commits.state.head = master[1];
 
-      const Commit = createReactStub<CommitProps>();
+      const Commit = createReactMock<CommitProps>();
 
       $render(<CommitGraphDebugView Commit={Commit} commitGraph={commits} />);
 
@@ -65,7 +65,7 @@ describe('CommitGraphDebugView', () => {
     });
 
     it('should preview a checkout on mouse over', () => {
-      const Commit = createReactStub<CommitProps>();
+      const Commit = createReactMock<CommitProps>();
 
       const $commits = $render(<CommitGraphDebugView Commit={Commit} commitGraph={commits} />);
 
@@ -78,7 +78,7 @@ describe('CommitGraphDebugView', () => {
     });
 
     it('should stop previewing a checkout on mouse leave', () => {
-      const Commit = createReactStub<CommitProps>();
+      const Commit = createReactMock<CommitProps>();
 
       const $commits = $render(<CommitGraphDebugView Commit={Commit} commitGraph={commits} />);
 
@@ -94,7 +94,7 @@ describe('CommitGraphDebugView', () => {
     it('should preview a later checkout', () => {
       commits.state.head = master[0];
 
-      const Commit = createReactStub<CommitProps>();
+      const Commit = createReactMock<CommitProps>();
 
       const $commits = $render(<CommitGraphDebugView Commit={Commit} commitGraph={commits} />);
 
@@ -126,7 +126,7 @@ describe('CommitGraphDebugView', () => {
     });
 
     it('should render all commits', () => {
-      const Commit = createReactStub<CommitProps>();
+      const Commit = createReactMock<CommitProps>();
 
       $render(<CommitGraphDebugView commitGraph={commits} Commit={Commit} />);
 
@@ -138,7 +138,7 @@ describe('CommitGraphDebugView', () => {
     });
 
     it('should not mark the inactive branches as checked out', () => {
-      const Commit = createReactStub<CommitProps>();
+      const Commit = createReactMock<CommitProps>();
 
       $render(<CommitGraphDebugView commitGraph={commits} Commit={Commit} />);
 
@@ -148,7 +148,7 @@ describe('CommitGraphDebugView', () => {
     });
 
     it('should preview the correct branch on hover', () => {
-      const Commit = createReactStub<CommitProps>();
+      const Commit = createReactMock<CommitProps>();
 
       const $commits = $render(<CommitGraphDebugView commitGraph={commits} Commit={Commit} />);
       Commit.sinonStub.resetHistory();
@@ -168,7 +168,7 @@ describe('CommitGraphDebugView', () => {
     });
 
     it('should properly position branches', () => {
-      const Commit = createReactStub<CommitProps>();
+      const Commit = createReactMock<CommitProps>();
       Commit.withProps({}).renders(<span>X</span>);
 
       const $commits = $render(<CommitGraphDebugView commitGraph={commits} Commit={Commit} />);

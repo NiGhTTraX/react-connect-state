@@ -1,8 +1,8 @@
 import React from 'react';
+import createReactMock from 'react-mock-component';
 import { Mock } from 'typemoq';
 import { $render, describe, expect, it, unmount, beforeEach, afterEach } from './suite';
 import StateContainer, { IStateContainer } from '../../src/state-container';
-import { createReactStub } from 'react-mock-component';
 import connectToState from '../../src/connect';
 
 describe('connectToState', () => {
@@ -40,7 +40,7 @@ describe('connectToState', () => {
 
   it('should pass the container on the first render', () => {
     const fooContainer = Mock.ofType<StateContainer<FooState>>();
-    const View = createReactStub<ViewProps>();
+    const View = createReactMock<ViewProps>();
     const ConnectedView = connectToState(View, { foo: fooContainer.object });
 
     $render(<ConnectedView />);
@@ -50,7 +50,7 @@ describe('connectToState', () => {
 
   it('should support one listener', () => {
     const fooContainer = new FooContainer();
-    const View = createReactStub<ViewProps>();
+    const View = createReactMock<ViewProps>();
     const ConnectedView = connectToState(View, { foo: fooContainer });
 
     $render(<ConnectedView />);
@@ -65,8 +65,8 @@ describe('connectToState', () => {
   it('should support multiple listeners', () => {
     const fooContainer = new FooContainer();
 
-    const View1 = createReactStub<ViewProps>();
-    const View2 = createReactStub<ViewProps>();
+    const View1 = createReactMock<ViewProps>();
+    const View2 = createReactMock<ViewProps>();
 
     const ConnectedView1 = connectToState(View1, { foo: fooContainer });
     const ConnectedView2 = connectToState(View2, { foo: fooContainer });
@@ -94,7 +94,7 @@ describe('connectToState', () => {
       bar: IStateContainer<FooState>;
     }
 
-    const View = createReactStub<ViewWithMultipleContainersProps>();
+    const View = createReactMock<ViewWithMultipleContainersProps>();
     const ConnectedView = connectToState(View, {
       foo: fooContainer1.object,
       bar: fooContainer2.object
@@ -119,7 +119,7 @@ describe('connectToState', () => {
       baz: IStateContainer<FooState>;
     }
 
-    const View = createReactStub<ViewWithMultipleContainersProps>();
+    const View = createReactMock<ViewWithMultipleContainersProps>();
     const ConnectedView = connectToState(View, {
       foo: fooContainer1.object,
       bar: fooContainer2.object
@@ -136,7 +136,7 @@ describe('connectToState', () => {
 
   it('should remove the listener after unmounting', () => {
     const fooContainer = new FooContainer();
-    const View = createReactStub<ViewProps>();
+    const View = createReactMock<ViewProps>();
     const ConnectedView = connectToState(View, { foo: fooContainer });
 
     $render(<ConnectedView />);

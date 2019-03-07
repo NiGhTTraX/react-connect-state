@@ -1,10 +1,10 @@
 import React from 'react';
-import { createReactStub } from 'react-mock-component';
+import createReactMock from 'react-mock-component';
 import { spy } from 'sinon';
 import { Simulate } from 'react-dom/test-utils';
+import { It, Mock } from 'typemoq';
 import { describe, it, $render, expect } from '../suite';
 import Commit, { PrettyPrinter, TooltipProps } from '../../../src/components/commit';
-import { It, Mock } from 'typemoq';
 
 describe('Commit', () => {
   it('should checkout the commit when clicked', () => {
@@ -32,7 +32,7 @@ describe('Commit', () => {
       parent: null,
       checkout: () => {}
     };
-    const Tooltip = createReactStub<TooltipProps>();
+    const Tooltip = createReactMock<TooltipProps>();
     const prettyPrintSpy = Mock.ofType<PrettyPrinter>();
     prettyPrintSpy
       // TODO: I don't care about the 2nd argument, especially since
