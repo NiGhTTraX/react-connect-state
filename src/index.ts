@@ -1,6 +1,6 @@
 import bindComponent from 'react-bind-component';
 import connectToState, { PropsThatAllowContainers } from './connect';
-import StateContainer, { setStateCommitListener } from './state-container';
+import StateContainer, { setStateCommitListener, IStateContainer, IStateEmitter } from './state-container';
 import StateCommitGraph from './commit-graph';
 import CommitGraphDebugView from './components/commit-graph-debug';
 import Commit from './components/commit';
@@ -17,6 +17,7 @@ export default connectToState;
 
 export {
   StateContainer,
+  IStateContainer, IStateEmitter,
   PropsThatAllowContainers,
   stateCommitGraph,
   ConnectedCommitGraphDebug as CommitGraphDebug,
