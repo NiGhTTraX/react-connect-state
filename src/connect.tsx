@@ -8,8 +8,7 @@ export type PropsThatAllowContainers<ViewProps, SC extends IStateContainer<any>>
 }[keyof ViewProps];
 
 type BindableContainers<ViewProps> = {
-  // eslint-disable-next-line max-len
-  [P in PropsThatAllowContainers<ViewProps, IStateContainer<any>>]: ViewProps[P] extends IStateContainer<infer U>
+  [P in keyof ViewProps]: ViewProps[P] extends IStateContainer<infer U>
     ? ViewProps[P] & IStateEmitter<U>
     : never
 };
