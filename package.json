@@ -101,7 +101,7 @@
     "nyc": "~13.3.0",
     "react": "~16.8.1",
     "react-cosmos": "~4.8.0",
-    "react-cosmos-shared": "~4.6.1",
+    "react-cosmos-shared": "~4.8.0",
     "react-cosmos-voyager2": "~4.6.4",
     "react-dom": "~16.8.1",
     "react-mock-component": "~1.0.1",
