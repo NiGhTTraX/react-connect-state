@@ -92,7 +92,7 @@
     "jquery": "~3.4.0",
     "jsdom": "~15.0.0",
     "less": "~3.9.0",
-    "less-loader": "~4.1.0",
+    "less-loader": "~5.0.0",
     "lint-staged": "~8.1.0",
     "mocha": "~6.1.0",
     "mugshot": "~0.3.2",
