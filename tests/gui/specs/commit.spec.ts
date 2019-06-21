@@ -6,6 +6,7 @@ describe('Commit', () => {
   });
 
   vit('hover', async browser => {
-    await browser.moveToObject('.commit');
+    const commit = await browser.$('.commit');
+    await commit.moveTo();
   }, '#root');
 });

@@ -7,34 +7,46 @@ describe('Example:Todos', () => {
 
   it('should record a commit for every key press', async browser => {
     const newTodo = 'buy milk';
-    await browser.setValue('input', newTodo);
+    const input = await browser.$('input');
+    await input.setValue(newTodo);
 
-    const { value: commits } = await browser.elements('.commit-node');
+    const commits = await browser.$$('.commit-node');
     expect(commits).to.have.length(newTodo.length);
   });
 
   it('should record a commit for adding a todo', async browser => {
-    await browser.setValue('input', 'x');
-    await browser.click('button');
+    const input = await browser.$('input');
+    await input.setValue('x');
 
-    const { value: commits } = await browser.elements('.commit-node');
+    const button = await browser.$('button');
+    await button.click();
+
+    const commits = await browser.$$('.commit-node');
     expect(commits).to.have.length(2);
   });
 
   it('should revert key presses', async browser => {
-    await browser.setValue('input', 'buy milk');
+    let input = await browser.$('input');
+    await input.setValue('buy milk');
 
-    await browser.click('.commit:first-child');
+    const firstCommit = await browser.$('.commit:first-child');
+    firstCommit.click();
 
-    expect(await browser.getValue('input')).to.equal('b');
+    input = await browser.$('input');
+    expect(await input.getValue()).to.equal('b');
   });
 
   it('should revert adding todos', async browser => {
-    await browser.setValue('input', 'x');
-    await browser.click('button');
+    const input = await browser.$('input');
+    await input.setValue('x');
 
-    await browser.click('.commit:first-child');
+    const button = await browser.$('button');
+    await button.click();
 
-    expect(await browser.getText('#todos')).to.be.empty;
+    const firstCommit = await browser.$('.commit:first-child');
+    firstCommit.click();
+
+    const todos = await browser.$('#todos');
+    expect(await todos.getText()).to.be.empty;
   });
 });
