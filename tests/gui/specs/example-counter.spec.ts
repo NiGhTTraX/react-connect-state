@@ -22,7 +22,7 @@ describe('Example:Counter', () => {
     await button.click();
 
     const firstCommit = await browser.$('.commit:first-child');
-    firstCommit.click();
+    await firstCommit.click();
 
     const count = await browser.$('#count');
     expect(await count.getText()).to.equal('2');
@@ -35,7 +35,7 @@ describe('Example:Counter', () => {
     await button.click();
 
     const firstCommit = await browser.$('.commit:first-child');
-    firstCommit.click();
+    await firstCommit.click();
 
     await button.click();
     await button.click();
@@ -51,13 +51,13 @@ describe('Example:Counter', () => {
     await button.click();
 
     const firstCommit = await browser.$('.commit:first-child');
-    firstCommit.click();
+    await firstCommit.click();
 
     await button.click();
     await button.click();
     await button.click();
 
-    firstCommit.click();
+    await firstCommit.click();
 
     const count = await browser.$('#count');
     expect(await count.getText()).to.equal('2');
