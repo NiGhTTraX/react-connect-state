@@ -1,8 +1,4 @@
-import { remote, Client, RawResult } from 'webdriverio';
-// @ts-ignore because no types
-import Mugshot from 'mugshot';
-// @ts-ignore because no types
-import WebdriverIOAdapter from 'mugshot-webdriverio';
+import { remote } from 'webdriverio';
 import path from 'path';
 import fs from 'fs';
 import { expect } from 'chai';
@@ -13,8 +9,14 @@ import {
   runnerIt,
   runnerDescribe
 } from '../mocha-runner';
+import Mugshot from 'mugshot';
+import WebdriverIOAdapter from '@mugshot/webdriverio';
 
-export type TestDefinition = (browser: Client<RawResult<null>>) => Promise<any> | void;
+export { expect };
+
+export type Browser = ReturnType<typeof remote>;
+
+export type TestDefinition = (browser: Browser) => Promise<any> | void;
 
 const { BROWSER = 'chrome', SELENIUM_HOST = 'localhost' } = process.env;
 
@@ -28,7 +30,37 @@ let suiteNesting = 0;
 // These will hold root suite level instances. Since most, if not all test
 // runners run tests inside of a suite sequentially and since we only set
 // up the browser once per root test suite, these should be "thread safe".
-let rootSuiteBrowser: Client<RawResult<null>> & RawResult<null>, rootSuiteMugshot: any;
+let rootSuiteBrowser: Browser;
+let rootSuiteMugshot: Mugshot;
+
+function getBrowserChromeSize() {
+  return {
+    width: window.outerWidth - window.innerWidth,
+    height: window.outerHeight - window.innerHeight
+  };
+}
+
+export async function setViewportSize(width: number, height: number) {
+  const {
+    // @ts-ignore because the return type is not properly inferred
+    width: chromeWidth,
+    // @ts-ignore
+    height: chromeHeight
+  } = await rootSuiteBrowser.execute(getBrowserChromeSize);
+
+  const actualWidth = width + chromeWidth;
+  const actualHeight = height + chromeHeight;
+
+  // Chrome...
+  await rootSuiteBrowser.setWindowSize(actualWidth, actualHeight);
+
+  // Firefox...
+  try {
+    await rootSuiteBrowser.setWindowRect(0, 0, actualWidth, actualHeight);
+    // eslint-disable-next-line no-empty
+  } catch (e) {
+  }
+}
 
 /**
  * Run your gui tests in a fresh Selenium session.
@@ -106,31 +138,21 @@ export async function loadFixture(componentPath: string, fixturePath: string) {
     + '&fullScreen=true'
   );
 
-  await rootSuiteBrowser.setViewportSize({ width: 1024, height: 768 });
+  await setViewportSize(1024, 768);
 
-  await rootSuiteBrowser.waitForVisible('[class^=index__container]', TIMEOUT.FIXTURE_LOAD);
+  const container = await rootSuiteBrowser.$('[class^=index__container]');
+  await container.waitForDisplayed(TIMEOUT.FIXTURE_LOAD);
 
-  const { value: iframe } = await rootSuiteBrowser.element('[class^=index__container] iframe');
-  await rootSuiteBrowser.frame(iframe);
+  const iframe = await rootSuiteBrowser.$('[class^=index__container] iframe');
+  await rootSuiteBrowser.switchToFrame(iframe);
 }
 
-export { expect };
+async function checkForVisualChanges(name: string, selector: string = 'body > *') {
+  const result = await rootSuiteMugshot.check(
+    getSafeFilename(name), selector
+  );
 
-function checkForVisualChanges(name: string, selector:string = 'body > *') {
-  return new Promise((resolve, reject) => {
-    rootSuiteMugshot.test(
-      { name: getSafeFilename(name), selector },
-      (err: Error, result: { isEqual: boolean }) => {
-        if (err) {
-          return reject(err);
-        }
-
-        expect(result.isEqual, 'Visual changes detected. Check screenshots').to.be.true;
-
-        return resolve();
-      }
-    );
-  });
+  expect(result.matches, 'Visual changes detected. Check screenshots').to.be.true;
 }
 
 /**
@@ -142,7 +164,7 @@ function collectCoverage(testName: string): Promise<void> {
   return Promise.resolve(rootSuiteBrowser.execute(function getCoverage() {
     // @ts-ignore because `__coverage__` is added by nyc
     return JSON.stringify(window.__coverage__);
-  })).then(({ value: coverage }) => {
+  })).then(coverage => {
     fs.writeFileSync(
       path.join(__dirname, 'results', 'coverage', `${BROWSER}_${safeTestName}.json`),
       coverage
@@ -161,26 +183,24 @@ function getSafeFilename(fileName: string): string {
 }
 
 function setupHooks() {
-  runnerBefore(function connectToSelenium() {
-    const options: WebdriverIO.Options = {
-      host: SELENIUM_HOST,
-      desiredCapabilities: { browserName: BROWSER },
-      deprecationWarnings: false
+  runnerBefore(async function connectToSelenium() {
+    const options: WebDriver.Options = {
+      hostname: SELENIUM_HOST,
+      capabilities: { browserName: BROWSER },
+      logLevel: 'error'
     };
 
-    rootSuiteBrowser = remote(options).init();
-
+    rootSuiteBrowser = await remote(options);
     const adapter = new WebdriverIOAdapter(rootSuiteBrowser);
 
-    rootSuiteMugshot = new Mugshot(adapter, {
-      rootDirectory: path.join(__dirname, 'screenshots', BROWSER),
-      acceptFirstBaseline: false
+    rootSuiteMugshot = new Mugshot(adapter, path.join(__dirname, 'screenshots', BROWSER), {
+      createMissingBaselines: false
     });
 
     return rootSuiteBrowser;
   });
 
   runnerAfter(function endSession() {
-    return rootSuiteBrowser.end();
+    return rootSuiteBrowser.deleteSession();
   });
 }

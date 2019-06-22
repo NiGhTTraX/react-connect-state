@@ -6,4 +6,4 @@ results
 fixtures.json
 .idea
 *.diff.png
-*.new.png
+*.actual.png
