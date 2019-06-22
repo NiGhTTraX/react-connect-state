@@ -1,7 +1,7 @@
 > Simple, type safe and time travelling state management for React
 
 [![Build Status](https://travis-ci.com/NiGhTTraX/react-connect-state.svg?branch=master)](https://travis-ci.com/NiGhTTraX/react-connect-state)
-[![codecov](https://codecov.io/gh/NiGhTTraX/react-connect-state/branch/master/graph/badge.svg)](https://codecov.io/gh/NiGhTTraX/react-connect-state)
+[![codecov](https://codecov.io/gh/NiGhTTraX/react-connect-state/branch/master/graph/badge.svg)](https://codecov.io/gh/NiGhTTraX/react-connect-state) ![npm type definitions](https://img.shields.io/npm/types/react-connect-state.svg)
 
 ----
 
