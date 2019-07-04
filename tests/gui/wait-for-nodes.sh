@@ -25,8 +25,8 @@ nodes_connected() {
   fi
   set -e
 
-  echo ${status} | python -c \
-    'import json,sys;obj=json.load(sys.stdin);print obj["slotCounts"]["free"]'
+  echo ${status} | node -e \
+    "const fs=require('fs');console.log(JSON.parse(fs.readFileSync(0, 'utf-8')).slotCounts.free)"
 }
 
 echo Waiting for ${EXPECTED_BROWSERS} browsers to connect to the Selenium hub...
