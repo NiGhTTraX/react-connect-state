@@ -163,6 +163,7 @@ function collectCoverage(testName: string): Promise<void> {
 
   return Promise.resolve(rootSuiteBrowser.execute(function getCoverage() {
     // @ts-ignore because `__coverage__` is added by nyc
+    // eslint-disable-next-line no-underscore-dangle
     return JSON.stringify(window.__coverage__);
   })).then(coverage => {
     fs.writeFileSync(
