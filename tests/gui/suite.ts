@@ -138,10 +138,10 @@ export async function loadFixture(componentPath: string, fixturePath: string) {
     + '&fullScreen=true'
   );
 
-  await setViewportSize(1024, 768);
-
   const container = await rootSuiteBrowser.$('[class^=index__container]');
   await container.waitForDisplayed(TIMEOUT.FIXTURE_LOAD);
+
+  await setViewportSize(1024, 768);
 
   const iframe = await rootSuiteBrowser.$('[class^=index__container] iframe');
   await rootSuiteBrowser.switchToFrame(iframe);
