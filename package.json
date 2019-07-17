@@ -61,7 +61,7 @@
     "@babel/preset-env": "~7.5.0",
     "@babel/preset-react": "~7.0.0",
     "@babel/preset-typescript": "~7.3.0",
-    "@babel/register": "~7.4.0",
+    "@babel/register": "~7.5.0",
     "@nighttrax/eslint-config-tsx": "~2.0.0",
     "@types/chai": "~4.1.7",
     "@types/fetch-mock": "~7.3.0",
