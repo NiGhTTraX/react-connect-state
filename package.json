@@ -90,7 +90,7 @@
     "ignore-styles": "~5.0.1",
     "jquery": "~3.4.0",
     "jsdom": "~15.1.0",
-    "less": "~3.9.0",
+    "less": "~3.10.0",
     "less-loader": "~5.0.0",
     "lint-staged": "~9.2.0",
     "mocha": "~6.2.0",
