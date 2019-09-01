@@ -175,7 +175,6 @@ describe('CommitGraphDebugView', () => {
 
       const $commits = $render(<CommitGraphDebugView commitGraph={commits} Commit={Commit} />);
       const cells = $commits.find('.commit-node')
-        // @ts-ignore TODO: figure this out
         .map((_, n) => n.textContent)
         .get();
 
