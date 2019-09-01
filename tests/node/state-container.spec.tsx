@@ -1,7 +1,8 @@
 /* eslint-disable react/no-access-state-in-setstate */
 import { spy } from 'sinon';
-import { describe, it, expect } from './suite';
 import StateContainer from '../../src/state-container';
+import { describe, it } from 'tdd-buffet/suite/node';
+import { expect } from '../expect';
 
 describe('StateContainer', () => {
   interface FooState {

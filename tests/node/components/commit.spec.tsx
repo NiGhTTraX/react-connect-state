@@ -1,10 +1,11 @@
 import React from 'react';
 import createReactMock from 'react-mock-component';
 import { spy } from 'sinon';
-import { Simulate } from 'react-dom/test-utils';
 import { It, Mock } from 'typemoq';
-import { describe, it, $render, expect } from '../suite';
 import Commit, { PrettyPrinter, TooltipProps } from '../../../src/components/commit';
+import { describe, it } from 'tdd-buffet/suite/node';
+import { $render, click } from '@tdd-buffet/react';
+import { expect } from '../../expect';
 
 describe('Commit', () => {
   it('should checkout the commit when clicked', () => {
@@ -17,9 +18,9 @@ describe('Commit', () => {
     };
     const Tooltip = (props: TooltipProps) => props.children;
 
-    const $commit = $render(<Commit Tooltip={Tooltip} commit={commit} prettyPrint={() => ''} />);
+    $render(<Commit Tooltip={Tooltip} commit={commit} prettyPrint={() => ''} />);
 
-    Simulate.click($commit[0]);
+    click('.commit');
 
     expect(commit.checkout).to.have.been.calledOnce;
   });

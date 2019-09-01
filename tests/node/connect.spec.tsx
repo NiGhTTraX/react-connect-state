@@ -1,9 +1,11 @@
 import React from 'react';
 import createReactMock from 'react-mock-component';
 import { Mock } from 'typemoq';
-import { $render, describe, expect, it, unmount, beforeEach, afterEach } from './suite';
 import StateContainer, { IStateContainer } from '../../src/state-container';
 import connectToState from '../../src/connect';
+import { $render, unmount } from '@tdd-buffet/react';
+import { afterEach, beforeEach, describe, it } from 'tdd-buffet/suite/node';
+import { expect } from '../expect';
 
 describe('connectToState', () => {
   let originalConsoleError: (msg?: string, ...args: any[]) => void;

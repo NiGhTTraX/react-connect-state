@@ -1,4 +1,6 @@
-import { describe, loadFixture, beforeEach, vit } from '../suite';
+import { vit } from '@tdd-buffet/visual';
+import { beforeEach, describe } from 'tdd-buffet/suite/gui';
+import { loadFixture } from '../load-fixture';
 
 describe('Commit', () => {
   beforeEach(async () => {

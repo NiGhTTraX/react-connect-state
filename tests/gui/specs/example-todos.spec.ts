@@ -1,4 +1,6 @@
-import { describe, loadFixture, it, beforeEach, expect } from '../suite';
+import { beforeEach, describe, it } from 'tdd-buffet/suite/gui';
+import { expect } from '../../expect';
+import { loadFixture } from '../load-fixture';
 
 describe('Example:Todos', () => {
   beforeEach(async () => {

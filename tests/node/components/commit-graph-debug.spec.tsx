@@ -2,10 +2,12 @@
 import React from 'react';
 import createReactMock from 'react-mock-component';
 import { Simulate } from 'react-dom/test-utils';
-import { $render, describe, expect, it } from '../suite';
 import CommitGraphDebugView, { CommitProps } from '../../../src/components/commit-graph-debug';
 import { ICommitGraphContainer } from '../../../src/commit-graph';
 import createBranch from '../../../playground/factories/commit';
+import { beforeEach, describe, it } from 'tdd-buffet/suite/node';
+import { $render } from '@tdd-buffet/react';
+import { expect } from '../../expect';
 
 describe('CommitGraphDebugView', () => {
   let commits!: ICommitGraphContainer;
@@ -25,7 +27,7 @@ describe('CommitGraphDebugView', () => {
     const $graph = $render(<CommitGraphDebugView Commit={Commit} commitGraph={commitGraph} />);
 
     expect(Commit.rendered).to.be.false;
-    expect($graph.html()).to.be.undefined;
+    expect($graph.html()).to.be.empty;
   });
 
   describe('master', () => {
@@ -173,6 +175,7 @@ describe('CommitGraphDebugView', () => {
 
       const $commits = $render(<CommitGraphDebugView commitGraph={commits} Commit={Commit} />);
       const cells = $commits.find('.commit-node')
+        // @ts-ignore TODO: figure this out
         .map((_, n) => n.textContent)
         .get();
 

@@ -1,3 +1,0 @@
---require ignore-styles
---file tests/node/jsdom-setup.ts
-tests/node/**/*.spec.{ts,tsx}

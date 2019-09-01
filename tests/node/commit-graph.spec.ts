@@ -1,9 +1,10 @@
 /* eslint-disable react/no-access-state-in-setstate */
 import { spy } from 'sinon';
-import { beforeEach, describe, expect, it } from './suite';
 import StateContainer from '../../src/state-container';
-import { StateCommit, CommitGraphState } from '../../src/commit-graph';
+import { CommitGraphState, StateCommit } from '../../src/commit-graph';
 import { stateCommitGraph } from '../../src';
+import { beforeEach, describe, it } from 'tdd-buffet/suite/node';
+import { expect } from '../expect';
 
 describe('stateCommitGraph', () => {
   const commitListener = spy();

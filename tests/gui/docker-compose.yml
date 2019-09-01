@@ -3,39 +3,15 @@ version: '2.1'
 services:
   playground:
     extends:
-      file: ./docker-compose.base.yml
+      file: ../../docker-compose.yml
       service: playground
     environment:
+      - ACCEPTANCE=1
       - COVERAGE=1
+    networks:
+      - tdd-buffet
 
-  selenium:
-    extends:
-      file: ./docker-compose.base.yml
-      service: selenium
-    depends_on:
-      - chrome
-#      - firefox
+networks:
+  tdd-buffet:
+    external: true
 
-  chrome:
-    extends:
-      file: ./docker-compose.base.yml
-      service: chrome
-    environment:
-      # These are legacy compose links env vars that the image is relying on.
-      - HUB_PORT_4444_TCP_PORT=4444
-      - HUB_PORT_4444_TCP_ADDR=selenium
-    depends_on:
-      playground:
-        condition: service_healthy
-
-  firefox:
-    extends:
-      file: ./docker-compose.base.yml
-      service: firefox
-    environment:
-      # These are legacy compose links env vars that the image is relying on.
-      - HUB_PORT_4444_TCP_PORT=4444
-      - HUB_PORT_4444_TCP_ADDR=selenium
-    depends_on:
-      playground:
-        condition: service_healthy
