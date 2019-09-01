@@ -59,7 +59,7 @@
     "@babel/preset-react": "~7.0.0",
     "@babel/preset-typescript": "~7.3.0",
     "@babel/register": "~7.5.0",
-    "@nighttrax/eslint-config-tsx": "~2.0.0",
+    "@nighttrax/eslint-config-tsx": "~3.0.0",
     "@tdd-buffet/react": "~0.2.3",
     "@tdd-buffet/selenium": "~0.4.1",
     "@tdd-buffet/visual": "~0.2.9",
