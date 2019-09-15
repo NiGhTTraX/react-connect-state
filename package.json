@@ -98,7 +98,7 @@
     "style-loader": "~1.0.0",
     "tdd-buffet": "~0.8.2",
     "ts-loader": "~6.0.0",
-    "ts-node": "~8.3.0",
+    "ts-node": "~8.4.0",
     "typemoq": "~2.1.0",
     "typescript": "~3.5.0",
     "webdriverio": "~5.12.0",
