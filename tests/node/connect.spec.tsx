@@ -57,7 +57,7 @@ describe('connectToState', () => {
 
     $render(<ConnectedView />);
 
-    View.sinonStub.reset();
+    View.reset();
 
     fooContainer.increment();
 
@@ -78,8 +78,8 @@ describe('connectToState', () => {
       <ConnectedView2 />
     </div>);
 
-    View1.sinonStub.reset();
-    View2.sinonStub.reset();
+    View1.reset();
+    View2.reset();
 
     fooContainer.increment();
 

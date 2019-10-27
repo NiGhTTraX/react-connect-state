@@ -71,7 +71,7 @@ describe('CommitGraphDebugView', () => {
 
       const $commits = $render(<CommitGraphDebugView Commit={Commit} commitGraph={commits} />);
 
-      Commit.sinonStub.resetHistory();
+      Commit.reset();
       Simulate.mouseOver($commits.find('.commit-node')[1]);
 
       expect(Commit.renderedWith({ commit: master[0], disabled: false })).to.be.true;
@@ -85,7 +85,7 @@ describe('CommitGraphDebugView', () => {
       const $commits = $render(<CommitGraphDebugView Commit={Commit} commitGraph={commits} />);
 
       Simulate.mouseOver($commits.find('.commit-node')[1]);
-      Commit.sinonStub.resetHistory();
+      Commit.reset();
       Simulate.mouseLeave($commits.find('.commit-node')[1]);
 
       expect(Commit.renderedWith({ commit: master[0], disabled: false })).to.be.true;
@@ -153,7 +153,7 @@ describe('CommitGraphDebugView', () => {
       const Commit = createReactMock<CommitProps>();
 
       const $commits = $render(<CommitGraphDebugView commitGraph={commits} Commit={Commit} />);
-      Commit.sinonStub.resetHistory();
+      Commit.reset();
 
       const $firstBranch = $commits.find('.branch').eq(0);
       Simulate.mouseOver($firstBranch.find('.commit-node')[0]);
@@ -180,8 +180,7 @@ describe('CommitGraphDebugView', () => {
 
       expect(cells).to.deep.equal([
         'X', 'X', 'X', 'X',
-        // eslint-disable-next-line no-multi-spaces
-        '',  'X', 'X', ''
+        '', 'X', 'X', ''
       ]);
     });
   });
