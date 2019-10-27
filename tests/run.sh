@@ -4,6 +4,7 @@ set -e
 
 cd "$( dirname "${BASH_SOURCE[0]}" )"
 
+npm run _test:fixtures
 npm run _test:selenium
 npm run _test:playground
 
