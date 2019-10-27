@@ -1,4 +1,4 @@
-/* eslint-disable class-methods-use-this */
+/* eslint-disable class-methods-use-this,react/no-array-index-key */
 import React, { Component, ComponentType, CSSProperties } from 'react';
 import { ICommitGraphContainer, StateCommit } from '../commit-graph';
 
@@ -96,7 +96,6 @@ export default class CommitGraphDebugView extends Component<CommitGraphProps, Co
         CommitGraphDebugView.addPadding(row, rightPadding);
       }
 
-      // eslint-disable-next-line react/no-array-index-key
       return <tr className="branch" key={`row-${i}`}>{row}</tr>;
     });
   }

@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-/* eslint-disable global-require,import/no-extraneous-dependencies */
 require('ts-node/register');
 require('ignore-styles');
 
@@ -49,9 +48,9 @@ findFixtureFiles({ rootPath, fileMatch, exclude }).then(fixtureFiles => {
 
 function getFixtureModules(fixtureFiles) {
   // I don't like this, but it's what the API needs.
-  /* eslint-disable import/no-dynamic-require */
   return fixtureFiles.reduce(
     (acc, f) => Object.assign(acc, {
+      // eslint-disable-next-line global-require
       [f.filePath]: importModule(require(f.filePath))
     }),
     {}
