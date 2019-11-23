@@ -60,7 +60,7 @@
     "@babel/preset-typescript": "~7.6.0",
     "@babel/register": "~7.6.2",
     "@nighttrax/eslint-config-tsx": "~3.0.0",
-    "@tdd-buffet/react": "~0.5.5",
+    "@tdd-buffet/react": "~0.7.0",
     "@tdd-buffet/selenium": "~0.4.3",
     "@tdd-buffet/visual": "~0.2.28",
     "@types/fetch-mock": "~7.3.0",
