@@ -71,7 +71,7 @@
     "@types/sinon": "~7.5.0",
     "@types/sinon-chai": "~3.2.3",
     "@types/stringify-object": "~3.2.0",
-    "@typescript-eslint/eslint-plugin": "~2.16.0",
+    "@typescript-eslint/eslint-plugin": "~2.17.0",
     "babel-loader": "~8.0.4",
     "babel-plugin-istanbul": "~6.0.0",
     "chai": "~4.2.0",
