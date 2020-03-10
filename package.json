@@ -102,7 +102,7 @@
     "ts-node": "~8.6.0",
     "typemoq": "~2.1.0",
     "typescript": "~3.8.0",
-    "webdriverio": "~5.18.0",
+    "webdriverio": "~5.19.0",
     "webpack": "~4.42.0",
     "webpack-cli": "~3.3.9",
     "webpack-dev-server": "~3.10.0"
