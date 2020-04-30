@@ -80,7 +80,7 @@
     "eslint": "~6.8.0",
     "eslint-plugin-react": "~7.19.0",
     "fork-ts-checker-webpack-plugin": "~4.1.0",
-    "html-webpack-plugin": "~4.2.0",
+    "html-webpack-plugin": "~4.3.0",
     "husky": "~4.2.0",
     "ignore-styles": "~5.0.1",
     "jest": "~25.5.0",
