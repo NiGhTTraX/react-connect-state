@@ -85,7 +85,7 @@
     "ignore-styles": "~5.0.1",
     "jest": "~26.1.0",
     "less": "~3.11.0",
-    "less-loader": "~6.1.0",
+    "less-loader": "~6.2.0",
     "lint-staged": "~10.2.0",
     "react": "~16.13.0",
     "react-cosmos": "~4.8.0",
